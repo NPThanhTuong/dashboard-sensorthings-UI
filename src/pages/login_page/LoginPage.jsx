@@ -1,25 +1,25 @@
 import { useState } from "react";
 import axios from "axios";
-import Cookies from "js-cookie";
+import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  //const [message, setMessage] = useState("");
+  const { saveToken } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/login", {
-        username,
-        password,
-      });
-      const { token, user } = response.data;
-      Cookies.set("token", token, { expires: 7 });
-      setMessage("Đăng nhập thành công!");
-      console.log("đăng nhập với người dùng:", user);
+      const response = await axios.post("/api/login", { username, password });
+      const { token } = response.data;
+      saveToken(token);
+      //  setMessage("Đăng nhập thành công!");
+      toast("Đăng nhập thành công!");
     } catch (error) {
-      setMessage(error.message);
+      // setMessage(error.message);
+      toast(error);
     }
   };
 
@@ -48,7 +48,7 @@ const LoginPage = () => {
         </div>
         <button type="submit">Đăng nhập</button>
       </form>
-      {message && <p>{message}</p>}
+      {/* {message && <p>{message}</p>} */}
     </div>
   );
 };
