@@ -1,17 +1,17 @@
-import { Routes, Route } from "react-router-dom";
-
 import HomePage from "../pages/home_page/HomePage";
 import ObservationPage from "../pages/observation_page/ObservationPage";
 import MapPage from "../pages/map_page/MapPage";
-import LoginPage from "../pages/login_page/LoginPage";
+import ProtectedRoute from "./ProtectedRoute";
+import { Routes, Route } from "react-router-dom";
 
-const HomeRoutes = () => (
+const UserRoutes = () => (
   <Routes>
-    <Route path="/" element={<HomePage />} />
-    <Route path="/quan-sat" element={<ObservationPage />} />
-    <Route path="/ban-do" element={<MapPage />} />
-    <Route path="/dang-nhap" element={<LoginPage />} />
+    <Route element={<ProtectedRoute />}>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/quan-sat" element={<ObservationPage />} />
+      <Route path="/ban-do" element={<MapPage />} />
+    </Route>
   </Routes>
 );
 
-export default HomeRoutes;
+export default UserRoutes;
