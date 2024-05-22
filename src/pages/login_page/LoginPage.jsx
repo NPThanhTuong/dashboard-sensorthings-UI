@@ -1,13 +1,25 @@
 import { useState } from "react";
+import "./login-page.css";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  //const [message, setMessage] = useState("");
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    displayName: "",
+    phone: "",
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
   const navigate = useNavigate();
 
@@ -16,44 +28,61 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/login", { username, password });
+      const response = await axios.post("/api/login", formData);
       const { token } = response.data;
       saveToken(token);
-      //  setMessage("Đăng nhập thành công!");
       toast("Đăng nhập thành công!");
       navigate("/");
     } catch (error) {
-      // setMessage(error.message);
       toast(error);
     }
   };
 
   return (
-    <div className="login-container">
-      <form onSubmit={handleLogin}>
-        <div>
-          <label htmlFor="username">Tên đăng nhập:</label>
+    <div className="">
+      <form
+        onSubmit={handleLogin}
+        className="w-full max-w-sm rounded-lg bg-white p-8 shadow-md"
+      >
+        <div className="mb-4">
+          <label htmlFor="username" className="mb-2 block text-gray-700">
+            Tên đăng nhập
+          </label>
           <input
             type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            name="username"
+            value={formData.username}
+            onChange={handleInputChange}
             required
+            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div>
-          <label htmlFor="password">Mật khẩu:</label>
+        <div className="mb-6">
+          <label htmlFor="password" className="mb-2 block text-gray-700">
+            Mật khẩu
+          </label>
           <input
             type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
             required
+            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <button type="submit">Đăng nhập</button>
+        <button
+          type="submit"
+          className="w-full rounded-md bg-blue-500 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+        >
+          Đăng nhập
+        </button>
+        <div className="flex justify-between px-1 py-2">
+          <span>Chưa có tài khoản?</span>
+          <Link to={"/dang-ky"} className="underline">
+            Đăng ký
+          </Link>
+        </div>
       </form>
-      {/* {message && <p>{message}</p>} */}
     </div>
   );
 };
