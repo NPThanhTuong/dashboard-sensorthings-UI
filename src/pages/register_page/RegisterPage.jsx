@@ -33,12 +33,20 @@ const RegisterPage = () => {
     }
     if (!formData.username.trim()) {
       newErrors.username = 'Vui lòng nhập tên đăng nhập';
+
+    } else if (formData.username.length < 4) {
+      newErrors.username = 'Tên đăng nhập phải có ít nhất 4 ký tự';
     }
     if (formData.password.length < 8) {
       newErrors.password = 'Mật khẩu phải có ít nhất 8 ký tự';
     }
     if (!formData.phone.trim()) {
       newErrors.phone = 'Vui lòng nhập số điện thoại';
+    } else if (formData.phone.length > 0) {
+      const phoneRegex = /^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/;
+      if (!phoneRegex.test(formData.phone)) {
+        newErrors.phone = 'Số điện thoại không hợp lệ';
+      }
     }
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -46,15 +54,21 @@ const RegisterPage = () => {
 
       try {
 
-        const response = await axios.post("/api/register", formData);
-        console.log('dk thanh cong', response.data);
-        // alert('Đăng ký thành công');
+        const response = await axios.post("http://127.0.0.1:8000/api/register", formData);
         toast("Đăng ký thành công!");
+
       } catch (error) {
 
         toast('Đăng ký không thành công!');
-        console.error('Đăng ký không thành công:', error.response);
+        if (error.response && error.response.data[0]) {
+          const { data } = error.response;
 
+          data[0].forEach(err => {
+
+            toast(err);
+
+          });
+        }
       }
     }
   };
@@ -122,7 +136,7 @@ const RegisterPage = () => {
               Số điện thoại
             </label>
             <input
-              className={` border border-gray-300 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.phoneNumber ? 'border-red-500' : ''
+              className={` border border-gray-300 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.phone ? 'border-red-500' : ''
                 }`}
               id="phone"
               type="text"
@@ -133,7 +147,7 @@ const RegisterPage = () => {
               onClick={handleClick}
 
             />
-            {errors.phoneNumber && <p className="text-red-500 text-sm italic">{errors.phoneNumber}</p>}
+            {errors.phone && <p className="text-red-500 text-sm italic">{errors.phone}</p>}
           </div>
           <div className="flex items-center justify-between">
             <button
