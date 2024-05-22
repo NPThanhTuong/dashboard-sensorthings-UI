@@ -33,28 +33,28 @@ const Sidebar = () => {
         <div className="my-10 flex w-full flex-col items-center">
           <Link
             to="/"
-            className={`flex w-full max-w-sm items-center justify-start gap-1 border bg-white p-1 text-black ${location.pathname === "/" ? "bg-sky-700 text-white" : ""}`}
+            className={`flex w-full max-w-sm items-center justify-start gap-1 border p-1 text-black ${location.pathname === "/" ? "bg-sky-700 text-white" : ""}`}
           >
             <IoHomeOutline className="size-5" />
             <span className="text-lg font-semibold">Trang chủ</span>
           </Link>
           <Link
             to="/dieu-khien"
-            className={`flex w-full max-w-sm items-center justify-start gap-1 border bg-white p-1 text-black ${location.pathname === "/dieu-khien" ? "bg-sky-700 text-white" : ""}`}
+            className={`flex w-full max-w-sm items-center justify-start gap-1 border p-1 text-black ${location.pathname === "/dieu-khien" ? "bg-sky-700 text-white" : ""}`}
           >
             <RiRemoteControlLine className="size-5" />
             <span className="text-lg font-semibold">Điều khiển</span>
           </Link>
           <Link
             to="/quan-sat"
-            className={`flex w-full max-w-sm items-center justify-start gap-1 border bg-white p-1 text-black ${location.pathname === "/quan-sat" ? "bg-sky-700 text-white" : ""}`}
+            className={`flex w-full max-w-sm items-center justify-start gap-1 border p-1 text-black ${location.pathname === "/quan-sat" ? "bg-sky-700 text-white" : ""}`}
           >
             <LuMonitorSpeaker className="size-5" />
             <span className="text-lg font-semibold">Quan sát</span>
           </Link>
           <Link
             to="/ban-do"
-            className={`flex w-full max-w-sm items-center justify-start gap-1 border bg-white p-1 text-black ${location.pathname === "/ban-do" ? "bg-sky-700 text-white" : ""}`}
+            className={`flex w-full max-w-sm items-center justify-start gap-1 border p-1 text-black ${location.pathname === "/ban-do" ? "bg-sky-700 text-white" : ""}`}
           >
             <SiOpenstreetmap className="size-5" />
             <span className="text-lg font-semibold">Bản đồ</span>

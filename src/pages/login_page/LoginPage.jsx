@@ -2,11 +2,15 @@ import { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   //const [message, setMessage] = useState("");
+
+  const navigate = useNavigate();
+
   const { saveToken } = useAuth();
 
   const handleLogin = async (e) => {
@@ -17,6 +21,7 @@ const LoginPage = () => {
       saveToken(token);
       //  setMessage("Đăng nhập thành công!");
       toast("Đăng nhập thành công!");
+      navigate("/");
     } catch (error) {
       // setMessage(error.message);
       toast(error);

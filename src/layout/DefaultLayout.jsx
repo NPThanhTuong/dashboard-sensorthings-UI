@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/navbar_component/Navbar";
+//import Navbar from "../components/navbar_component/Navbar";
 import Sidebar from "../components/sidebar_component/Sidebar";
 import UserRoutes from "../routes/UserRoutes";
 import { useAuth } from "../context/AuthContext";
@@ -26,7 +26,7 @@ const DefaultLayout = () => {
         <Sidebar />
       </div>
       <div className="w-[90%] bg-gray-100 p-2">
-        <Navbar />
+        {/* <Navbar /> */}
         <UserRoutes />
       </div>
     </div>
