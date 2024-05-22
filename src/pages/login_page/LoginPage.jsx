@@ -1,88 +1,138 @@
 import { useState } from "react";
 import "./login-page.css";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-    displayName: "",
-    phone: "",
   });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const navigate = useNavigate();
-
+  const [errors, setErrors] = useState({});
   const { saveToken } = useAuth();
 
-  const handleLogin = async (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    const newErrors = { ...errors };
+    delete newErrors[name];
+    setErrors(newErrors);
+    setFormData({ ...formData, [name]: value });
+  };
+  const handleClick = (e) => {
+    const { name } = e.target;
+    const newErrors = { ...errors };
+    delete newErrors[name];
+    setErrors(newErrors);
+  };
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post("/api/login", formData);
-      const { token } = response.data;
-      saveToken(token);
-      toast("Đăng nhập thành công!");
-      navigate("/");
-    } catch (error) {
-      toast(error);
+    const newErrors = {};
+
+    if (!formData.username.trim()) {
+      newErrors.username = "Vui lòng nhập tên đăng nhập";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+    } else {
+      try {
+        const response = await axios.post("/api/login", formData);
+        const { token } = response.data;
+        saveToken(token);
+
+        toast("Đăng nhập thành công!");
+      } catch (error) {
+        toast("Đăng nhập không thành công!");
+      }
     }
   };
 
   return (
     <div className="">
       <form
-        onSubmit={handleLogin}
-        className="w-full max-w-sm rounded-lg bg-white p-8 shadow-md"
+        onSubmit={handleSubmit}
+        className="form-container mx-auto mt-16 w-96 max-w-lg rounded-xl bg-white px-8 py-10 shadow-lg"
       >
-        <div className="mb-4">
-          <label htmlFor="username" className="mb-2 block text-gray-700">
-            Tên đăng nhập
-          </label>
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleInputChange}
-            required
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+        <h2 className="mb-4 text-center text-2xl font-bold text-blue-500">
+          Đăng nhập tài khoản
+        </h2>
+
+        <div className="w-50 mb-4 rounded-md border border-gray-300 bg-gray-100 px-8 pb-8 pt-6">
+          <div className="mb-3">
+            <label
+              className="mb-2 block text-lg text-gray-700"
+              htmlFor="username"
+            >
+              Tên đăng nhập
+            </label>
+            <input
+              className={`focus:shadow-outline w-full appearance-none rounded border border-gray-300 px-3 py-2 leading-tight text-gray-700 focus:outline-none ${
+                errors.username ? "border-red-500" : ""
+              }`}
+              id="username"
+              type="text"
+              placeholder="Tên đăng nhập"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              onClick={handleClick}
+              autoComplete="username"
+            />
+            {errors.username && (
+              <p className="text-sm italic text-red-500">{errors.username}</p>
+            )}
+          </div>
+          <div className="mb-3">
+            <label
+              className="mb-2 block text-lg text-gray-700"
+              htmlFor="password"
+            >
+              Mật khẩu
+            </label>
+            <div className="input-container">
+              <input
+                className={`focus:shadow-outline w-full appearance-none rounded border border-gray-300 px-3 py-2 leading-tight text-gray-700 focus:outline-none ${
+                  errors.password ? "border-red-500" : ""
+                }`}
+                id="password"
+                placeholder="Mật khẩu"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                onClick={handleClick}
+                autoComplete="current-password"
+              />
+            </div>
+            {errors.password && (
+              <p className="text-sm italic text-red-500">{errors.password}</p>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between">
+            <button
+              className="focus:shadow-outline w-full rounded bg-gradient-to-t from-cyan-400 to-blue-500 px-4 py-2 font-semibold text-white focus:outline-none"
+              type="submit"
+            >
+              Đăng nhập
+            </button>
+          </div>
         </div>
-        <div className="mb-6">
-          <label htmlFor="password" className="mb-2 block text-gray-700">
-            Mật khẩu
-          </label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleInputChange}
-            required
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full rounded-md bg-blue-500 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-        >
-          Đăng nhập
-        </button>
-        <div className="flex justify-between px-1 py-2">
+        <div className="w-50 mb-4 flex justify-between rounded-md border border-gray-300 px-8 pb-8 pt-6">
           <span>Chưa có tài khoản?</span>
-          <Link to={"/dang-ky"} className="underline">
-            Đăng ký
+          <Link to="/dang-ky">
+            <span className="font-semibold text-blue-500">Đăng ký</span>
           </Link>
         </div>
       </form>
+
+      {/* Thêm sóng ở đây */}
+      <div className="ocean">
+        <div className="wave"></div>
+        <div className="wave wave2"></div>
+        <div className="wave wave3"></div>
+      </div>
     </div>
   );
 };
