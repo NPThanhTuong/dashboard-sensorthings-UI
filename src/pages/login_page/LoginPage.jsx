@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
-
+import { toast } from "react-toastify";
 
 
 
@@ -30,9 +30,12 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
-  
+
     if (!formData.username.trim()) {
       newErrors.username = 'Vui lòng nhập tên đăng nhập';
+
+    } else if (formData.username.length < 4) {
+      newErrors.username = 'Tên đăng nhập phải có ít nhất 4 ký tự';
     }
     if (formData.password.length < 8) {
       newErrors.password = 'Mật khẩu phải có ít nhất 8 ký tự';
@@ -46,13 +49,15 @@ const LoginPage = () => {
 
       try {
         const response = await axios.post("/api/login",formData);
-        const { token, user } = response.data;
+        const { token} = response.data;
         Cookies.set("token", token, { expires: 7 });
         
-        console.log("Đăng nhập với người dùng:", user);
+        console.log('Dang nhap thanh cong', response.data);
+        toast("Đăng nhập thành công!");
+
       } catch (error) {
         console.error('Đăng nhập không thành công:', error);
-
+       
       }
     }
   };
@@ -126,4 +131,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
