@@ -32,6 +32,8 @@ const LoginPage = () => {
 
     if (!formData.username.trim()) {
       newErrors.username = "Vui lòng nhập tên đăng nhập";
+    } else if (formData.username.length < 4) {
+      newErrors.username = "Tên đăng nhập phải có ít nhất 4 ký tự";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -41,7 +43,6 @@ const LoginPage = () => {
         const response = await axios.post("/api/login", formData);
         const { token } = response.data;
         saveToken(token);
-
         toast("Đăng nhập thành công!");
       } catch (error) {
         toast("Đăng nhập không thành công!");
@@ -98,6 +99,7 @@ const LoginPage = () => {
                 }`}
                 id="password"
                 placeholder="Mật khẩu"
+                type="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
