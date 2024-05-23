@@ -181,7 +181,7 @@ const RegisterPage = () => {
         <div className="w-50 mb-4 flex justify-between rounded-md border border-gray-300 px-8 pb-8 pt-6">
           <span>Đã có tài khoản?</span>
           <Link to="/dang-nhap">
-            <span className="font-semibold text-blue-500">Đăng Nhập</span>
+            <span className="font-semibold text-blue-500">Đăng nhập</span>
           </Link>
         </div>
       </form>
