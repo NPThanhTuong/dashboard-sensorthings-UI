@@ -1,11 +1,11 @@
 // import component data
 import Light from "../../components/control_component/Light";
 import SoilHumidity from "../../components/control_component/SoilHumidity";
-import Temperature from "../../components/control_component/Temperature";
+//import Temperature from "../../components/control_component/Temperature";
 
 // import component chart
-import ChartLight from "../../components/chart_component/ChartLight";
-import ChartSoilHumidity from "../../components/chart_component/ChartSoilHumidity";
+import ChartLight from "../../components/chart_component/LightChartDay";
+import ChartSoilHumidity from "../../components/chart_component/SoilHumidityChartDay";
 
 const ObservationPage = () => {
   return (
@@ -28,10 +28,10 @@ const ObservationPage = () => {
             <Light />
           </div>
           <div className="my-2 border-4 border-white"></div>
-          <div className="flex w-full gap-3">
+          {/* <div className="flex w-full gap-3">
             <Temperature />
             <Temperature />
-          </div>
+          </div> */}
         </div>
       </section>
       <section className="mt-4 flex gap-4">
