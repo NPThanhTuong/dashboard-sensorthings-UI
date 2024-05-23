@@ -1,11 +1,13 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-toastify";
+
 import { IoHomeOutline } from "react-icons/io5";
 import { RiRemoteControlLine } from "react-icons/ri";
 import { LuMonitorSpeaker } from "react-icons/lu";
 import { SiOpenstreetmap } from "react-icons/si";
 import { IoMdLogOut } from "react-icons/io";
-import { toast } from "react-toastify";
+import { AiOutlineLineChart } from "react-icons/ai";
 
 const Sidebar = () => {
   const { token, clearToken } = useAuth();
@@ -58,6 +60,13 @@ const Sidebar = () => {
           >
             <SiOpenstreetmap className="size-5" />
             <span className="text-lg font-semibold">Bản đồ</span>
+          </Link>
+          <Link
+            to="/bieu-do-do-am-dat"
+            className={`flex w-full max-w-sm items-center justify-start gap-1 border p-1 text-black ${location.pathname === "/bieu-do-do-am-dat" || location.pathname === "/bieu-do-cuong-do-anh-sang" ? "bg-sky-700 text-white" : ""}`}
+          >
+            <AiOutlineLineChart className="size-5" />
+            <span className="text-lg font-semibold">Thống kê</span>
           </Link>
         </div>
         <button
