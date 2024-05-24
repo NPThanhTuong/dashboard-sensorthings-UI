@@ -1,11 +1,7 @@
-import DefaultLayout from "./layout/DefaultLayout";
+import UserRoutes from "./routes/UserRoutes";
 
 function App() {
-  return (
-    <>
-      <DefaultLayout />
-    </>
-  );
+  return <UserRoutes />;
 }
 
 export default App;
