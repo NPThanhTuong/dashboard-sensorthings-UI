@@ -14,7 +14,6 @@ import {
   Legend,
 } from "chart.js";
 
-// Đăng ký các thành phần cần thiết cho ChartJS
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -27,6 +26,7 @@ ChartJS.register(
 const LightChartPage = () => {
   const [allLight, setAllLight] = useState([]);
   const { token } = useAuth();
+
   useEffect(() => {
     const fetchAllLight = async () => {
       try {
@@ -43,18 +43,37 @@ const LightChartPage = () => {
           },
         );
 
-        setAllLight(response.data);
-        // console.log(response.data);
+        const now = new Date();
+        const threeDaysAgo = new Date(now);
+        threeDaysAgo.setDate(now.getDate() - 1);
+
+        const filteredData = response.data.filter((obs) => {
+          const obsDate = new Date(obs.resultTime);
+          return obsDate >= threeDaysAgo;
+        });
+
+        // Xắp sếp ngày tăng dần
+        const sortedData = filteredData.sort(
+          (a, b) => new Date(a.resultTime) - new Date(b.resultTime),
+        );
+
+        setAllLight(sortedData);
       } catch (error) {
         console.error("Lỗi lấy dữ liệu:", error);
       }
     };
 
     fetchAllLight();
+
+    const interval = setInterval(() => {
+      fetchAllLight();
+    }, 3000); // Sau 3s sẽ fetch dữ liệu 1 lần
+
+    return () => clearInterval(interval);
   }, [token]);
 
   const data = {
-    labels: allLight.map((obs) =>
+    labels: allLight?.map((obs) =>
       new Date(obs.resultTime).toLocaleString("vi-VN", {
         day: "2-digit",
         month: "2-digit",
@@ -64,7 +83,6 @@ const LightChartPage = () => {
         second: "2-digit",
       }),
     ),
-
     datasets: [
       {
         label: "Cường độ ánh sáng (lux)",
@@ -77,7 +95,6 @@ const LightChartPage = () => {
   };
 
   const options = {
-    type: "line",
     responsive: true,
     plugins: {
       legend: {
