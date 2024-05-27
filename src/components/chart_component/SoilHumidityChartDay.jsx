@@ -3,7 +3,7 @@ import axios from "axios";
 
 import { useAuth } from "../../context/AuthContext";
 
-import { Bar } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 
 import { formatTime, formatDate } from "../../utils/formatTime";
 
@@ -132,7 +132,7 @@ const SoilHumidityChartDay = () => {
   return (
     <div>
       {allSoilHumidity.length > 0 ? (
-        <Bar data={data} options={options} />
+        <Line data={data} options={options} />
       ) : (
         <p>Đang tải...</p>
       )}

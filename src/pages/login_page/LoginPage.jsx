@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./login-page.css";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 
@@ -10,8 +10,10 @@ const LoginPage = () => {
     username: "",
     password: "",
   });
+
   const [errors, setErrors] = useState({});
   const { saveToken } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,12 +22,14 @@ const LoginPage = () => {
     setErrors(newErrors);
     setFormData({ ...formData, [name]: value });
   };
+
   const handleClick = (e) => {
     const { name } = e.target;
     const newErrors = { ...errors };
     delete newErrors[name];
     setErrors(newErrors);
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
@@ -44,6 +48,7 @@ const LoginPage = () => {
         const { token } = response.data;
         saveToken(token);
         toast("Đăng nhập thành công!");
+        navigate("/");
       } catch (error) {
         toast("Đăng nhập không thành công!");
       }

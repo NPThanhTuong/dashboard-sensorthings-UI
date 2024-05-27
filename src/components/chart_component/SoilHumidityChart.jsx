@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
-import { Bar } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
@@ -15,7 +16,8 @@ import {
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
@@ -41,8 +43,17 @@ const SoilHumidityChart = () => {
           },
         );
 
-        // Sắp xếp dữ liệu theo thời gian tăng dần
-        const sortedData = response.data.sort(
+        const now = new Date();
+        const threeDaysAgo = new Date(now);
+        threeDaysAgo.setDate(now.getDate() - 1);
+
+        const filteredData = response.data.filter((obs) => {
+          const obsDate = new Date(obs.resultTime);
+          return obsDate >= threeDaysAgo;
+        });
+
+        // Xắp sếp ngày tăng dần
+        const sortedData = filteredData.sort(
           (a, b) => new Date(a.resultTime) - new Date(b.resultTime),
         );
 
@@ -56,13 +67,13 @@ const SoilHumidityChart = () => {
 
     const interval = setInterval(() => {
       fetchAllSoilHumidity();
-    }, 3000); // Sau 3s sẽ fetch dữ liệu 1 lần
+    }, 3000);
 
-    return () => clearInterval(interval); // đảm bảo interval sẽ được dọn dẹp khi component unmount, ngăn ngừa việc gọi hàm fetch khi không cần thiết
+    return () => clearInterval(interval);
   }, [token]);
 
   const data = {
-    labels: allSoilHumidity.map((obs) =>
+    labels: allSoilHumidity?.map((obs) =>
       new Date(obs.resultTime).toLocaleString("vi-VN", {
         day: "2-digit",
         month: "2-digit",
@@ -76,8 +87,8 @@ const SoilHumidityChart = () => {
       {
         label: "Độ ẩm đất (%)",
         data: allSoilHumidity.map((obs) => obs.result[0]),
-        backgroundColor: "rgba(128,0,0,1)",
-        borderColor: "rgba(128,0,0, 2)",
+        backgroundColor: "rgba(128, 0, 0, 1)",
+        borderColor: "rgba(128, 0, 0, 1)",
         borderWidth: 1,
       },
     ],
@@ -95,8 +106,8 @@ const SoilHumidityChart = () => {
       },
       tooltip: {
         callbacks: {
-          label: function (tooltipItem) {
-            return `${tooltipItem.dataset.label}: ${tooltipItem.raw} lux`;
+          label: function (context) {
+            return `${context.dataset.label}: ${context.raw} %`;
           },
         },
       },
@@ -115,7 +126,7 @@ const SoilHumidityChart = () => {
   return (
     <div className="h-full bg-white">
       {allSoilHumidity.length > 0 ? (
-        <Bar data={data} options={options} />
+        <Line data={data} options={options} />
       ) : (
         <p>Đang tải...</p>
       )}
