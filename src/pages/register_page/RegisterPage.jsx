@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./register_page.css";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const RegisterPage = () => {
@@ -12,6 +12,7 @@ const RegisterPage = () => {
     phone: "",
   });
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,8 +51,9 @@ const RegisterPage = () => {
       setErrors(newErrors);
     } else {
       try {
-        await axios.post("http://127.0.0.1:8000/api/register", formData);
+        await axios.post("/api/register", formData);
         toast("Đăng ký thành công!");
+        navigate('/dang-nhap');
       } catch (error) {
         toast("Đăng ký không thành công!");
         if (error.response && error.response.data[0]) {
