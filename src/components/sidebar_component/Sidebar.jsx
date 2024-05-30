@@ -9,6 +9,10 @@ import { SiOpenstreetmap } from "react-icons/si";
 import { IoMdLogOut } from "react-icons/io";
 import { AiOutlineLineChart } from "react-icons/ai";
 
+import "./sidebar.css";
+import { FiMenu } from "react-icons/fi";
+import  { useState } from "react";
+
 const Sidebar = () => {
   const { token, clearToken } = useAuth();
 
@@ -24,11 +28,29 @@ const Sidebar = () => {
       toast(error);
     }
   };
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const toggleSidebar = () => {
+    console.log('check');
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   return (
-    <div className="w-full">
+    <div className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
+    <FiMenu  className="icon-menu" onClick={toggleSidebar}/>
+      <div className="box">
       <div className="mx-auto my-5 text-center text-xl font-bold">
-        <span className="rounded-full border p-3">{token}</span>
+        {/* đoạn này người tổng hợp sẽ tổng hợp với code của người làm phần UserInfor và Update UserInfor để chuyển trang */}
+        <Link to="/user-infor">
+        
+        <div className="flex items-center rounded-full border p-3">
+          <img
+            src="https://www.vietnamworks.com/hrinsider/wp-content/uploads/2023/12/hinh-de-thuong-don-gian-010.jpg"
+            alt="Avatar"
+            className="h-10 w-10 rounded-full object-cover"
+          />
+          <span>Tên</span>
+        </div>
+          </Link>
       </div>
       <div className="border-white-900 border-b-2"></div>
       <div className="flex flex-col items-center">
@@ -76,6 +98,7 @@ const Sidebar = () => {
           <IoMdLogOut className="size-5" />
           <span className="text-lg font-semibold">Đăng xuất</span>
         </button>
+      </div>
       </div>
     </div>
   );
