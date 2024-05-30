@@ -76,10 +76,10 @@ const SoilHumidityChartDay = () => {
 
     const interval = setInterval(() => {
       fetchAllSoilHumidity();
-    }, 3000); // Sau 3s sẽ fetch dữ liệu 1 lần
+    }, 900000); // Sau 15 phút sẽ fetch dữ liệu 1 lần
 
     return () => clearInterval(interval); // đảm bảo interval sẽ được dọn dẹp khi component unmount, ngăn ngừa việc gọi hàm fetch khi không cần thiết
-  }, []);
+  }, [token]);
 
   const data = {
     labels: allSoilHumidity.map((obs) => formatTime(new Date(obs.resultTime))),
@@ -107,7 +107,7 @@ const SoilHumidityChartDay = () => {
       tooltip: {
         callbacks: {
           label: function (tooltipItem) {
-            return `${tooltipItem.dataset.label}: ${tooltipItem.raw} lux`;
+            return `${tooltipItem.dataset.label}: ${tooltipItem.raw} %`;
           },
         },
       },
@@ -130,11 +130,11 @@ const SoilHumidityChartDay = () => {
   };
 
   return (
-    <div>
+    <div className="w-full">
       {allSoilHumidity.length > 0 ? (
         <Line data={data} options={options} />
       ) : (
-        <p>Đang tải...</p>
+        <p className="text-center">Đang tải...</p>
       )}
     </div>
   );
