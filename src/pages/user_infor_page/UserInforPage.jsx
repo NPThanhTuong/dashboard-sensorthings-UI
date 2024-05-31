@@ -92,10 +92,10 @@ const UserInforPage = () => {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.message === "The phone has already been taken") {
+      if (error.response.data[0].includes('The phone has already been taken.')) {
         toast.error("Số điện thoại đã tồn tại, vui lòng nhập số khác");
-        window.location.reload();
-      } else {
+      } 
+      else {
         setError(error.response ? error.response.data : error.message);
       }
     }
@@ -103,10 +103,6 @@ const UserInforPage = () => {
 
   if (loading) {
     return <p className="loading-message">Đang tải thông tin người dùng...</p>;
-  }
-
-  if (error) {
-    return <p className="error-message">Lỗi: {error}</p>;
   }
 
   if (!userInfo) {
