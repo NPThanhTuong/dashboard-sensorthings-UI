@@ -15,10 +15,10 @@ const DefaultLayout = () => {
 
   return (
     <div className="flex h-screen">
-      <div className="h-full w-[10%] rounded-sm border bg-white">
+      <div className="h-full w-[16%] rounded-sm border bg-white">
         <Sidebar />
       </div>
-      <div className="h-full w-[90%] overflow-auto bg-gray-100 p-2">
+      <div className="h-full w-[84%] overflow-auto bg-gray-100 p-2">
         <Outlet />
       </div>
     </div>

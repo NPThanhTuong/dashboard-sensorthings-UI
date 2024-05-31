@@ -1,14 +1,12 @@
-// import component data
 import Light from "../../components/control_component/Light";
 import SoilHumidity from "../../components/control_component/SoilHumidity";
-//import Temperature from "../../components/control_component/Temperature";
 
 // import component chart
 import ChartLight from "../../components/chart_component/LightChartDay";
 import ChartSoilHumidity from "../../components/chart_component/SoilHumidityChartDay";
 
-import LightTable from "../../components/table_component/LightTable";
-import SoilHumidityTable from "../../components/table_component/SoilHumidityTable ";
+// import LightTable from "../../components/table_component/LightTable";
+// import SoilHumidityTable from "../../components/table_component/SoilHumidityTable ";
 
 const ObservationPage = () => {
   return (
@@ -25,24 +23,17 @@ const ObservationPage = () => {
         <div className="w-full rounded bg-white">
           <ChartLight />
         </div>
-<<<<<<< HEAD
-      </section>
+      </div>
 
-      <section className="mt-4 flex gap-4">
+      {/* <div className="mt-4 flex gap-4">
         <div className="w-full rounded bg-white">
           <SoilHumidityTable />
-
         </div>
         <div className="w-full rounded bg-white">
           <LightTable />
-
         </div>
-      </section>
-    </>
-=======
-      </div>
+      </div> */}
     </div>
->>>>>>> origin/main
   );
 };
 

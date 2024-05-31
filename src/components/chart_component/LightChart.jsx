@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
-<<<<<<< HEAD
-import LightTable from "../table_component/LightTable";
-=======
->>>>>>> origin/main
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -26,6 +22,8 @@ ChartJS.register(
 );
 
 import { formatDate } from "../../utils/formatTime";
+
+import LightTable from "../table_component/LightTable";
 
 const LightChartPage = () => {
   const [allLight, setAllLight] = useState([]);
@@ -51,10 +49,6 @@ const LightChartPage = () => {
         );
 
         const now = new Date();
-<<<<<<< HEAD
-        const threeDaysAgo = new Date(now);
-        threeDaysAgo.setDate(now.getDate() - 1);
-=======
         const maxEndDate = endDate ? new Date(endDate) : now;
         const maxStartDate = startDate
           ? new Date(startDate)
@@ -67,7 +61,6 @@ const LightChartPage = () => {
         maxStartDate.setHours(0, 0, 0, 0);
         maxEndDate.setHours(23, 59, 59, 999);
 
->>>>>>> origin/main
         const filteredData = response.data.filter((obs) => {
           const obsDate = new Date(obs.resultTime);
           return obsDate >= maxStartDate && obsDate <= maxEndDate;
@@ -168,19 +161,6 @@ const LightChartPage = () => {
   };
 
   return (
-<<<<<<< HEAD
-    <div>
-      <div className="bg-white">
-        {allLight.length > 0 ? (
-          <Line data={data} options={options} />
-        ) : (
-          <p>Đang tải...</p>
-        )}
-      </div>
-      <div className="mt-8 bg-white">
-        <LightTable />
-      </div>
-=======
     <div className="flex flex-col justify-center">
       <div className="mb-4 flex w-full max-w-screen-2xl justify-end gap-8 rounded-lg bg-white p-4 shadow">
         <div className="flex flex-col">
@@ -225,10 +205,12 @@ const LightChartPage = () => {
             <Line data={data} options={options} />
           </div>
         ) : (
-          <p className="text-center">Đang tải...</p>
+          <p className="text-center">Không có dữ liệu!</p>
         )}
       </div>
->>>>>>> origin/main
+      <div className="mt-8 bg-white">
+        <LightTable />
+      </div>
     </div>
   );
 };

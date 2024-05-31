@@ -2,7 +2,6 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-
 import nhaMay from "../../../../public/images/nha-may.jpg";
 
 const ListThings = () => {
@@ -71,80 +70,79 @@ const ListThings = () => {
     <div className="flex h-[100%] flex-col justify-center p-4">
       <div className="flex h-full w-full max-w-screen-2xl flex-col rounded-lg border bg-white p-6 shadow-lg">
         <div className="flex-grow overflow-auto">
-          <table className="w-full border-separate overflow-hidden rounded-lg border border-gray-300">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="w-10 border border-gray-300 px-4 py-2">STT</th>
-                <th className="border border-gray-300 px-4 py-2">Hình ảnh</th>
-                <th className="border border-gray-300 px-4 py-2">Tên</th>
-                <th className="border border-gray-300 px-4 py-2">Mô tả</th>
-                <th className="border border-gray-300 px-4 py-2">
-                  Luồng dữ liệu
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentThings?.map((thing, index) => (
-                <tr
-                  key={thing.id}
-                  className="bg-white transition duration-200 ease-in-out hover:bg-gray-100"
-                >
-                  <td className="border border-gray-300 px-4 py-2 text-center">
-                    {index + 1 + (currentPage - 1) * itemsPerPage}
-                  </td>
-                  {/* <td className="border border-gray-300 px-4 py-2 text-center">
-                    <img
-                      src={thing.avt_image}
-                      alt={thing.name}
-                      className="mx-auto h-16 w-16 rounded-full object-cover shadow-md"
-                    />
-                  </td> */}
-                  <td className="border border-gray-300 px-4 py-2 text-center">
-                    <img
-                      src={nhaMay}
-                      alt={thing.name}
-                      className="mx-auto h-16 w-16 rounded-full object-cover shadow-md"
-                    />
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2 font-medium text-gray-700">
-                    {thing.name}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2 text-gray-600">
-                    {thing.description}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2 text-center">
-                    <button
-                      onClick={() =>
-                        navigate(
-                          `/datastreams/${thing.id}/${encodeURIComponent(thing.name)}`,
-                        )
-                      }
-                      className="italic text-blue-900 underline"
-                    >
-                      Xem
-                    </button>
-                  </td>
+          {things.length === 0 ? (
+            <div className="text-center">Chưa có dữ liệu!</div>
+          ) : (
+            <table className="w-full border-separate overflow-hidden rounded-lg border border-gray-300">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="w-10 border border-gray-300 px-4 py-2">STT</th>
+                  <th className="border border-gray-300 px-4 py-2">Hình ảnh</th>
+                  <th className="border border-gray-300 px-4 py-2">Tên</th>
+                  <th className="border border-gray-300 px-4 py-2">Mô tả</th>
+                  <th className="border border-gray-300 px-4 py-2">
+                    Luồng dữ liệu
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {currentThings?.map((thing, index) => (
+                  <tr
+                    key={thing.id}
+                    className="bg-white transition duration-200 ease-in-out hover:bg-gray-100"
+                  >
+                    <td className="border border-gray-300 px-4 py-2 text-center">
+                      {index + 1 + (currentPage - 1) * itemsPerPage}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-center">
+                      <img
+                        src={nhaMay}
+                        alt={thing.name}
+                        className="mx-auto h-16 w-16 rounded-full object-cover shadow-md"
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 font-medium text-gray-700">
+                      {thing.name}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-gray-600">
+                      {thing.description}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-center">
+                      <button
+                        onClick={() =>
+                          navigate(
+                            `/datastreams/${thing.id}/${encodeURIComponent(thing.name)}`,
+                          )
+                        }
+                        className="italic text-blue-900 underline"
+                      >
+                        Xem
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
         {/* Phân trang */}
-        <div className="mt-4 flex justify-center">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i}
-              onClick={() => paginate(i + 1)}
-              className={`mx-1 rounded-md px-3 py-1 focus:outline-none ${
-                currentPage === i + 1
-                  ? "bg-gray-200"
-                  : "bg-white hover:bg-gray-100"
-              }`}
-            >
-              {i + 1}
-            </button>
-          ))}
-        </div>
+        {things.length > 0 && (
+          <div className="mt-4 flex justify-center">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => paginate(i + 1)}
+                className={`mx-1 rounded-md px-3 py-1 focus:outline-none ${
+                  currentPage === i + 1
+                    ? "bg-gray-200"
+                    : "bg-white hover:bg-gray-100"
+                }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

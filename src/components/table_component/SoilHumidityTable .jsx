@@ -173,7 +173,7 @@ const SoilHumidityTable = () => {
           </button>
         </>
       ) : (
-        <span>Chưa có dữ liệu...</span>
+        <span>Không có dữ liệu...</span>
       )}
     </div>
   );
