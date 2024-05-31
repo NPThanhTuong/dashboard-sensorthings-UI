@@ -14,6 +14,11 @@ import StatisticalPage from "../pages/statistical_page/StatisticalPage";
 import LightChart from "../components/chart_component/LightChart";
 import SoilHumidityChart from "../components/chart_component/SoilHumidityChart";
 
+// Home Layout
+import ListThings from "../components/home_component/thing_component/ListThings";
+import AddThing from "../components/home_component/thing_component/AddThing";
+import ListDataStream from "../components/home_component/datastream_component/ListDataStream";
+
 const UserRoutes = () => (
   <Routes>
     <Route element={<PublicLayout />}>
@@ -22,7 +27,6 @@ const UserRoutes = () => (
     </Route>
     <Route element={<ProtectedRoute />}>
       <Route element={<DefaultLayout />}>
-        <Route path="/" element={<HomePage />} />
         <Route path="/quan-sat" element={<ObservationPage />} />
         <Route path="/ban-do" element={<MapPage />} />
         <Route path="/thong-ke" element={<StatisticalPage />} />
@@ -46,6 +50,36 @@ const UserRoutes = () => (
           }
         />
         {/*End Route Statistical */}
+
+        {/* Start Route Home */}
+        <Route
+          path="/them-thing"
+          element={
+            <HomePage>
+              <AddThing />
+            </HomePage>
+          }
+        />
+
+        <Route
+          path="/"
+          element={
+            <HomePage>
+              <ListThings />
+            </HomePage>
+          }
+        />
+
+        <Route
+          path="/datastreams/:thingId/:thingName"
+          element={
+            <HomePage>
+              <ListDataStream />
+            </HomePage>
+          }
+        />
+
+        {/* Start Route Home */}
       </Route>
     </Route>
   </Routes>

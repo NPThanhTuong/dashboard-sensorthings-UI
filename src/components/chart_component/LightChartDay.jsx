@@ -75,7 +75,7 @@ const LightChartDay = () => {
 
     const interval = setInterval(() => {
       fetchAllLight();
-    }, 3000); // Sau 3s sẽ fetch dữ liệu 1 lần
+    }, 900000); // Sau 15 phút sẽ fetch dữ liệu 1 lần
 
     return () => clearInterval(interval); // đảm bảo interval sẽ được dọn dẹp khi component unmount, ngăn ngừa việc gọi hàm fetch khi không cần thiết
   }, [token]);
@@ -148,7 +148,7 @@ const LightChartDay = () => {
       {allLight.length > 0 ? (
         <Line data={data} options={options} />
       ) : (
-        <p>Đang tải...</p>
+        <p className="text-center">Đang tải...</p>
       )}
     </div>
   );
