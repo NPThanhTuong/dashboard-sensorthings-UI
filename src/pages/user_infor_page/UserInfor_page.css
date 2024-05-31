@@ -1,0 +1,178 @@
+/*Author:Le Vu Luan*/
+/* Toàn bộ trang thông tin người dùng */
+.user-info-container {
+    width: 70%;
+    margin: 20px auto 200px; /* Căn giữa và thêm khoảng cách phía trên và dưới */
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-family: 'Arial', sans-serif;
+    border: 2px solid #0552a5;
+    overflow-x: auto; /* Cho phép cuộn ngang nếu bảng quá rộng */
+    overflow-y: auto; /* Cho phép cuộn dọc nếu nội dung quá dài */
+    max-height: 80vh; /* Đặt chiều cao tối đa để bảng không vượt quá 80% chiều cao màn hình */
+}
+
+/* Tiêu đề trang */
+.user-info-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color:  #0552a5;
+    font-size: 35px;
+    border-bottom: 2px solid  #0552a5;
+    padding-bottom: 10px;
+}
+
+/* Bảng thông tin người dùng */
+.user-info-table {
+    width: 100%; /* Hiển thị full trong container */
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+/* Tiêu đề các cột trong bảng */
+.user-info-table th {
+    background-color:  #0552a5;
+    color: white;
+    padding: 8px; 
+    border: 1px solid #ddd;
+    text-align: center; /* Căn giữa tiêu đề cột */
+    white-space: nowrap; /* Đảm bảo tiêu đề không bị ngắt dòng */
+}
+
+/* Cột ID */
+.user-info-table td:first-child {
+    font-weight: bold;
+    background-color: #f2f2f2;
+    text-align: center; /* Căn giữa nội dung */
+    width: 40px; 
+    color:  #0552a5;
+}
+
+/* Các cột còn lại */
+.user-info-table td:not(:first-child) {
+    padding: 8px; 
+    border: 1px solid #ddd;
+    vertical-align: middle; /* Hiện chữ đều trên từng dòng */
+    word-wrap: break-word; /* Phân chia từng từ nếu nội dung quá dài */
+    white-space: normal; /* Cho phép nội dung xuống dòng khi cần thiết */
+    text-align: center; /* Căn giữa nội dung trong ô */
+    word-break: break-word; /* Tách từ khi cần */
+}
+
+/* Nút chỉnh sửa */
+.edit-button {
+    background-color: white;
+    color: black;
+    border: none;
+    /* padding: 8px 12px; */
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.edit-button:hover {
+    color: red;
+}
+
+/* Thông báo đang tải, lỗi và không có thông tin */
+.loading-message,
+.error-message,
+.no-info-message {
+    text-align: center;
+    font-size: 18px;
+    margin-top: 20px; /* Thêm khoảng cách với các phần khác */
+}
+
+.loading-message {
+    color: #555;
+}
+
+.error-message {
+    color: #e74c3c;
+}
+
+.no-info-message {
+    color: #555;
+}
+
+/* Ocean class */
+.ocean {
+    height: 5%;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: #015871;
+    z-index: 10;
+}
+
+.user-info-container button {
+    background-color: #007BFF; 
+    color: white; 
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease; 
+}
+  
+.user-info-container button:hover {
+    background-color: #0056b3; 
+}
+  
+
+/* Form chỉnh sửa */
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+  
+/* Nút lưu, hủy và thay đổi mật khẩu */
+.save-button, .cancel-button, .change-password-button {
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 10px;
+}
+  
+.save-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+}
+  
+.cancel-button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+}
+
+.change-password-button {
+    background-color: #007BFF; 
+    color: white; 
+    border: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .user-info-container {
+        padding: 10px;
+        margin: 20px auto;
+        width: 95%; 
+    }   
+
+    .user-info-table th, .user-info-table td {
+        padding: 8px; /* Giảm kích thước của các cột */
+        font-size: 12px; /* Giảm kích thước chữ trên thiết bị nhỏ */
+    }
+
+    .user-info-container h2 {
+        font-size: 20px; /* Giảm kích thước tiêu đề */
+    }
+}

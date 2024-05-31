@@ -13,12 +13,15 @@ import ProtectedRoute from "../routes/ProtectedRoute";
 import StatisticalPage from "../pages/statistical_page/StatisticalPage";
 import LightChart from "../components/chart_component/LightChart";
 import SoilHumidityChart from "../components/chart_component/SoilHumidityChart";
-
+import UserInforPage from "../pages/user_infor_page/UserInforPage"
+import ChangePassword from "../pages/user_infor_page/UserInforPage"
 const UserRoutes = () => (
   <Routes>
     <Route element={<PublicLayout />}>
       <Route path="/dang-nhap" element={<LoginPage />} />
       <Route path="/dang-ky" element={<RegisterPage />} />
+      <Route path="/user-infor" element={<UserInforPage />} />
+      <Route path="/change-password" element={<ChangePassword />} />
     </Route>
     <Route element={<ProtectedRoute />}>
       <Route element={<DefaultLayout />}>
