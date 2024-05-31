@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { Line } from "react-chartjs-2";
+
+import SoilHumidityTable from "../table_component/SoilHumidityTable ";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -130,6 +132,8 @@ const SoilHumidityChart = () => {
       ) : (
         <p>Đang tải...</p>
       )}
+
+      <SoilHumidityTable></SoilHumidityTable>
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 import { useAuth } from "../../context/AuthContext";
-
+import LightTable from "../table_component/LightTable";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -122,6 +122,7 @@ const LightChartPage = () => {
       ) : (
         <p>Đang tải...</p>
       )}
+      <LightTable/>
     </div>
   );
 };
