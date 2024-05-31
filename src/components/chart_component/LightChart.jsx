@@ -46,7 +46,6 @@ const LightChartPage = () => {
         const now = new Date();
         const threeDaysAgo = new Date(now);
         threeDaysAgo.setDate(now.getDate() - 1);
-
         const filteredData = response.data.filter((obs) => {
           const obsDate = new Date(obs.resultTime);
           return obsDate >= threeDaysAgo;
@@ -116,13 +115,17 @@ const LightChartPage = () => {
   };
 
   return (
-    <div className="h-full bg-white">
-      {allLight.length > 0 ? (
-        <Line data={data} options={options} />
-      ) : (
-        <p>Đang tải...</p>
-      )}
-      <LightTable/>
+    <div>
+      <div className="bg-white">
+        {allLight.length > 0 ? (
+          <Line data={data} options={options} />
+        ) : (
+          <p>Đang tải...</p>
+        )}
+      </div>
+      <div className="mt-8 bg-white">
+        <LightTable />
+      </div>
     </div>
   );
 };

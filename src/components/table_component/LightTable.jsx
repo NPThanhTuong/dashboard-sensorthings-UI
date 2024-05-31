@@ -4,7 +4,6 @@ import { useAuth } from "../../context/AuthContext";
 
 import * as XLSX from "xlsx";
 import * as ExcelJS from "exceljs"; // Import ExcelJS library
-
 const LightTable = () => {
   const [data, setData] = useState([]);
   const { token } = useAuth();
@@ -117,7 +116,11 @@ const LightTable = () => {
     const formattedHours = hours < 10 ? `0${hours}` : hours;
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
     const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
-    const formattedDate = `${formattedHours}:${formattedMinutes}:${formattedSeconds} ${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const formattedDay = day < 10 ? `0${day}` : day;
+    const formattedMonth = month < 10 ? `0${month}` : month;
+    const formattedDate = `${formattedHours}:${formattedMinutes}:${formattedSeconds} ${formattedDay}-${formattedMonth}-${date.getFullYear()}`;
     return formattedDate;
   };
 

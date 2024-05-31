@@ -126,14 +126,17 @@ const SoilHumidityChart = () => {
   };
 
   return (
-    <div className="h-full bg-white">
-      {allSoilHumidity.length > 0 ? (
-        <Line data={data} options={options} />
-      ) : (
-        <p>Đang tải...</p>
-      )}
-
-      <SoilHumidityTable></SoilHumidityTable>
+    <div>
+      <div className="bg-white">
+        {allSoilHumidity.length > 0 ? (
+          <Line data={data} options={options} />
+        ) : (
+          <p>Đang tải...</p>
+        )}
+      </div>
+      <div className="mt-8 bg-white">
+        <SoilHumidityTable />
+      </div>
     </div>
   );
 };
