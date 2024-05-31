@@ -14,11 +14,11 @@ const DefaultLayout = () => {
   }, [token, navigate]);
 
   return (
-    <div className="flex">
-      <div className="h-dvh w-[10%] rounded-sm border bg-white">
+    <div className="flex h-screen">
+      <div className="h-full w-[10%] rounded-sm border bg-white">
         <Sidebar />
       </div>
-      <div className="w-[90%] bg-gray-100 p-2">
+      <div className="h-full w-[90%] overflow-auto bg-gray-100 p-2">
         <Outlet />
       </div>
     </div>
