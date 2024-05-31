@@ -174,19 +174,6 @@ const SoilHumidityChart = () => {
   };
 
   return (
-<<<<<<< HEAD
-    <div>
-      <div className="bg-white">
-        {allSoilHumidity.length > 0 ? (
-          <Line data={data} options={options} />
-        ) : (
-          <p>Đang tải...</p>
-        )}
-      </div>
-      <div className="mt-8 bg-white">
-        <SoilHumidityTable />
-      </div>
-=======
     <div className="flex flex-col justify-center">
       <div className="mb-4 flex w-full max-w-screen-2xl justify-end gap-8 rounded-lg bg-white p-4 shadow">
         <div className="flex flex-col">
@@ -231,10 +218,12 @@ const SoilHumidityChart = () => {
             <Line data={data} options={options} />
           </div>
         ) : (
-          <p className="text-center">Đang tải...</p>
+          <p className="text-center">Không có dữ liệu!</p>
         )}
       </div>
->>>>>>> origin/main
+      <div className="mt-8 bg-white">
+        <SoilHumidityTable />
+      </div>
     </div>
   );
 };

@@ -134,7 +134,7 @@ const SoilHumidityChartDay = () => {
       {allSoilHumidity.length > 0 ? (
         <Line data={data} options={options} />
       ) : (
-        <p className="text-center">Đang tải...</p>
+        <p className="text-center">Không có dữ liệu!</p>
       )}
     </div>
   );
