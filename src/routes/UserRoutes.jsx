@@ -13,6 +13,7 @@ import ProtectedRoute from "../routes/ProtectedRoute";
 import StatisticalPage from "../pages/statistical_page/StatisticalPage";
 import LightChart from "../components/chart_component/LightChart";
 import SoilHumidityChart from "../components/chart_component/SoilHumidityChart";
+import UserInforPage from "../pages/user_infor_page/UserInforPage"
 
 // Home Layout
 import ListThings from "../components/home_component/thing_component/ListThings";
@@ -24,6 +25,8 @@ const UserRoutes = () => (
     <Route element={<PublicLayout />}>
       <Route path="/dang-nhap" element={<LoginPage />} />
       <Route path="/dang-ky" element={<RegisterPage />} />
+      <Route path="/thong-tin-nguoi-dung" element={<UserInforPage />} />
+
     </Route>
     <Route element={<ProtectedRoute />}>
       <Route element={<DefaultLayout />}>
