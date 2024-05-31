@@ -13,13 +13,10 @@ import ProtectedRoute from "../routes/ProtectedRoute";
 import StatisticalPage from "../pages/statistical_page/StatisticalPage";
 import LightChart from "../components/chart_component/LightChart";
 import SoilHumidityChart from "../components/chart_component/SoilHumidityChart";
-import ProfileUserPage from "../pages/profile_page/ProfileUserPage";
-import UpdateProfilePage from "../pages/update_profile_page/UpdateProfilePage";
 
 // Home Layout
 import ListThings from "../components/home_component/thing_component/ListThings";
 import AddThing from "../components/home_component/thing_component/AddThing";
-import ListSensor from "../components/home_component/sensor_component/ListSensor";
 import ListDataStream from "../components/home_component/datastream_component/ListDataStream";
 
 const UserRoutes = () => (
@@ -54,12 +51,6 @@ const UserRoutes = () => (
         />
         {/*End Route Statistical */}
 
-        <Route path="/thong-tin-ca-nhan" element={<ProfileUserPage />} />
-        <Route
-          path="/cap-nhat-thong-tin-ca-nhan"
-          element={<UpdateProfilePage />}
-        />
-
         {/* Start Route Home */}
         <Route
           path="/them-thing"
@@ -87,14 +78,14 @@ const UserRoutes = () => (
             </HomePage>
           }
         />
-        <Route
+        {/* <Route
           path="/danh-sach-sensor"
           element={
             <HomePage>
               <ListSensor />
             </HomePage>
           }
-        />
+        /> */}
         {/* Start Route Home */}
       </Route>
     </Route>
