@@ -1,13 +1,17 @@
 import  { useState } from 'react';
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import { toast } from 'react-toastify';
+import {  useNavigate } from "react-router-dom";
+
+
 
 const ChangePassword = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const navigate = useNavigate();
 
   const { token } = useAuth();
  
@@ -16,13 +20,13 @@ const ChangePassword = () => {
 
     // Validate passwords
     if (newPassword !== confirmPassword) {
-      setError('Mật khẩu mới và mật khẩu xác nhận không khớp.');
+      toast('Mật khẩu mới và mật khẩu xác nhận không khớp.');
       return;
     }
 
     // Call API to change password
     try {
-      console.log('tokennnn',token);
+     
       const response = await axios.post('/api/resetPassword', {
         password:currentPassword,
         newPassword:newPassword,
@@ -30,16 +34,17 @@ const ChangePassword = () => {
       });
     
       if (response.status !== 200) {
-        throw new Error('Đã xảy ra lỗi khi thay đổi mật khẩu.');
+        toast('Đã xảy ra lỗi khi thay đổi mật khẩu.');
       }
     
-      setSuccessMessage('Mật khẩu đã được thay đổi thành công.');
+      toast('Mật khẩu đã được thay đổi thành công.');
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
       setError('');
+      navigate('/dang-nhap');
     } catch (error) {
-      setError(error.message);
+      toast('Mật khẩu trùng với mật khẩu cũ')
     }
   };
 
@@ -48,7 +53,7 @@ const ChangePassword = () => {
       
       <form onSubmit={handleChangePassword} className='form-container mx-auto mt-16 w-96 max-w-lg rounded-xl bg-white px-8 py-10 shadow-lg'>
         {error && <div style={{ color: 'red' }}>{error}</div>}
-        {successMessage && <div style={{ color: 'green' }}>{successMessage}</div>}
+        
         <h2 className="mb-4 text-center text-2xl font-bold text-blue-500">Thay đổi mật khẩu</h2>
         
         <div>

@@ -21,7 +21,7 @@ const UserRoutes = () => (
       <Route path="/dang-nhap" element={<LoginPage />} />
       <Route path="/dang-ky" element={<RegisterPage />} />
     </Route>
-    <Route path="/change-password" element={<ChangePassword />} />
+    <Route path="/thay-doi-mat-khau" element={<ChangePassword />} />
     <Route element={<ProtectedRoute />}>
       <Route element={<DefaultLayout />}>
         <Route path="/" element={<HomePage />} />
