@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { Line } from "react-chartjs-2";
+
+import SoilHumidityTable from "../table_component/SoilHumidityTable ";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -172,6 +174,19 @@ const SoilHumidityChart = () => {
   };
 
   return (
+<<<<<<< HEAD
+    <div>
+      <div className="bg-white">
+        {allSoilHumidity.length > 0 ? (
+          <Line data={data} options={options} />
+        ) : (
+          <p>Đang tải...</p>
+        )}
+      </div>
+      <div className="mt-8 bg-white">
+        <SoilHumidityTable />
+      </div>
+=======
     <div className="flex flex-col justify-center">
       <div className="mb-4 flex w-full max-w-screen-2xl justify-end gap-8 rounded-lg bg-white p-4 shadow">
         <div className="flex flex-col">
@@ -219,6 +234,7 @@ const SoilHumidityChart = () => {
           <p className="text-center">Đang tải...</p>
         )}
       </div>
+>>>>>>> origin/main
     </div>
   );
 };
