@@ -1,7 +1,9 @@
-/*Author:Le Vu Luan*/
-import { useState, useEffect } from "react";
+/* Author: Le Vu Luan */
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; 
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./UserInfor_page.css"; 
 import { useAuth } from "../../context/AuthContext";
 
@@ -15,7 +17,6 @@ const UserInforPage = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
-    username: "",
     displayname: "",
     phone: "",
   });
@@ -43,7 +44,6 @@ const UserInforPage = () => {
 
   const handleEditClick = () => {
     setEditForm({
-      username: userInfo.username,
       displayname: userInfo.displayname,
       phone: userInfo.phone,
     });
@@ -57,43 +57,44 @@ const UserInforPage = () => {
       ...editForm,
       [name]: value,
     });
-    setValidationError(null); 
+    setValidationError(null);
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     
     const changes = {};
-    if (editForm.username !== userInfo.username) changes.username = editForm.username;
     if (editForm.displayname !== userInfo.displayname) changes.displayname = editForm.displayname;
     if (editForm.phone !== userInfo.phone) changes.phone = editForm.phone;
 
     if (Object.keys(changes).length === 0) {
-      //nếu người dùng không có thay đổi gì thì refresh lại trang thông tin user
       window.location.reload();
       return;
     }
 
     try {
-      console.log("Sending update request with data:", changes);
       const response = await axios.post("/api/updateInformation", changes, {
         params: {
           'token': token,
         },
       });
-      console.log("Update response:", response);
-      setUserInfo((prevUserInfo) => ({
-        ...prevUserInfo,
-        ...changes,
-      }));
-      setIsEditing(false);
-      setHeaderTitle("THÔNG TIN TÀI KHOẢN NGƯỜI DÙNG");
-      window.location.reload(); 
+
+      // Check if the update was successful
+      if (response.data.success) {
+        setUserInfo((prevUserInfo) => ({
+          ...prevUserInfo,
+          ...changes,
+        }));
+        setIsEditing(false);
+        setHeaderTitle("THÔNG TIN TÀI KHOẢN NGƯỜI DÙNG");
+        toast.success("Cập nhật thông tin thành công!");
+      } else {
+        throw new Error(response.data.message);
+      }
     } catch (error) {
-      console.error("Error updating user info:", error.response || error.message);
       if (error.response && error.response.data && error.response.data.message === "The phone has already been taken") {
-        alert("Lỗi: Số điện thoại đã tồn tại!"); // Nếu số điện thoại đã tồn tại ở 1 user khác thì báo lỗi
-        window.location.reload(); 
+        toast.error("Số điện thoại đã tồn tại, vui lòng nhập số khác");
+        window.location.reload();
       } else {
         setError(error.response ? error.response.data : error.message);
       }
@@ -112,20 +113,17 @@ const UserInforPage = () => {
     return <p className="no-info-message">Không có thông tin người dùng.</p>;
   }
 
+  const formatDate = (dateString) => {
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString('vi-VN', options);
+  };
+
   return (
     <div className="user-info-container">
+      <ToastContainer />
       <h2>{headerTitle}</h2>
       {isEditing ? (
         <form onSubmit={handleFormSubmit} className="edit-form">
-          <div>
-            <label>Tên đăng nhập:  </label>
-            <input
-              type="text"
-              name="username"
-              value={editForm.username}
-              onChange={handleInputChange}
-            />
-          </div>
           <div>
             <label>Họ và Tên:  </label>
             <input
@@ -143,15 +141,15 @@ const UserInforPage = () => {
               value={editForm.phone}
               onChange={handleInputChange}
             />
+            {validationError && <p className="error-message">{validationError}</p>}
           </div>
-          {validationError && <p className="error-message">{validationError}</p>} {/* Display validation error */}
-          <button type="submit" className="save-button">Lưu</button>
+          <button type="submit" className="save-button" disabled={validationError}>Lưu</button>
           <button type="button" className="cancel-button" onClick={() => {
             setIsEditing(false);
             setHeaderTitle("THÔNG TIN TÀI KHOẢN NGƯỜI DÙNG");
-            window.location.reload(); // Refresh page when cancelling edit
+            window.location.reload();
           }}>Hủy</button>
-          <button type="button" className="change-password-button" onClick={() => navigate("/change-password")}>
+          <button type="button" className="change-password-button" onClick={() => navigate("/thay-doi-mat-khau")}>
             Thay đổi mật khẩu
           </button>
         </form>
@@ -159,7 +157,6 @@ const UserInforPage = () => {
         <table className="user-info-table">
           <thead>
             <tr>
-              <th>ID</th>
               <th>Tên đăng nhập</th>
               <th>Họ và Tên</th>
               <th>Số điện thoại</th>
@@ -169,11 +166,10 @@ const UserInforPage = () => {
           </thead>
           <tbody>
             <tr>
-              <td>{userInfo.id}</td>
               <td>{userInfo.username}</td>
               <td>{userInfo.displayname}</td>
               <td>{userInfo.phone}</td>
-              <td>{userInfo.created_at}</td>
+              <td>{formatDate(userInfo.created_at)}</td>
               <td>
                 <button className="edit-button" onClick={handleEditClick}>Chỉnh sửa</button>
               </td>
