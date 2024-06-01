@@ -1,40 +1,15 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { toast } from "react-toastify";
-
-import { IoHomeOutline } from "react-icons/io5";
-import { LuMonitorSpeaker } from "react-icons/lu";
-import { SiOpenstreetmap } from "react-icons/si";
-import { IoMdLogOut } from "react-icons/io";
-import { AiOutlineLineChart } from "react-icons/ai";
-
-import avatar from "../../../public/images/nha-may.jpg";
-
-const Sidebar = () => {
-  const { token, clearToken } = useAuth();
-
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const handleLogout = async (e) => {
-    e.preventDefault();
-    try {
-      clearToken(token);
-      navigate("/dang-nhap");
-    } catch (error) {
-      toast(error);
-    }
-  };
-
-  return (
+return (
     <div className="flex w-full flex-col">
-      <div className="mx-auto my-5">
-        <img
-          src={avatar}
-          alt="avatar"
-          className="h-20 w-20 rounded-full object-cover"
-        />
-      </div>
+      <Link to="/thong-tin-nguoi-dung">
+        <div className="flex items-center rounded-full border p-3">
+          <img
+            src="https://www.vietnamworks.com/hrinsider/wp-content/uploads/2023/12/hinh-de-thuong-don-gian-010.jpg"
+            alt="Avatar"
+            className="h-10 w-10 rounded-full object-cover"
+          />
+          <span>Tên</span>
+        </div>
+      </Link>
       <div className="border-white-900 my-4 border-b-2"></div>
       <div className="flex flex-col items-center">
         <div className="my-10 flex w-full flex-col items-center">
@@ -79,5 +54,3 @@ const Sidebar = () => {
     </div>
   );
 };
-
-export default Sidebar;

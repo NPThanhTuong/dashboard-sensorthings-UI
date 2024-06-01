@@ -1,0 +1,36 @@
+.icon-menu {
+    display: none;
+    cursor: pointer; 
+  }
+  .open{
+    display: block !important;
+    width: 210px !important;
+  }
+ 
+  @media screen and (max-width: 767px) {
+    /* .sidebar {
+      width: 30px;
+    } */
+  
+     .sidebar {
+      display: none;
+     
+    }
+  
+    .icon-menu {
+      display: block;
+    }
+  }
+  @media screen and (min-width: 767px) {
+    /* .sidebar {
+      width: 30px;
+    } */
+  
+     .sidebar {
+      display: block !important;
+    }
+  
+    .icon-menu {
+      display: none;
+    }
+  }
