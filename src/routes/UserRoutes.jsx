@@ -24,8 +24,8 @@ const UserRoutes = () => (
     </Route>
 
     <Route element={<ProtectedRoute />}>
-    <Route path="/thay-doi-mat-khau" element={<ChangePassword />} />
       <Route element={<DefaultLayout />}>
+      <Route path="/thay-doi-mat-khau" element={<ChangePassword />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/quan-sat" element={<ObservationPage />} />
         <Route path="/ban-do" element={<MapPage />} />
