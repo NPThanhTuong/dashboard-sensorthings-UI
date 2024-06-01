@@ -20,15 +20,17 @@ const UserRoutes = () => (
     <Route element={<PublicLayout />}>
       <Route path="/dang-nhap" element={<LoginPage />} />
       <Route path="/dang-ky" element={<RegisterPage />} />
+     
     </Route>
-    <Route path="/thay-doi-mat-khau" element={<ChangePassword />} />
+
     <Route element={<ProtectedRoute />}>
+    <Route path="/thay-doi-mat-khau" element={<ChangePassword />} />
       <Route element={<DefaultLayout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/quan-sat" element={<ObservationPage />} />
         <Route path="/ban-do" element={<MapPage />} />
         <Route path="/thong-ke" element={<StatisticalPage />} />
-
+       
         {/* Start Route Statistical */}
         <Route
           path="/bieu-do-cuong-do-anh-sang"
