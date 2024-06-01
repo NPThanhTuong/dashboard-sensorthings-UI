@@ -98,12 +98,8 @@ const ChangePassword = () => {
               >Thay đổi mật khẩu</button>
         
       </form>
-      {/* Thêm sóng ở đây */}
-      <div className="ocean">
-        <div className="wave"></div>
-        <div className="wave wave2"></div>
-        <div className="wave wave3"></div>
-      </div>
+     
+      
     </div>
   );
 };
