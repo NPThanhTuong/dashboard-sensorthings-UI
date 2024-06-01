@@ -4,6 +4,7 @@ import SoilHumidity from "../../components/control_component/SoilHumidity";
 // import component chart
 import ChartLight from "../../components/chart_component/LightChartDay";
 import ChartSoilHumidity from "../../components/chart_component/SoilHumidityChartDay";
+import ListThings from "../../components/home_component/thing_component/ListThings";
 
 // import LightTable from "../../components/table_component/LightTable";
 // import SoilHumidityTable from "../../components/table_component/SoilHumidityTable ";

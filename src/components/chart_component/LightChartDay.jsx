@@ -148,7 +148,7 @@ const LightChartDay = () => {
       {allLight.length > 0 ? (
         <Line data={data} options={options} />
       ) : (
-        <p className="text-center">Không có dữ liệu!</p>
+        <p className="text-center">Chưa có dữ liệu ngày hôm nay!</p>
       )}
     </div>
   );

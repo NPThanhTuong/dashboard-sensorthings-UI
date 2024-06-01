@@ -13,7 +13,7 @@ import ProtectedRoute from "../routes/ProtectedRoute";
 import StatisticalPage from "../pages/statistical_page/StatisticalPage";
 import LightChart from "../components/chart_component/LightChart";
 import SoilHumidityChart from "../components/chart_component/SoilHumidityChart";
-import ChangePassword from "../pages/change_psw/ChangePassword";
+import ChangePasswordPage from "../pages/change_password_page/ChangePasswordPage";
 import UserInforPage from "../pages/user_infor_page/UserInforPage";
 
 // Home Layout
@@ -26,17 +26,17 @@ const UserRoutes = () => (
     <Route element={<PublicLayout />}>
       <Route path="/dang-nhap" element={<LoginPage />} />
       <Route path="/dang-ky" element={<RegisterPage />} />
-      <Route path="/thong-tin-nguoi-dung" element={<UserInforPage />} />
     </Route>
 
     <Route element={<ProtectedRoute />}>
       <Route element={<DefaultLayout />}>
-        <Route path="/thay-doi-mat-khau" element={<ChangePassword />} />
         <Route path="/" element={<HomePage />} />
+        <Route path="/thay-doi-mat-khau" element={<ChangePasswordPage />} />
+        <Route path="/thong-tin-nguoi-dung" element={<UserInforPage />} />
         <Route path="/quan-sat" element={<ObservationPage />} />
         <Route path="/ban-do" element={<MapPage />} />
         <Route path="/thong-ke" element={<StatisticalPage />} />
-       
+
         {/* Start Route Statistical */}
         <Route
           path="/bieu-do-cuong-do-anh-sang"
@@ -68,7 +68,7 @@ const UserRoutes = () => (
         />
 
         <Route
-          path="/"
+          path="/danh-sach-thing"
           element={
             <HomePage>
               <ListThings />
