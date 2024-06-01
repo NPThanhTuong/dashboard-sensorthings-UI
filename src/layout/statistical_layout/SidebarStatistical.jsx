@@ -4,23 +4,24 @@ const SidebarStatistical = () => {
   const location = useLocation();
 
   return (
-    <div className="flex h-full bg-white text-lg">
+    <div className="mx-auto my-1 flex h-full w-full rounded-lg bg-white p-4 text-lg shadow">
       <Link
         to="/bieu-do-do-am-dat"
-        className={`px-2 py-1 font-medium ${
+        className={`mx-2 flex-1 px-4 py-2 text-center font-medium transition-all duration-300 ${
           location.pathname === "/bieu-do-do-am-dat"
-            ? "text-blue-800 underline"
-            : "text-gray-700 hover:bg-sky-50"
+            ? "rounded bg-blue-800 text-white"
+            : "text-gray-700 hover:text-blue-800"
         }`}
       >
         Độ ẩm đất
       </Link>
+      <div className="mx-1 border-r-2 border-gray-200"></div>
       <Link
         to="/bieu-do-cuong-do-anh-sang"
-        className={`px-2 py-1 font-medium ${
+        className={`mx-2 flex-1 px-4 py-2 text-center font-medium transition-all duration-300 ${
           location.pathname === "/bieu-do-cuong-do-anh-sang"
-            ? "text-blue-800 underline"
-            : "text-gray-700 hover:bg-sky-50"
+            ? "rounded bg-blue-800 text-white"
+            : "text-gray-700 hover:text-blue-800"
         }`}
       >
         Cường độ ánh sáng

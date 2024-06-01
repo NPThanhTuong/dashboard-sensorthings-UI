@@ -19,6 +19,7 @@ const DefaultLayout = () => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 767) {
@@ -36,16 +37,18 @@ const DefaultLayout = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-  return (
-    <div className="flex">
-      <div className={` ${isSidebarOpen ? "w-60" : ""} h-dvh rounded-sm border bg-white`}>
-        <div className="icon-menu p-2"><FiMenu onClick={toggleSidebar} /></div>
 
-        <div>
-          <div className={`w-full sidebar ${isSidebarOpen ? "block w-60" : ""}`}><Sidebar /></div>
+  return (
+    <div className="flex h-screen">
+      <div className={`h-full ${isSidebarOpen ? "w-60" : "w-[16%]"} rounded-sm border bg-white`}>
+        <div className="icon-menu p-2">
+          <FiMenu onClick={toggleSidebar} />
+        </div>
+        <div className={`w-full sidebar ${isSidebarOpen ? "block w-60" : ""}`}>
+          <Sidebar />
         </div>
       </div>
-      <div className="w-full bg-gray-100 p-2">
+      <div className="h-full w-full overflow-auto bg-gray-100 p-2">
         <Outlet />
       </div>
     </div>

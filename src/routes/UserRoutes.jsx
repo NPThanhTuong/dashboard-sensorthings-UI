@@ -14,18 +14,24 @@ import StatisticalPage from "../pages/statistical_page/StatisticalPage";
 import LightChart from "../components/chart_component/LightChart";
 import SoilHumidityChart from "../components/chart_component/SoilHumidityChart";
 import ChangePassword from "../pages/change_psw/ChangePassword";
+import UserInforPage from "../pages/user_infor_page/UserInforPage";
+
+// Home Layout
+import ListThings from "../components/home_component/thing_component/ListThings";
+import AddThing from "../components/home_component/thing_component/AddThing";
+import ListDataStream from "../components/home_component/datastream_component/ListDataStream";
 
 const UserRoutes = () => (
   <Routes>
     <Route element={<PublicLayout />}>
       <Route path="/dang-nhap" element={<LoginPage />} />
       <Route path="/dang-ky" element={<RegisterPage />} />
-     
+      <Route path="/thong-tin-nguoi-dung" element={<UserInforPage />} />
     </Route>
 
     <Route element={<ProtectedRoute />}>
       <Route element={<DefaultLayout />}>
-      <Route path="/thay-doi-mat-khau" element={<ChangePassword />} />
+        <Route path="/thay-doi-mat-khau" element={<ChangePassword />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/quan-sat" element={<ObservationPage />} />
         <Route path="/ban-do" element={<MapPage />} />
@@ -50,6 +56,35 @@ const UserRoutes = () => (
           }
         />
         {/*End Route Statistical */}
+
+        {/* Start Route Home */}
+        <Route
+          path="/them-thing"
+          element={
+            <HomePage>
+              <AddThing />
+            </HomePage>
+          }
+        />
+
+        <Route
+          path="/"
+          element={
+            <HomePage>
+              <ListThings />
+            </HomePage>
+          }
+        />
+
+        <Route
+          path="/datastreams/:thingId/:thingName"
+          element={
+            <HomePage>
+              <ListDataStream />
+            </HomePage>
+          }
+        />
+        {/* End Route Home */}
       </Route>
     </Route>
   </Routes>
