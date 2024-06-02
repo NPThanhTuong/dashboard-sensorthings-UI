@@ -40,11 +40,13 @@ const DefaultLayout = () => {
 
   return (
     <div className="flex h-screen">
-      <div className={`h-full ${isSidebarOpen ? "w-60" : "w-[16%]"} rounded-sm border bg-white`}>
+      <div
+        className={`h-full ${isSidebarOpen ? "w-60" : "w-[16%]"} rounded-sm border bg-white`}
+      >
         <div className="icon-menu p-2">
           <FiMenu onClick={toggleSidebar} />
         </div>
-        <div className={`w-full sidebar ${isSidebarOpen ? "block w-60" : ""}`}>
+        <div className={`sidebar w-full ${isSidebarOpen ? "block w-60" : ""}`}>
           <Sidebar />
         </div>
       </div>

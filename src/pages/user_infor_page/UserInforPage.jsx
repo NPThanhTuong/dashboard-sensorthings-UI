@@ -1,38 +1,43 @@
 /* Author: Le Vu Luan */
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./UserInfor_page.css"; 
+import "./UserInfor_page.css";
 import { useAuth } from "../../context/AuthContext";
 
 const UserInforPage = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [validationError, setValidationError] = useState(null); 
+  const [validationError, setValidationError] = useState(null);
   const { token } = useAuth();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     displayname: "",
     phone: "",
   });
-  const [headerTitle, setHeaderTitle] = useState("THÔNG TIN TÀI KHOẢN NGƯỜI DÙNG");
+  const [headerTitle, setHeaderTitle] = useState(
+    "THÔNG TIN TÀI KHOẢN NGƯỜI DÙNG",
+  );
 
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
         const response = await axios.get("/api/user", {
           headers: {
-            'token': token,
+            token: token,
           },
         });
         setUserInfo(response.data.message);
       } catch (error) {
-        console.error("Error fetching user info:", error.response || error.message);
+        console.error(
+          "Error fetching user info:",
+          error.response || error.message,
+        );
         setError(error.response ? error.response.data : error.message);
       } finally {
         setLoading(false);
@@ -62,9 +67,10 @@ const UserInforPage = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    
+
     const changes = {};
-    if (editForm.displayname !== userInfo.displayname) changes.displayname = editForm.displayname;
+    if (editForm.displayname !== userInfo.displayname)
+      changes.displayname = editForm.displayname;
     if (editForm.phone !== userInfo.phone) changes.phone = editForm.phone;
 
     if (Object.keys(changes).length === 0) {
@@ -75,7 +81,7 @@ const UserInforPage = () => {
     try {
       const response = await axios.post("/api/updateInformation", changes, {
         params: {
-          'token': token,
+          token: token,
         },
       });
 
@@ -92,10 +98,11 @@ const UserInforPage = () => {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      if (error.response.data[0].includes('The phone has already been taken.')) {
+      if (
+        error.response.data[0].includes("The phone has already been taken.")
+      ) {
         toast.error("Số điện thoại đã tồn tại, vui lòng nhập số khác");
-      } 
-      else {
+      } else {
         setError(error.response ? error.response.data : error.message);
       }
     }
@@ -110,8 +117,8 @@ const UserInforPage = () => {
   }
 
   const formatDate = (dateString) => {
-    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-    return new Date(dateString).toLocaleDateString('vi-VN', options);
+    const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+    return new Date(dateString).toLocaleDateString("vi-VN", options);
   };
 
   return (
@@ -121,7 +128,7 @@ const UserInforPage = () => {
       {isEditing ? (
         <form onSubmit={handleFormSubmit} className="edit-form">
           <div>
-            <label>Họ và Tên:  </label>
+            <label>Họ và Tên: </label>
             <input
               type="text"
               name="displayname"
@@ -130,22 +137,40 @@ const UserInforPage = () => {
             />
           </div>
           <div>
-            <label>Số điện thoại:  </label>
+            <label>Số điện thoại: </label>
             <input
               type="text"
               name="phone"
               value={editForm.phone}
               onChange={handleInputChange}
             />
-            {validationError && <p className="error-message">{validationError}</p>}
+            {validationError && (
+              <p className="error-message">{validationError}</p>
+            )}
           </div>
-          <button type="submit" className="save-button" disabled={validationError}>Lưu</button>
-          <button type="button" className="cancel-button" onClick={() => {
-            setIsEditing(false);
-            setHeaderTitle("THÔNG TIN TÀI KHOẢN NGƯỜI DÙNG");
-            window.location.reload();
-          }}>Hủy</button>
-          <button type="button" className="change-password-button" onClick={() => navigate("/thay-doi-mat-khau")}>
+          <button
+            type="submit"
+            className="save-button"
+            disabled={validationError}
+          >
+            Lưu
+          </button>
+          <button
+            type="button"
+            className="cancel-button"
+            onClick={() => {
+              setIsEditing(false);
+              setHeaderTitle("THÔNG TIN TÀI KHOẢN NGƯỜI DÙNG");
+              window.location.reload();
+            }}
+          >
+            Hủy
+          </button>
+          <button
+            type="button"
+            className="change-password-button"
+            onClick={() => navigate("/thay-doi-mat-khau")}
+          >
             Thay đổi mật khẩu
           </button>
         </form>
@@ -167,18 +192,15 @@ const UserInforPage = () => {
               <td>{userInfo.phone}</td>
               <td>{formatDate(userInfo.created_at)}</td>
               <td>
-                <button className="edit-button" onClick={handleEditClick}>Chỉnh sửa</button>
+                <button className="edit-button" onClick={handleEditClick}>
+                  Chỉnh sửa
+                </button>
               </td>
             </tr>
           </tbody>
         </table>
       )}
       <button onClick={() => navigate("/")}>Quay Về Trang Chủ</button>
-      <div className="ocean">
-        <div className="wave"></div>
-        <div className="wave wave2"></div>
-        <div className="wave wave3"></div>
-      </div>
     </div>
   );
 };
