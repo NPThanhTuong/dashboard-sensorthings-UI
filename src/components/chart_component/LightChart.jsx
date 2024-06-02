@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -21,9 +21,9 @@ ChartJS.register(
   Legend,
 );
 
-import { formatDate } from "../../utils/formatTime";
+import { formatDate } from "@/utils/formatTime";
 
-import LightTable from "../table_component/LightTable";
+import LightTable from "@/components/table_component/LightTable";
 
 const LightChartPage = () => {
   const [allLight, setAllLight] = useState([]);

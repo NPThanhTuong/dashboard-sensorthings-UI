@@ -1,9 +1,8 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useAuth } from "../../../context/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
-import nhaMay from "../../../../public/images/nha-may.jpg";
-import AddThing from "./AddThing";
+import { useAuth } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import nhaMay from "@public/images/nha-may.jpg";
 
 const ListThings = () => {
   const { token } = useAuth();
@@ -72,14 +71,6 @@ const ListThings = () => {
   return (
     <div className="flex h-[100%] flex-col justify-center p-3">
       <div className="flex h-full w-full max-w-screen-2xl flex-col rounded-lg border bg-white p-6 shadow-lg">
-        <div className="mb-4 flex justify-end">
-          <Link
-            className="w-36 rounded border bg-gray-100 py-1 text-center font-medium"
-            to={"/them-thing"}
-          >
-            Thêm Thing
-          </Link>
-        </div>
         <div className="flex-grow overflow-auto">
           {things.length === 0 ? (
             <div className="text-center">Chưa có dữ liệu!</div>

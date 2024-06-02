@@ -2,10 +2,10 @@ import axios from "axios";
 import "./add-thing.css";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-import uploadFile from "../../../../public/images/upload-file.png";
+import uploadFile from "@public/images/upload-file.png";
 
 const FloatingLabelInput = ({ label, type, name, value, onChange }) => (
   <div className="input-group">

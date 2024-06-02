@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { Line } from "react-chartjs-2";
-import { formatTime, formatDate } from "../../utils/formatTime";
+import { formatTime, formatDate } from "@/utils/formatTime";
 
 import {
   Chart as ChartJS,
@@ -145,6 +145,10 @@ const LightChartDay = () => {
 
   return (
     <div>
+      {" "}
+      <h2 className="p-3 text-xl font-bold text-yellow-500">
+        Biểu đồ thể hiện cường độ ánh sáng
+      </h2>
       {allLight.length > 0 ? (
         <Line data={data} options={options} />
       ) : (
