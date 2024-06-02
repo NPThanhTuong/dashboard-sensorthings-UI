@@ -1,36 +1,18 @@
+/* Ẩn icon menu trên tất cả các màn hình vì chúng ta sẽ dùng mũi tên để show/hide menu */
 .icon-menu {
-    display: none;
-    cursor: pointer; 
-  }
-  .open{
-    display: block !important;
-    width: 210px !important;
-  }
- 
-  @media screen and (max-width: 767px) {
-    /* .sidebar {
-      width: 30px;
-    } */
-  
-     .sidebar {
-      display: none;
-     
-    }
-  
-    .icon-menu {
-      display: block;
-    }
-  }
-  @media screen and (min-width: 767px) {
-    /* .sidebar {
-      width: 30px;
-    } */
-  
-     .sidebar {
-      display: block !important;
-    }
-  
-    .icon-menu {
-      display: none;
-    }
-  }
+  display: none;
+}
+
+/* Style cho mũi tên */
+.toggle-icon-container {
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Không cần điều khiển hiển thị sidebar trong CSS vì đã được xử lý trong JavaScript */
+.sidebar {
+  width: 100%;
+}

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import Sidebar from "../components/sidebar_component/Sidebar";
-import { useAuth } from "../context/AuthContext";
-import { FiMenu } from "react-icons/fi";
+import Sidebar from "@/components/sidebar_component/Sidebar";
+import { useAuth } from "@/context/AuthContext";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import "./default_layout.css";
 
 const DefaultLayout = () => {
@@ -15,7 +15,7 @@ const DefaultLayout = () => {
     }
   }, [token, navigate]);
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -23,13 +23,13 @@ const DefaultLayout = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 767) {
-        setIsSidebarOpen(true); // Nếu màn hình lớn hơn 767px, mở sidebar
+        setIsSidebarOpen(true);
       } else {
-        setIsSidebarOpen(false); // Nếu màn hình nhỏ hơn hoặc bằng 767px, đóng sidebar
+        setIsSidebarOpen(false);
       }
     };
 
-    handleResize(); // Gọi hàm handleResize lần đầu để đặt trạng thái ban đầu
+    handleResize();
 
     window.addEventListener("resize", handleResize);
 
@@ -41,16 +41,22 @@ const DefaultLayout = () => {
   return (
     <div className="flex h-screen">
       <div
-        className={`h-full ${isSidebarOpen ? "w-60" : "w-[16%]"} rounded-sm border bg-white`}
+        className={`relative h-full ${
+          isSidebarOpen ? "w-60" : "w-10"
+        } border bg-white transition-all duration-300`}
       >
-        <div className="icon-menu p-2">
-          <FiMenu onClick={toggleSidebar} />
+        <div className="toggle-icon-container absolute right-0 top-1/2 -translate-y-1/2 transform cursor-pointer">
+          {isSidebarOpen ? (
+            <FiChevronLeft onClick={toggleSidebar} />
+          ) : (
+            <FiChevronRight onClick={toggleSidebar} />
+          )}
         </div>
-        <div className={`sidebar w-full ${isSidebarOpen ? "block w-60" : ""}`}>
+        <div className={`sidebar ${isSidebarOpen ? "block" : "hidden"}`}>
           <Sidebar />
         </div>
       </div>
-      <div className="h-full w-full overflow-auto bg-gray-100 p-2">
+      <div className="main-content h-full w-full overflow-auto bg-gray-100 p-2">
         <Outlet />
       </div>
     </div>

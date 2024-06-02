@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
+
+import { TiAdjustBrightness } from "react-icons/ti";
 
 const Light = () => {
   const [light, setLight] = useState(null); // Khởi tạo state để lưu cường độ ánh sáng
@@ -48,8 +50,9 @@ const Light = () => {
 
   return (
     <div className="mx-auto min-w-72 rounded-lg bg-white p-4 shadow-md">
-      <div className="mb-4 flex items-center justify-center">
-        <h2 className="text-center text-xl font-bold">Thông tin ánh sáng</h2>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-xl font-bold text-yellow-500">Ánh sáng</h2>
+        <TiAdjustBrightness className="text-3xl text-yellow-500" />
       </div>
       <div className="relative mb-4">
         <svg
@@ -58,9 +61,27 @@ const Light = () => {
           height={diameter}
           viewBox={`0 0 ${diameter + 16} ${diameter + 16}`}
         >
+          <defs>
+            <linearGradient
+              id="yellow-gradient"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="100%"
+            >
+              <stop
+                offset="0%"
+                style={{ stopColor: "#FFD700", stopOpacity: 1 }}
+              />
+              <stop
+                offset="100%"
+                style={{ stopColor: "#FFA500", stopOpacity: 1 }}
+              />
+            </linearGradient>
+          </defs>
           <circle
             className="text-gray-300"
-            strokeWidth="8"
+            strokeWidth="12" // Tăng độ dày của vòng tròn
             stroke="gray"
             fill="transparent"
             r={radius}
@@ -69,8 +90,8 @@ const Light = () => {
           />
           <circle
             className="text-yellow-500"
-            strokeWidth="8"
-            stroke="yellow"
+            strokeWidth="12" // Tăng độ dày của vòng tròn
+            stroke="url(#yellow-gradient)" // Sử dụng màu gradient
             fill="transparent"
             r={radius}
             cx="50%"
