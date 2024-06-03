@@ -90,7 +90,7 @@ const RegisterPage = () => {
     <div className="">
       <form
         onSubmit={handleSubmit}
-        className="form-container mx-auto mt-16 w-96 max-w-lg rounded-xl bg-white px-8 py-10 shadow-lg"
+        className="form-container mx-auto w-96 max-w-lg rounded-xl bg-white px-8 py-10 shadow-lg"
       >
         <h2 className="mb-4 text-center text-2xl font-bold text-blue-500">
           Đăng ký tài khoản
