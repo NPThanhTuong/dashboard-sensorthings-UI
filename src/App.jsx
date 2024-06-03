@@ -1,4 +1,4 @@
-import UserRoutes from "./routes/UserRoutes";
+import UserRoutes from "@/routes/UserRoutes";
 
 function App() {
   return <UserRoutes />;

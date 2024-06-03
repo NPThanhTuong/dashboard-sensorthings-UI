@@ -1,4 +1,4 @@
-import SidebarStatistical from "../../layout/statistical_layout/SidebarStatistical";
+import SidebarStatistical from "@/layout/statistical_layout/SidebarStatistical";
 
 const Layout = ({ children }) => {
   return (

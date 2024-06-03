@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
 import * as XLSX from "xlsx";
 import * as ExcelJS from "exceljs"; // Import ExcelJS library

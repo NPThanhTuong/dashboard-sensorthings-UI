@@ -1,61 +1,61 @@
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { useState, useEffect } from "react";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
-import nhaMay from "@public/images/nha-may.jpg";
 
-const ListThings = () => {
+import Sensor from "@public/images/sensor.png";
+
+const ListSensor = () => {
   const { token } = useAuth();
-  const [things, setThings] = useState([]);
+  const [sensors, setSensors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5); // Số lượng mục trên mỗi trang
   const navigate = useNavigate();
 
-  const fetchThings = async () => {
+  const fetchSensors = async () => {
     try {
-      const response = await axios.get("/api/getThings", {
+      const response = await axios.get("/api/get/sensors?top=all", {
         headers: {
           token: token,
         },
       });
-
-      if (response.data.success && Array.isArray(response.data.data)) {
-        setThings(response.data.data);
+      if (Array.isArray(response.data)) {
+        setSensors(response.data);
       } else {
-        setThings([]);
+        setSensors([]);
         console.error(
           "API response is not in the expected format or success is false",
         );
       }
       setLoading(false);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setError(error);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setError(err.message);
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchThings(); // Lấy danh sách Things ban đầu
+    fetchSensors(); // Lấy danh sách Sensors ban đầu
 
     const interval = setInterval(() => {
-      fetchThings(); // Lấy danh sách Things định kỳ
-    }, 3000); // Sau 3s lấy dữ liệu mới
+      fetchSensors(); // Lấy danh sách Sensors định kỳ
+    }, 3000); // Sau 3 giây lấy dữ liệu mới
 
     return () => clearInterval(interval);
   }, [token]);
 
   // Tính số lượng trang
-  const totalPages = Math.ceil(things.length / itemsPerPage);
+  const totalPages = Math.ceil(sensors.length / itemsPerPage);
 
   // Lấy chỉ số của mục đầu tiên và cuối cùng trên trang hiện tại
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
   // Lấy các mục của trang hiện tại
-  const currentThings = things.slice(indexOfFirstItem, indexOfLastItem);
+  const currentSensors = sensors.slice(indexOfFirstItem, indexOfLastItem);
 
   // Đổi trang
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -65,14 +65,14 @@ const ListThings = () => {
   }
 
   if (error) {
-    return <div className="text-center">Lỗi: {error.message}</div>;
+    return <div className="text-center">Lỗi: {error}</div>;
   }
 
   return (
     <div className="flex h-[100%] flex-col justify-center p-3">
       <div className="flex h-full w-full max-w-screen-2xl flex-col rounded-lg border bg-white p-6 shadow-lg">
         <div className="flex-grow overflow-auto">
-          {things.length === 0 ? (
+          {sensors.length === 0 ? (
             <div className="text-center">Chưa có dữ liệu!</div>
           ) : (
             <table className="w-full border-separate overflow-hidden rounded-lg border border-gray-300">
@@ -88,9 +88,9 @@ const ListThings = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentThings.map((thing, index) => (
+                {currentSensors.map((sensor, index) => (
                   <tr
-                    key={thing.id}
+                    key={sensor.id}
                     className="bg-white transition duration-200 ease-in-out hover:bg-gray-100"
                   >
                     <td className="border border-gray-300 px-4 py-2 text-center">
@@ -98,22 +98,22 @@ const ListThings = () => {
                     </td>
                     <td className="border border-gray-300 px-4 py-2 text-center">
                       <img
-                        src={nhaMay}
-                        alt={thing.name}
+                        src={Sensor}
+                        alt={sensor.name}
                         className="mx-auto h-16 w-16 rounded-full object-cover shadow-md"
                       />
                     </td>
                     <td className="border border-gray-300 px-4 py-2 font-medium text-gray-700">
-                      {thing.name}
+                      {sensor.name}
                     </td>
                     <td className="border border-gray-300 px-4 py-2 text-gray-600">
-                      {thing.description}
+                      {sensor.description}
                     </td>
                     <td className="border border-gray-300 px-4 py-2 text-center">
                       <button
                         onClick={() =>
                           navigate(
-                            `/datastreams/${thing.id}/${encodeURIComponent(thing.name)}`,
+                            `/datastreams/${sensor.id}/${encodeURIComponent(sensor.name)}`,
                           )
                         }
                         className="italic text-blue-900 underline"
@@ -128,7 +128,7 @@ const ListThings = () => {
           )}
         </div>
         {/* Phân trang */}
-        {things.length > 0 && (
+        {sensors.length > 0 && (
           <div className="mt-4 flex justify-center">
             {Array.from({ length: totalPages }, (_, i) => (
               <button
@@ -150,4 +150,4 @@ const ListThings = () => {
   );
 };
 
-export default ListThings;
+export default ListSensor;

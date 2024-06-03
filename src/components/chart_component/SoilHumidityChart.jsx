@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { Line } from "react-chartjs-2";
 
-import SoilHumidityTable from "../table_component/SoilHumidityTable ";
+import SoilHumidityTable from "@/components/table_component/SoilHumidityTable ";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -25,7 +25,7 @@ ChartJS.register(
   Legend,
 );
 
-import { formatDate } from "../../utils/formatTime";
+import { formatDate } from "@/utils/formatTime";
 
 const SoilHumidityChart = () => {
   const [allSoilHumidity, setAllSoilHumidity] = useState([]);

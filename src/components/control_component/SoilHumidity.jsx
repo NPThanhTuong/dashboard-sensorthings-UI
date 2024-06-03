@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
+
+import { RiWaterPercentLine } from "react-icons/ri";
 
 const SoilHumidity = () => {
   const [soilHumidity, setSoilHumidity] = useState(null); // Khởi tạo state để lưu độ ẩm đất
@@ -31,7 +33,7 @@ const SoilHumidity = () => {
     fetchSoilHumidity();
 
     const interval = setInterval(() => {
-      fetchSoilHumidity(); // Lấy dữ liệu mỗi 3 giây
+      fetchSoilHumidity(); // Lấy dữ liệu mỗi 15p 1 lần
     }, 3000);
 
     return () => clearInterval(interval); // Dọn dẹp khi component bị hủy
@@ -45,10 +47,17 @@ const SoilHumidity = () => {
       ? (circumference * (100 - soilHumidity)) / 100 // Tính phần còn lại chưa được tô màu dựa trên độ ẩm đất
       : circumference;
 
+  const getColor = (humidity) => {
+    if (humidity < 30) return "Cyan"; // Độ ẩm thấp
+    if (humidity < 60) return "Blue"; // Độ ẩm trung bình
+    return "Navy"; // Độ ẩm cao
+  };
+
   return (
     <div className="mx-auto min-w-72 rounded-lg bg-white p-4 shadow-md">
-      <div className="mb-4 flex items-center justify-center">
-        <h2 className="text-center text-xl font-bold">Thông tin độ ẩm đất</h2>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-xl font-bold text-blue-500">Độ ẩm đất</h2>
+        <RiWaterPercentLine className="text-3xl text-blue-500" />
       </div>
       <div className="relative mb-4">
         <svg
@@ -59,7 +68,7 @@ const SoilHumidity = () => {
         >
           <circle
             className="text-gray-300"
-            strokeWidth="8"
+            strokeWidth="12"
             stroke="gray"
             fill="transparent"
             r={radius}
@@ -68,8 +77,8 @@ const SoilHumidity = () => {
           />
           <circle
             className="text-brown-500"
-            strokeWidth="8"
-            stroke="brown"
+            strokeWidth="12"
+            stroke={getColor(soilHumidity)}
             fill="transparent"
             r={radius}
             cx="50%"

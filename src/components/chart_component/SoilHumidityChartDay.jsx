@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
 import { Line } from "react-chartjs-2";
 
-import { formatTime, formatDate } from "../../utils/formatTime";
+import { formatTime, formatDate } from "@/utils/formatTime";
 
 import {
   Chart as ChartJS,
@@ -87,8 +87,8 @@ const SoilHumidityChartDay = () => {
       {
         label: "Độ ẩm đất (%)",
         data: allSoilHumidity.map((obs) => obs.result[0]),
-        backgroundColor: "rgba(128,0,0,1)",
-        borderColor: "rgba(128,0,0, 2)",
+        backgroundColor: "rgba(0,0,255,1)",
+        borderColor: "rgba(0,0,255, 2)",
         borderWidth: 1,
       },
     ],
@@ -131,6 +131,9 @@ const SoilHumidityChartDay = () => {
 
   return (
     <div className="w-full">
+      <h2 className="p-3 text-xl font-bold text-blue-500">
+        Biểu đồ thể hiện độ ẩm đất
+      </h2>
       {allSoilHumidity.length > 0 ? (
         <Line data={data} options={options} />
       ) : (
