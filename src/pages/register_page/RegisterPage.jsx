@@ -92,12 +92,12 @@ const RegisterPage = () => {
         onSubmit={handleSubmit}
         className="form-container mx-auto mt-16 w-96 max-w-lg rounded-xl bg-white px-8 py-10 shadow-lg"
       >
-        <h2 className="mb-6 text-center text-3xl font-bold text-blue-500">
+        <h2 className="mb-4 text-center text-2xl font-bold text-blue-500">
           Đăng ký tài khoản
         </h2>
 
         <div className="w-50 mb-4 rounded-md border border-gray-300 bg-gray-100 px-8 pb-8 pt-6">
-          <div className="mb-4">
+          <div className="mb-2">
             <label
               className="mb-2 block text-lg text-gray-700"
               htmlFor="displayname"
@@ -121,7 +121,7 @@ const RegisterPage = () => {
               </p>
             )}
           </div>
-          <div className="mb-4">
+          <div className="mb-2">
             <label
               className="mb-2 block text-lg text-gray-700"
               htmlFor="username"
@@ -143,7 +143,29 @@ const RegisterPage = () => {
               <p className="text-sm italic text-red-500">{errors.username}</p>
             )}
           </div>
-          <div className="mb-4">
+          <div className="mb-2">
+            <label
+              className="mb-2 block text-lg text-gray-700"
+              htmlFor="phoneNumber"
+            >
+              Số điện thoại
+            </label>
+            <input
+              className={`focus:shadow-outline w-full appearance-none rounded border border-gray-300 px-3 py-2 leading-tight text-gray-700 focus:outline-none ${errors.phone ? "border-red-500" : ""
+                }`}
+              id="phone"
+              type="text"
+              placeholder="Số điện thoại"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              onClick={handleClick}
+            />
+            {errors.phone && (
+              <p className="text-sm italic text-red-500">{errors.phone}</p>
+            )}
+          </div>
+          <div className="mb-2">
             <label
               className="mb-2 block text-lg text-gray-700"
               htmlFor="password"
@@ -174,7 +196,7 @@ const RegisterPage = () => {
               <p className="text-sm italic text-red-500">{errors.password}</p>
             )}
           </div>
-          <div className="mb-4">
+          <div className="mb-6">
             <label
               className="mb-2 block text-lg text-gray-700"
               htmlFor="confirmPassword"
@@ -204,28 +226,7 @@ const RegisterPage = () => {
               <p className="text-sm italic text-red-500">{errors.confirmPassword}</p>
             )}
           </div>
-          <div className="mb-8">
-            <label
-              className="mb-2 block text-lg text-gray-700"
-              htmlFor="phoneNumber"
-            >
-              Số điện thoại
-            </label>
-            <input
-              className={`focus:shadow-outline w-full appearance-none rounded border border-gray-300 px-3 py-2 leading-tight text-gray-700 focus:outline-none ${errors.phone ? "border-red-500" : ""
-                }`}
-              id="phone"
-              type="text"
-              placeholder="Số điện thoại"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              onClick={handleClick}
-            />
-            {errors.phone && (
-              <p className="text-sm italic text-red-500">{errors.phone}</p>
-            )}
-          </div>
+
           <div className="flex items-center justify-between">
             <button
               className="focus:shadow-outline w-full rounded bg-gradient-to-t from-cyan-400 to-blue-500 px-4 py-2 font-semibold text-white focus:outline-none"
@@ -235,7 +236,7 @@ const RegisterPage = () => {
             </button>
           </div>
         </div>
-        <div className="w-50 mb-4 flex justify-between rounded-md border border-gray-300 px-8 pb-8 pt-6">
+        <div className="w-50  flex justify-between rounded-md border border-gray-300 px-8 pb-4 pt-4">
           <span>Đã có tài khoản?</span>
           <Link to="/dang-nhap">
             <span className="font-semibold text-blue-500">Đăng nhập</span>
