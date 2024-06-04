@@ -22,7 +22,9 @@ import UserInforPage from "@/pages/user_infor_page/UserInforPage";
 import ListThings from "@/components/home_component/thing_component/ListThings";
 import AddThing from "@/components/home_component/thing_component/AddThing";
 import ListDataStream from "@/components/home_component/datastream_component/ListDataStream";
-import ListSensor from "@/components/home_component/sensor_component/ListSensor";
+import Sensor from "@/components/home_component/sensor_component/Sensor";
+import Observation from "@/components/home_component/observation_component/Observation";
+import AddDataStream from "@/components/home_component/datastream_component/AddDataStream";
 
 const UserRoutes = () => (
   <Routes>
@@ -80,14 +82,6 @@ const UserRoutes = () => (
         />
 
         <Route
-          path="/danh-sach-sensor"
-          element={
-            <HomePage>
-              <ListSensor />
-            </HomePage>
-          }
-        />
-        <Route
           path="/datastreams/:thingId/:thingName"
           element={
             <HomePage>
@@ -95,6 +89,34 @@ const UserRoutes = () => (
             </HomePage>
           }
         />
+
+        <Route
+          path="/datastreams/:thingId/them-luong-du-lieu"
+          element={
+            <HomePage>
+              <AddDataStream />
+            </HomePage>
+          }
+        />
+
+        <Route
+          path="/sensor/:datastreamId/:datastreamName"
+          element={
+            <HomePage>
+              <Sensor />
+            </HomePage>
+          }
+        />
+
+        <Route
+          path="/observation/:datastreamId/:datastreamName"
+          element={
+            <HomePage>
+              <Observation />
+            </HomePage>
+          }
+        />
+
         {/* End Route Home */}
       </Route>
     </Route>

@@ -56,7 +56,7 @@ const DefaultLayout = () => {
           <Sidebar />
         </div>
       </div>
-      <div className="main-content h-full w-full overflow-auto bg-gray-100 p-2">
+      <div className="main-content h-full w-full overflow-auto bg-gray-100">
         <Outlet />
       </div>
     </div>

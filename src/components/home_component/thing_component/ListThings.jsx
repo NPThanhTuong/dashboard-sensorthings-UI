@@ -1,8 +1,10 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
+import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Card, Row, Col, Pagination } from "antd";
 import nhaMay from "@public/images/nha-may.jpg";
+//import SearchInput from "@/components/home_component/thing_component/SearchInput";
 
 const ListThings = () => {
   const { token } = useAuth();
@@ -10,7 +12,7 @@ const ListThings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Số lượng mục trên mỗi trang
+  const itemsPerPage = 6; // Số lượng mục trên mỗi trang
   const navigate = useNavigate();
 
   const fetchThings = async () => {
@@ -25,13 +27,11 @@ const ListThings = () => {
         setThings(response.data.data);
       } else {
         setThings([]);
-        console.error(
-          "API response is not in the expected format or success is false",
-        );
+        console.error(error);
       }
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Lỗi lấy dữ liệu:", error);
       setError(error);
       setLoading(false);
     }
@@ -42,13 +42,10 @@ const ListThings = () => {
 
     const interval = setInterval(() => {
       fetchThings(); // Lấy danh sách Things định kỳ
-    }, 3000); // Sau 3s lấy dữ liệu mới
+    }, 300000); // Sau 5 phút lấy dữ liệu mới
 
     return () => clearInterval(interval);
   }, [token]);
-
-  // Tính số lượng trang
-  const totalPages = Math.ceil(things.length / itemsPerPage);
 
   // Lấy chỉ số của mục đầu tiên và cuối cùng trên trang hiện tại
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -69,84 +66,68 @@ const ListThings = () => {
   }
 
   return (
-    <div className="flex h-[100%] flex-col justify-center p-3">
-      <div className="flex h-full w-full max-w-screen-2xl flex-col rounded-lg border bg-white p-6 shadow-lg">
-        <div className="flex-grow overflow-auto">
-          {things.length === 0 ? (
-            <div className="text-center">Chưa có dữ liệu!</div>
-          ) : (
-            <table className="w-full border-separate overflow-hidden rounded-lg border border-gray-300">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="w-10 border border-gray-300 px-4 py-2">STT</th>
-                  <th className="border border-gray-300 px-4 py-2">Hình ảnh</th>
-                  <th className="border border-gray-300 px-4 py-2">Tên</th>
-                  <th className="border border-gray-300 px-4 py-2">Mô tả</th>
-                  <th className="border border-gray-300 px-4 py-2">
-                    Luồng dữ liệu
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+    <>
+      {/* <div className="bg-gray-100">
+        <SearchInput />
+      </div> */}
+      <div className="flex flex-col justify-center p-3">
+        <div className="flex h-dvh w-full max-w-screen-2xl flex-col rounded-lg border bg-white p-6 shadow-lg">
+          <div className="flex-grow">
+            {things.length === 0 ? (
+              <div className="text-center">Chưa có dữ liệu!</div>
+            ) : (
+              <Row gutter={[16, 16]}>
                 {currentThings.map((thing, index) => (
-                  <tr
-                    key={thing.id}
-                    className="bg-white transition duration-200 ease-in-out hover:bg-gray-100"
-                  >
-                    <td className="border border-gray-300 px-4 py-2 text-center">
-                      {index + 1 + (currentPage - 1) * itemsPerPage}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2 text-center">
-                      <img
-                        src={nhaMay}
-                        alt={thing.name}
-                        className="mx-auto h-16 w-16 rounded-full object-cover shadow-md"
-                      />
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2 font-medium text-gray-700">
-                      {thing.name}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2 text-gray-600">
-                      {thing.description}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2 text-center">
-                      <button
-                        onClick={() =>
-                          navigate(
-                            `/datastreams/${thing.id}/${encodeURIComponent(thing.name)}`,
-                          )
+                  <Col span={8} key={thing.id}>
+                    <Card
+                      hoverable
+                      className="custom-card"
+                      style={{
+                        backgroundColor: "white",
+                        border: "1px solid #ddd",
+                      }}
+                      cover={
+                        <img
+                          alt={thing.name}
+                          src={nhaMay}
+                          className="h-52 w-full object-cover"
+                        />
+                      }
+                      onClick={() =>
+                        navigate(
+                          `/datastreams/${thing.id}/${encodeURIComponent(thing.name)}`,
+                        )
+                      }
+                    >
+                      <Card.Meta
+                        title={thing.name}
+                        description={
+                          <div className="line-clamp-2">
+                            {thing.description}
+                          </div>
                         }
-                        className="italic text-blue-900 underline"
-                      >
-                        Xem
-                      </button>
-                    </td>
-                  </tr>
+                      />
+                    </Card>
+                  </Col>
                 ))}
-              </tbody>
-            </table>
+              </Row>
+            )}
+          </div>
+          <div className="my-2 w-full border-b-2 border-gray-200"></div>
+          {/* Phân trang */}
+          {things.length > 0 && (
+            <div className="mt-4 flex justify-center">
+              <Pagination
+                current={currentPage}
+                pageSize={itemsPerPage}
+                total={things.length}
+                onChange={paginate}
+              />
+            </div>
           )}
         </div>
-        {/* Phân trang */}
-        {things.length > 0 && (
-          <div className="mt-4 flex justify-center">
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i}
-                onClick={() => paginate(i + 1)}
-                className={`mx-1 rounded-md px-3 py-1 focus:outline-none ${
-                  currentPage === i + 1
-                    ? "bg-gray-200"
-                    : "bg-white hover:bg-gray-100"
-                }`}
-              >
-                {i + 1}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
-    </div>
+    </>
   );
 };
 
