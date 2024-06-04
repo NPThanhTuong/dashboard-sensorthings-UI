@@ -1,26 +1,25 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { Card, Col, Row, Pagination, Button } from "antd";
+import { Card, Col, Row, Pagination } from "antd";
 import nhaMay from "@public/images/nha-may.jpg";
 
-const ListDataStream = () => {
+const Sensor = () => {
   const { token } = useAuth();
-
   const navigate = useNavigate();
-  const [dataStreams, setDataStreams] = useState([]);
+  const [sensors, setSensors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6; // Số lượng mục trên mỗi trang
+  const itemsPerPage = 6; // Số mục mỗi trang
 
-  const { thingId, thingName } = useParams();
+  const { datastreamId, datastreamName } = useParams();
 
-  const fetchDataStreams = async () => {
+  const fetchSensors = async () => {
     try {
       const response = await axios.get(
-        `/api/get/things(${thingId})/datastreams`,
+        `/api/get/datastreams(${datastreamId})/sensors`,
         {
           headers: {
             token: token,
@@ -29,37 +28,34 @@ const ListDataStream = () => {
       );
 
       if (Array.isArray(response.data)) {
-        setDataStreams(response.data);
+        setSensors(response.data);
       } else {
-        setDataStreams([]);
+        setSensors([]);
       }
       setLoading(false);
     } catch (error) {
-      console.error("Lỗi lấy dữ liệu data stream:", error);
+      console.error("Lỗi khi tải cảm biến:", error);
       setError(error);
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (thingId && token) {
-      fetchDataStreams();
+    if (datastreamId && token) {
+      fetchSensors();
     } else {
       setLoading(false);
     }
-  }, [thingId, token]);
+  }, [datastreamId, token]);
 
-  // Lấy chỉ số của mục đầu tiên và cuối cùng trên trang hiện tại
+  // Tính toán chỉ số của mục đầu tiên và cuối cùng trên trang hiện tại
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  // Lấy các mục của trang hiện tại
-  const currentDataStreams = dataStreams.slice(
-    indexOfFirstItem,
-    indexOfLastItem,
-  );
+  // Lấy các mục trên trang hiện tại
+  const currentSensors = sensors.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Đổi trang
+  // Xử lý thay đổi trang
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   if (loading) {
@@ -73,25 +69,15 @@ const ListDataStream = () => {
   return (
     <div className="flex h-[100%] flex-col justify-center p-4">
       <div className="flex h-full w-full max-w-screen-2xl flex-col rounded-lg border bg-white p-6 shadow-lg">
-        <h3 className="text-xl font-bold">{thingName}</h3>
-        <Button
-          type="primary"
-          onClick={() =>
-            navigate(`/datastreams/${thingId}/them-luong-du-lieu`, {
-              state: { thingName: thingName },
-            })
-          }
-        >
-          Thêm Datastream
-        </Button>
+        <h3 className="text-xl font-bold">{datastreamName}</h3>
         <div className="my-2 border-b-2 border-gray-200"></div>
         <div className="flex-grow">
-          {dataStreams.length === 0 ? (
-            <div className="text-center">Chưa có dữ liệu!</div>
+          {sensors.length === 0 ? (
+            <div className="text-center">Không có dữ liệu!</div>
           ) : (
             <Row gutter={[16, 16]}>
-              {currentDataStreams.map((dataStream, index) => (
-                <Col span={8} key={dataStream.id}>
+              {currentSensors.map((sensor) => (
+                <Col span={8} key={sensor.id}>
                   <Card
                     hoverable
                     className="custom-card"
@@ -101,25 +87,21 @@ const ListDataStream = () => {
                     }}
                     cover={
                       <img
-                        alt={dataStream.name}
+                        alt={sensor.name}
                         src={nhaMay}
                         className="h-52 w-full object-cover"
                       />
                     }
                     onClick={() =>
                       navigate(
-                        `/sensor/${dataStream.id}/${encodeURIComponent(
-                          dataStream.name,
-                        )}`,
+                        `/observation/${datastreamId}/${encodeURIComponent(sensor.name)}`,
                       )
                     }
                   >
                     <Card.Meta
-                      title={dataStream.name}
+                      title={sensor.name}
                       description={
-                        <div className="line-clamp-2">
-                          {dataStream.description}
-                        </div>
+                        <div className="line-clamp-2">{sensor.description}</div>
                       }
                     />
                   </Card>
@@ -130,12 +112,12 @@ const ListDataStream = () => {
         </div>
         <div className="my-1 w-full border-b-2 border-gray-200"></div>
         {/* Phân trang */}
-        {dataStreams.length > 0 && (
+        {sensors.length > 0 && (
           <div className="mt-4 flex justify-center">
             <Pagination
               current={currentPage}
               pageSize={itemsPerPage}
-              total={dataStreams.length}
+              total={sensors.length}
               onChange={paginate}
             />
           </div>
@@ -145,4 +127,4 @@ const ListDataStream = () => {
   );
 };
 
-export default ListDataStream;
+export default Sensor;
