@@ -3,9 +3,14 @@ import React from "react";
 import "./Inspect.css";
 
 // eslint-disable-next-line react/prop-types
-const Inspect = ({ title, value, unit, icon }) => {
+const Inspect = ({ title, value, unit, icon, backgroundColor, color }) => {
+  const cardStyle = {
+    background: backgroundColor || 'linear-gradient(to right, #6a11cb, #2575fc)',
+    color: color || 'white',
+  };
+
   return (
-    <div className="inspect-card">
+    <div className="inspect-card" style={cardStyle}>
       <div className="inspect-title">{title}</div>
       <div className="inspect-content">
         <div className="inspect-icon">

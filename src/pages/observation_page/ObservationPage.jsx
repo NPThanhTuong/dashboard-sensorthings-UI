@@ -3,8 +3,9 @@ import React from "react";
 import Light from "@/components/control_component/Light";
 import SoilHumidity from "@/components/control_component/SoilHumidity";
 import Inspect from "@/components/card_component/Inspect";
-import lightIcon from '@/components/card_component/icon/lux-icon.png'; // Có thể thay thế theo nhu cầu người dùng
-import humidityIcon from '@/components/card_component/icon/humidity-icon.png'; // Có thể thay thế theo nhu cầu người dùng
+import lightIcon from '@/components/card_component/icon/lux-icon.png';
+import humidityIcon from '@/components/card_component/icon/humidity-icon.png'; // Đảm bảo thay đúng đường dẫn
+
 // import component chart
 import ChartLight from "@/components/chart_component/LightChartDay";
 import ChartSoilHumidity from "@/components/chart_component/SoilHumidityChartDay";
@@ -23,12 +24,16 @@ const ObservationPage = () => {
             value="30" 
             unit="candela" 
             icon={lightIcon} 
+            backgroundColor="linear-gradient(to right, #ff7e5f, #feb47b)" 
+            color="white"
           />
           <Inspect 
             title="Độ Ẩm Đất" 
             value="2" 
             unit="%" 
             icon={humidityIcon} 
+            backgroundColor="linear-gradient(to right, #43cea2, #185a9d)" 
+            color="white"
           />
         </div>
       </div>
