@@ -24,6 +24,9 @@ import AddThing from "@/components/home_component/thing_component/AddThing";
 import ListDataStream from "@/components/home_component/datastream_component/ListDataStream";
 import ListSensor from "@/components/home_component/sensor_component/ListSensor";
 
+// Import ControlPanel component
+import ControlPanel from "@/components/card_component/ControlPanel"; // Đảm bảo đường dẫn chính xác
+
 const UserRoutes = () => (
   <Routes>
     <Route element={<PublicLayout />}>
@@ -96,6 +99,17 @@ const UserRoutes = () => (
           }
         />
         {/* End Route Home */}
+
+        {/* Route for Control Panel */}
+        <Route
+          path="/dieu-khien"
+          element={<ControlPanel />}
+        />
+        {/* Route for Observation */}
+        <Route
+          path="/giam-sat"
+          element={<ObservationPage />}
+        />
       </Route>
     </Route>
   </Routes>
