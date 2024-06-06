@@ -1,0 +1,15 @@
+.custom-select .ant-select-selector,
+.custom-input {
+  border: 2px solid #ff8e3c !important;
+  padding: 0.5rem 2rem;
+}
+
+.custom-select .ant-select-selector:hover,
+.custom-input:hover {
+  border-color: #ff8e3c;
+  box-shadow: 0 0 0 2px rgba(255, 142, 60, 0.2);
+}
+
+.custom-select .ant-select-selector {
+  height: auto !important;
+}
