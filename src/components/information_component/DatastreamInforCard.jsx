@@ -3,41 +3,19 @@ import { Card, Image, Skeleton, Typography } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-export default function DatastreamInforCard({ datastreamId }) {
+export default function DatastreamInforCard({ data }) {
   const [loading, setLoading] = useState(true);
-  const [datastreamInfo, setDatastreamInfo] = useState(true);
   const [expanded, setExpanded] = useState(false);
-  const { token } = useAuth();
 
   const TEXT_ROWS = 2;
 
   useEffect(() => {
     setLoading(true);
-
-    try {
-      if (!token) {
-        throw new Error("Token không tồn tại");
-      }
-
-      const getDatastreamInfo = async () => {
-        const res = await axios.get(`/api/get/datastreams(${datastreamId})`, {
-          headers: {
-            "Content-Type": "application/json",
-            token: token,
-          },
-        });
-
-        setDatastreamInfo(res.data[0]);
-      };
-      getDatastreamInfo();
-    } catch (error) {
-      console.log("Lỗi lấy dữ liệu cảm biến");
-    }
     const timeoutId = setTimeout(() => setLoading(false), 1000);
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [datastreamId]);
+  }, []);
 
   return (
     <Card
@@ -45,7 +23,7 @@ export default function DatastreamInforCard({ datastreamId }) {
       style={{ width: 650, backgroundColor: "#fffffe" }}
     >
       <Skeleton loading={loading} active>
-        {datastreamInfo && (
+        {data && (
           <div className="flex gap-3">
             <div className="flex items-center">
               <Image
@@ -57,13 +35,13 @@ export default function DatastreamInforCard({ datastreamId }) {
             </div>
             <div>
               <h6 className="text-sm font-semibold text-tertiary">
-                Mã cảm biến:
+                Mã luồng quan trắc:
               </h6>
-              <p className="ml-4 text-sub-headline">{datastreamInfo?.id}</p>
+              <p className="ml-4 text-sub-headline">{data?.id}</p>
               <h6 className="mt-3 text-sm font-semibold text-tertiary">
-                Tên cảm biến:
+                Tên luồng quan trắc:
               </h6>
-              <p className="ml-4 text-sub-headline">{datastreamInfo?.name}</p>
+              <p className="ml-4 text-sub-headline">{data?.name}</p>
               <h6 className="mt-3 text-sm font-semibold text-tertiary">
                 Mô tả:
               </h6>
@@ -77,7 +55,7 @@ export default function DatastreamInforCard({ datastreamId }) {
                   },
                 }}
               >
-                {datastreamInfo?.description}
+                {data?.description}
               </Typography.Paragraph>
             </div>
           </div>
