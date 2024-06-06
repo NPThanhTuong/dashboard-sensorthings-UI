@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Form, Input, Button, Select, notification, Card } from "antd";
+import { Form, Input, Button, Select, notification } from "antd";
 import { useAuth } from "@/context/AuthContext";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
+import "./add-data-stream.css";
 
 const { Option } = Select;
 const { TextArea } = Input;
 
 const AddDataStream = () => {
   const { token } = useAuth();
-  const { thingId } = useParams(); // Chỉ lấy thingId từ URL params
-  const { state } = useLocation(); // Lấy state từ location
-  const thingName = state?.thingName; // Lấy thingName từ state nếu có
+  const { thingId } = useParams();
+  const { state } = useLocation();
+  const thingName = state?.thingName;
   const [loading, setLoading] = useState(false);
   const [sensors, setSensors] = useState([]);
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const AddDataStream = () => {
         "/api/post/datastreams",
         {
           Sensor: values.sensor,
-          Thing: thingId, // Sử dụng thingId từ params
+          Thing: thingId,
           name: values.name,
           description: values.description,
         },
@@ -56,7 +57,7 @@ const AddDataStream = () => {
           message: "Thành công",
           description: "Thêm luồng dữ liệu thành công",
         });
-        navigate(-1, { state: { thingName: thingName } }); // Quay lại trang trước đó với state
+        navigate(-1, { state: { thingName: thingName } });
       } else {
         notification.error({
           message: "Lỗi",
@@ -74,50 +75,53 @@ const AddDataStream = () => {
   };
 
   return (
-    <Card
-      title="Thêm Luồng Dữ Liệu"
-      bordered={false}
-      style={{ maxWidth: 600, margin: "0 auto", marginTop: 50 }}
+    <Form
+      layout="vertical"
+      onFinish={onFinish}
+      initialValues={{ sensor: "", name: "", description: "" }}
     >
-      <Form
-        layout="vertical"
-        onFinish={onFinish}
-        initialValues={{ sensor: "", name: "", description: "" }}
+      <Form.Item
+        label={<span>Sensor</span>}
+        name="sensor"
+        rules={[{ required: true, message: "Vui lòng chọn sensor!" }]}
       >
-        <Form.Item
-          label="Sensor"
-          name="sensor"
-          rules={[{ required: true, message: "Vui lòng chọn sensor!" }]}
+        <Select placeholder="Chọn sensor" className="custom-select">
+          {sensors.map((sensor) => (
+            <Option key={sensor.id} value={sensor.id}>
+              {sensor.name}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+      <Form.Item
+        label={<span>Tên</span>}
+        name="name"
+        rules={[{ required: true, message: "Vui lòng nhập tên luồng!" }]}
+      >
+        <Input placeholder="Nhập tên luồng dữ liệu" className="custom-input" />
+      </Form.Item>
+      <Form.Item
+        label={<span>Mô tả</span>}
+        name="description"
+        rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
+      >
+        <TextArea
+          placeholder="Nhập mô tả"
+          rows={4}
+          className="custom-input px-10"
+        />
+      </Form.Item>
+      <Form.Item>
+        <Button
+          type="primary"
+          htmlType="submit"
+          className="mt-5 w-48 rounded-full border-orange-500 bg-orange-500 font-bold text-white hover:border-orange-600 hover:bg-orange-600"
+          loading={loading}
         >
-          <Select placeholder="Chọn sensor">
-            {sensors.map((sensor) => (
-              <Option key={sensor.id} value={sensor.id}>
-                {sensor.name}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-        <Form.Item
-          label="Tên"
-          name="name"
-          rules={[{ required: true, message: "Vui lòng nhập tên luồng!" }]}
-        >
-          <Input placeholder="Nhập tên luồng dữ liệu" />
-        </Form.Item>
-        <Form.Item
-          label="Mô tả"
-          name="description"
-          rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
-        >
-          <TextArea placeholder="Nhập mô tả" rows={4} />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" loading={loading}>
-            Thêm
-          </Button>
-        </Form.Item>
-      </Form>
-    </Card>
+          Thêm
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
 
