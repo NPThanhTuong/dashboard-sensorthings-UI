@@ -93,11 +93,7 @@ const ListThings = () => {
                           className="h-52 w-full object-cover"
                         />
                       }
-                      onClick={() =>
-                        navigate(
-                          `/datastreams/${thing.id}/${encodeURIComponent(thing.name)}`,
-                        )
-                      }
+                      onClick={() => navigate(`/luong-du-lieu/${thing.id}`)}
                     >
                       <Card.Meta
                         title={thing.name}
