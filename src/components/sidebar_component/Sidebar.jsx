@@ -1,62 +1,91 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { IoHomeOutline } from "react-icons/io5";
 import { LuMonitorSpeaker } from "react-icons/lu";
 import { SiOpenstreetmap } from "react-icons/si";
 import { AiOutlineLineChart } from "react-icons/ai";
-
-import { useAuth } from "@/context/AuthContext";
+import { Layout, Menu } from "antd";
 import avatar from "@public/images/user-avatar.jpg";
+import { useAuth } from "@/context/AuthContext";
+import "./sidebar.css";
 
-const Sidebar = () => {
-  const location = useLocation();
+const { Sider } = Layout;
+
+function getItem(label, key, icon, to) {
+  return {
+    key,
+    icon,
+    label,
+    to,
+  };
+}
+
+const Sidebar = ({ collapsed, setCollapsed }) => {
   const { user } = useAuth();
 
-  const linkClasses = (path) =>
-    `flex items-center justify-start pl-5 h-12 rounded-md transition-colors duration-200 ease-in-out ${
-      location.pathname === path
-        ? "bg-blue-800 text-white"
-        : "text-gray-700 hover:bg-blue-100 hover:text-blue-500"
-    }`;
-
-  return (
-    <div className="flex h-screen flex-col bg-white shadow-lg">
+  const items = [
+    getItem(
       <Link
         to={"/thong-tin-nguoi-dung"}
-        className="mx-4 my-6 flex flex-col items-center justify-start"
+        className="user-info flex flex-col items-center justify-center p-2"
       >
         <img
           src={avatar}
           alt={user?.message.displayname}
           className="h-12 w-12 rounded-full object-cover"
         />
-        <p className="text-2xl font-semibold">{user?.message.displayname}</p>
-      </Link>
-      <div className="my-2 border-b"></div>
-      <div className="mx-4 flex flex-col space-y-2">
-        <Link to="/" className={linkClasses("/")}>
-          <IoHomeOutline className="text-xl" />
-          <span className="text-md ml-3 font-medium">Trang chủ</span>
-        </Link>
+        <p className="user-name text-2xl font-semibold">
+          {user?.message.displayname}
+        </p>
+      </Link>,
+      "0",
+      null,
+      "/",
+    ),
+    getItem(<Link to={"/"}>Trang chủ</Link>, "1", <IoHomeOutline />, "/"),
+    getItem(
+      <Link to={"/quan-sat"}>Quan sát</Link>,
+      "2",
+      <LuMonitorSpeaker />,
+      "/quan-sat",
+    ),
+    getItem(
+      <Link to={"/ban-do"}>Bản đồ</Link>,
+      "3",
+      <SiOpenstreetmap />,
+      "/ban-do",
+    ),
+    getItem(
+      <Link to={"/bieu-do-do-am-dat"}>Thống kê</Link>,
+      "4",
+      <AiOutlineLineChart />,
+      "/bieu-do-do-am-dat",
+    ),
+    getItem(
+      <Link to={"/them-actuator"}>Actuator</Link>,
+      "5",
+      <AiOutlineLineChart />,
+      "/them-actuator",
+    ),
+  ];
 
-        <Link to="/quan-sat" className={linkClasses("/quan-sat")}>
-          <LuMonitorSpeaker className="text-xl" />
-          <span className="text-md ml-3 font-medium">Quan sát</span>
-        </Link>
-
-        <Link to="/ban-do" className={linkClasses("/ban-do")}>
-          <SiOpenstreetmap className="text-xl" />
-          <span className="text-md ml-3 font-medium">Bản đồ</span>
-        </Link>
-
-        <Link
-          to="/bieu-do-do-am-dat"
-          className={linkClasses("/bieu-do-do-am-dat")}
-        >
-          <AiOutlineLineChart className="text-xl" />
-          <span className="text-md ml-3 font-medium">Thống kê</span>
-        </Link>
-      </div>
-    </div>
+  return (
+    <Sider
+      breakpoint="xxl"
+      collapsible
+      collapsed={collapsed}
+      onCollapse={(value) => setCollapsed(value)}
+    >
+      <div className="demo-logo-vertical" />
+      <div className="user-avatar">{items[0].label}</div>
+      <div className="spacer" />
+      <Menu
+        className=""
+        theme="light"
+        defaultSelectedKeys={["1"]}
+        mode="inline"
+        items={items.slice(1)} // Bỏ đi phần tài khoản, chỉ hiển thị menu
+      />
+    </Sider>
   );
 };
 

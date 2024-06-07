@@ -3,20 +3,29 @@ import { Button, Select, Modal } from "antd";
 import { useState, useEffect } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import AddDataStream from "@/components/home_component/datastream_component/AddDataStream";
+import TaskingCapabilityForm from "@/components/home_component/taskingcapability_component/TaskingCapabilityForm";
 
 const { Option } = Select;
 
 const DataStreamHeader = ({ dataStreams, handleDataStreamChange }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isAddDataStreamModalVisible, setIsAddDataStreamModalVisible] =
+    useState(false);
+  const [isTaskingCapabilityModalVisible, setIsTaskingCapabilityModalVisible] =
+    useState(false);
   const [greeting, setGreeting] = useState("");
   const [currentTime, setCurrentTime] = useState("");
 
-  const showModal = () => {
-    setIsModalVisible(true);
+  const showAddDataStreamModal = () => {
+    setIsAddDataStreamModalVisible(true);
+  };
+
+  const showTaskingCapabilityModal = () => {
+    setIsTaskingCapabilityModalVisible(true);
   };
 
   const handleCancel = () => {
-    setIsModalVisible(false);
+    setIsAddDataStreamModalVisible(false);
+    setIsTaskingCapabilityModalVisible(false);
   };
 
   useEffect(() => {
@@ -66,15 +75,16 @@ const DataStreamHeader = ({ dataStreams, handleDataStreamChange }) => {
           shape="round"
           size="large"
           className="ant-btn-primary"
+          onClick={showTaskingCapabilityModal}
         >
-          + Actuator
+          + Tasking Capability
         </Button>
         <Button
           style={{ backgroundColor: "#ff8e3c", borderColor: "#ff8e3c" }}
           shape="round"
           size="large"
           className="ant-btn-primary"
-          onClick={showModal}
+          onClick={showAddDataStreamModal}
         >
           + Luồng dữ liệu
         </Button>
@@ -101,11 +111,19 @@ const DataStreamHeader = ({ dataStreams, handleDataStreamChange }) => {
       </div>
       <Modal
         title="Thêm Luồng Dữ Liệu"
-        visible={isModalVisible}
+        open={isAddDataStreamModalVisible}
         onCancel={handleCancel}
         footer={null}
       >
         <AddDataStream />
+      </Modal>
+      <Modal
+        title="Thêm Tasking Capability"
+        open={isTaskingCapabilityModalVisible}
+        onCancel={handleCancel}
+        footer={null}
+      >
+        <TaskingCapabilityForm />
       </Modal>
     </section>
   );

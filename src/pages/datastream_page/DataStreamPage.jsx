@@ -1,12 +1,14 @@
-import hitech_ctu from "@public/images/hitech-ctu.jpg";
-import "./data-stream-page.css";
-import { Alert, Spin, Row, Col } from "antd";
+import { useState, useEffect } from "react";
+import { Alert, Spin } from "antd";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import hitech_ctu from "@public/images/hitech-ctu.jpg";
+import "./data-stream-page.css";
 import DataStreamHeader from "@/components/home_component/datastream_component/DataStreamHeader";
 import DataStreamDisplay from "@/components/home_component/datastream_component/DataStreamDisplay";
+import LightControlCard from "@/components/home_component/task_component/LightControlCard";
+import WaterControlCard from "@/components/home_component/task_component/WaterControlCard";
 
 const DataStreamPage = () => {
   const { token } = useAuth();
@@ -15,7 +17,6 @@ const DataStreamPage = () => {
   const [thingData, setThingData] = useState(null);
   const [dataStreams, setDataStreams] = useState([]);
   const [sensorData, setSensorData] = useState(null);
-
   const [selectedDataStream, setSelectedDataStream] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -117,31 +118,15 @@ const DataStreamPage = () => {
         handleDataStreamChange={handleDataStreamChange}
       />
 
-      <section className="mt-4 flex h-48 w-full justify-between gap-4 rounded-xl bg-white p-5 text-center">
-        <div
-          className="h-full w-full rounded-xl"
-          style={{ backgroundColor: "#eff0f3", borderColor: "#eff0f3" }}
-        >
-          2
+      <section className="mt-4 flex h-auto w-full justify-between gap-4 rounded-xl bg-white p-5 text-center">
+        <div className="h-full w-full rounded-xl">
+          <LightControlCard thingId={thingId} actuatorId={2} />
         </div>
-        <div
-          className="h-full w-full rounded-xl"
-          style={{ backgroundColor: "#eff0f3", borderColor: "#eff0f3" }}
-        >
-          5
+        <div className="h-full w-full rounded-xl">
+          <WaterControlCard thingId={thingId} actuatorId={2} />
         </div>
-        <div
-          className="h-full w-full rounded-xl"
-          style={{ backgroundColor: "#eff0f3", borderColor: "#eff0f3" }}
-        >
-          3
-        </div>
-        <div
-          className="h-full w-full rounded-xl"
-          style={{ backgroundColor: "#eff0f3", borderColor: "#eff0f3" }}
-        >
-          4
-        </div>
+        <div className="h-full w-full rounded-xl">3</div>
+        <div className="h-full w-full rounded-xl">4</div>
       </section>
 
       <section className="my-4 grid h-auto w-full grid-cols-5 gap-4 rounded-xl bg-white p-5 text-center md:grid-cols-5">
