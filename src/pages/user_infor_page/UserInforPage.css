@@ -1,0 +1,144 @@
+.user-info-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #e0f7fa; 
+    width: 100%;
+  }
+  
+  .avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+  }
+  
+  .avatar {
+    width: 150px; 
+    height: 150px; 
+    border: 2px solid #ccc;
+    border-radius: 50%; 
+    cursor: pointer;
+}
+
+  
+  .upload-button {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+  
+  .username {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 15px;
+    text-align: center;
+  }
+  
+  .phone-number {
+    font-size: 16px;
+    color: gray;
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  .info-section {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 20px;
+  }
+  
+  .general-info,
+  .edit-form {
+    background: #f8f8f8;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+  
+  label {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .form-input {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .action-button {
+    padding: 10px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    background: linear-gradient(to right, #007bff, #00c6ff); 
+    color: #fff;
+  }
+  
+  .save-button {
+    background: #28a745;
+    color: #fff;
+  }
+  
+  .cancel-button {
+    background: #dc3545;
+    color: #fff;
+  }
+  
+  .change-password-button {
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    color: #fff;
+  }
+  
+  .edit-button {
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    color: #fff;
+    margin-right: 50px;
+  }
+  
+  .logout-button {
+    background: #dc3545;
+    color: #fff;
+  }
+  
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .info-row label {
+    font-weight: bold;
+    width: 40%;
+  }
+  
+  .info-row span {
+    width: 60%;
+    text-align: left;
+  }
+  
