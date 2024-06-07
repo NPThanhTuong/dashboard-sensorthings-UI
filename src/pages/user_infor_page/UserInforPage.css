@@ -1,29 +1,23 @@
 .user-info-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-family: Arial, sans-serif;
     padding: 20px;
-    background-color: #e0f7fa; 
-    width: 100%;
+    background-color: #f0f0f0;
   }
   
-  .avatar-section {
+  .user-info {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: flex-start;
     margin-bottom: 20px;
-    flex-shrink: 0;
   }
   
   .avatar {
-    width: 150px; 
-    height: 150px; 
+    width: 150px; /* Kích thước nhỏ hơn cho avatar */
+    height: 150px;
     border: 2px solid #ccc;
-    border-radius: 50%; 
+    border-radius: 50%;
     cursor: pointer;
-}
-
+    margin-right: 400px; /* Tăng khoảng cách giữa avatar và text */
+  }
   
   .upload-button {
     position: relative;
@@ -31,24 +25,25 @@
     cursor: pointer;
   }
   
-  .username {
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 15px;
-    text-align: center;
-  }
+.username {
+  font-size: 24px; /* Tăng kích thước font cho username */
+  font-weight: bold;
+  margin-right: 20px; /* Khoảng cách giữa username và ngày tạo */
+  white-space: nowrap; /* Hiển thị username trên một dòng */
+}
+
+.created-at {
+  font-size: 18px; /* Tăng kích thước font cho ngày tạo */
+  color: gray;
+  margin-bottom: 10px; /* Khoảng cách giữa dòng ngày tạo và dòng nút chỉnh sửa */
+}
+
   
-  .phone-number {
-    font-size: 16px;
-    color: gray;
-    margin-top: 10px;
-    text-align: center;
-  }
-  
-  .info-section {
-    width: 100%;
-    max-width: 1200px;
-    padding: 0 20px;
+  .button-group {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px; /* Khoảng cách giữa dòng nút chỉnh sửa và các phần tử khác */
   }
   
   .general-info,
@@ -56,7 +51,7 @@
     background: #f8f8f8;
     padding: 30px;
     border-radius: 15px;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
   }
   
   .input-group {
@@ -66,7 +61,7 @@
   }
   
   label {
-    font-size: 16px;
+    font-size: 18px;
     margin-bottom: 8px;
   }
   
@@ -74,7 +69,7 @@
     padding: 12px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 18px;
   }
   
   .error-message {
@@ -83,20 +78,14 @@
     margin-top: 5px;
   }
   
-  .button-group {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
   .action-button {
     padding: 10px;
-    font-size: 14px;
+    font-size: 16px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     margin-right: 10px;
-    background: linear-gradient(to right, #007bff, #00c6ff); 
+    background: linear-gradient(to right, #007bff, #00c6ff);
     color: #fff;
   }
   
@@ -118,7 +107,7 @@
   .edit-button {
     background: linear-gradient(to right, #007bff, #00c6ff);
     color: #fff;
-    margin-right: 50px;
+    margin-left: 20px;
   }
   
   .logout-button {
@@ -140,5 +129,11 @@
   .info-row span {
     width: 60%;
     text-align: left;
+  }
+  
+  .infor-secure {
+    font-size: 14px;
+    color: black;
+    font-weight: bold;
   }
   

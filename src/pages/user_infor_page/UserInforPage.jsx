@@ -8,11 +8,9 @@ import './UserInforPage.css';
 const UserInforPage = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
-  // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState(null);
   const [validationError, setValidationError] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState(null);
-  // eslint-disable-next-line no-unused-vars
   const [avatarFile, setAvatarFile] = useState(null);
   const { token, clearToken } = useAuth();
   const navigate = useNavigate();
@@ -79,17 +77,13 @@ const UserInforPage = () => {
     if (editForm.displayname !== userInfo.displayname)
       changes.displayname = editForm.displayname;
     if (editForm.phone !== userInfo.phone) changes.phone = editForm.phone;
-    // Trước khi gửi request, kiểm tra số điện thoại có đúng độ dài không
-if (editForm.phone.length !== 10) {
-  setValidationError("Số điện thoại không đúng"); // Thông báo số điện thoại không đủ độ dài
-  return; // Dừng xử lý tiếp theo
-}
+    if (editForm.phone.length !== 10) {
+      setValidationError("Số điện thoại không đúng");
+      return;
+    }
 
     if (Object.keys(changes).length === 0) {
       setIsEditing(false);
-      // eslint-disable-next-line no-undef
-      setHeaderTitle("THÔNG TIN TÀI KHOẢN NGƯỜI DÙNG");
-      window.location.reload();
       return;
     }
   
@@ -100,26 +94,23 @@ if (editForm.phone.length !== 10) {
         },
       });
   
-     // Sau khi cập nhật thành công
-if (response.data.success) {
-  setUserInfo((prevUserInfo) => ({
-      ...prevUserInfo,
-      ...changes,
-  }));
-  setIsEditing(false);
-  toast.success("Cập nhật thông tin thành công!"); // Thêm thông báo thành công
-} else {
-  throw new Error(response.data.message);
-}
-
-} catch (error) {
-  if (error.response.data[0].includes("The phone has already been taken.")) {
-      toast.error("Số điện thoại đã tồn tại, vui lòng nhập số khác");
-  } else {
-      setError(error.response ? error.response.data : error.message);
-  }
-}
-
+      if (response.data.success) {
+        setUserInfo((prevUserInfo) => ({
+            ...prevUserInfo,
+            ...changes,
+        }));
+        setIsEditing(false);
+        toast.success("Cập nhật thông tin thành công!");
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (error.response.data[0].includes("The phone has already been taken.")) {
+        toast.error("Số điện thoại đã tồn tại, vui lòng nhập số khác");
+      } else {
+        setError(error.response ? error.response.data : error.message);
+      }
+    }
   };
   
   if (loading) {
@@ -142,23 +133,33 @@ if (response.data.success) {
 
   return (
     <div className="user-info-page">
-      <div className="avatar-section">
-        <label htmlFor="avatar-upload" className="upload-button">
-          <img 
-            src={avatarUrl || "https://img.freepik.com/premium-photo/male-female-profile-avatar-user-avatars-gender-icons_1020867-75342.jpg"} 
-            alt="Avatar" 
-            className="avatar"
-          />
-          <input
-            type="file"
-            id="avatar-upload"
-            accept="image/*"
-            onChange={handleAvatarUpload}
-            style={{ display: "none" }}
-          />
-        </label>
-        <div className="username">{userInfo.displayname}</div>
-        <div className="phone-number">{userInfo.phone}</div>
+      <div className="form-section">
+        <div className="user-info">
+          <label htmlFor="avatar-upload" className="upload-button">
+            <img 
+              src={avatarUrl || "https://img.freepik.com/premium-photo/male-female-profile-avatar-user-avatars-gender-icons_1020867-75342.jpg"} 
+              alt="Avatar" 
+              className="avatar"
+            />
+            <input
+              type="file"
+              id="avatar-upload"
+              accept="image/*"
+              onChange={handleAvatarUpload}
+              style={{ display: "none" }}
+            />
+          </label>
+          <div>
+            <div className="username">{userInfo.displayname}</div>
+            <div className="created-at">Ngày tạo: {formatDate(userInfo.created_at)}</div>
+          </div>
+          <button
+            className="action-button edit-button"
+            onClick={handleEditClick}
+          >
+            Chỉnh sửa
+          </button>
+        </div>
       </div>
       <div className="info-section">
         {isEditing ? (
@@ -190,9 +191,9 @@ if (response.data.success) {
             )}
             <div className="button-group">
               <button
-              type="button"
-              className="action-button cancel-button"
-              onClick={() => setIsEditing(false)}
+                type="button"
+                className="action-button cancel-button"
+                onClick={() => setIsEditing(false)}
               >
                 Hủy
               </button>
@@ -200,40 +201,26 @@ if (response.data.success) {
                 Lưu thay đổi
               </button>
               <button
-                  type="button"
-                  className="action-button change-password-button"
-                  onClick={() => navigate("/thay-doi-mat-khau")}
-                >
-                  Thay đổi mật khẩu
-                </button>
+                type="button"
+                className="action-button change-password-button"
+                onClick={() => navigate("/thay-doi-mat-khau")}
+              >
+                Thay đổi mật khẩu
+              </button>
             </div>
-
           </form>
         ) : (
           <div className="general-info">
+            <label className="infor-secure">THÔNG TIN BẢO MẬT</label><br /><br />
             <div className="info-row">
-              <label>Họ và tên:</label>
-              <span>{userInfo.displayname}</span>
-            </div>
-            <div className="info-row">
+            <label>Email:</label>
+            <span>{userInfo.email ? userInfo.email : "Không có Email"}</span>
+              <label>Mật khẩu:</label>
+              <span>*********</span>
               <label>Số điện thoại:</label>
               <span>{userInfo.phone}</span>
             </div>
-            <div className="info-row">
-              <label>Ngày tạo:</label>
-              <span>{formatDate(userInfo.created_at)}</span>
-            </div>
-            <div className="info-row">
-              <label>Mật khẩu:</label>
-              <span>*********</span>
-            </div>
             <div className="button-group">
-              <button
-                className="action-button edit-button"
-                onClick={handleEditClick}
-              >
-                Chỉnh sửa
-              </button>
               <button
                 className="action-button logout-button"
                 onClick={handleLogout}
