@@ -51,7 +51,7 @@ const DataStreamDisplay = ({ selectedDataStream, sensorData }) => {
                 onClick={() => navigate(`/observation/${datastreamId}`)}
                 shape="round"
                 size="large"
-                className="ant-btn-primary"
+                className="button-primary"
               >
                 Quan sát
               </Button>

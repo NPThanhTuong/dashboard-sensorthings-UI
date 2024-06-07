@@ -74,7 +74,7 @@ const DataStreamHeader = ({ dataStreams, handleDataStreamChange }) => {
           style={{ backgroundColor: "#ff8e3c", borderColor: "#ff8e3c" }}
           shape="round"
           size="large"
-          className="ant-btn-primary"
+          className="button-primary"
           onClick={showTaskingCapabilityModal}
         >
           + Tasking Capability
@@ -83,7 +83,7 @@ const DataStreamHeader = ({ dataStreams, handleDataStreamChange }) => {
           style={{ backgroundColor: "#ff8e3c", borderColor: "#ff8e3c" }}
           shape="round"
           size="large"
-          className="ant-btn-primary"
+          className="button-primary"
           onClick={showAddDataStreamModal}
         >
           + Luồng dữ liệu

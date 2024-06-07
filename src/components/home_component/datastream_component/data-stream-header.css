@@ -42,7 +42,7 @@
 }
 
 /* Button Styles */
-.ant-btn-primary {
+.button-primary {
   background-color: #ff8e3c !important;
   border-color: #ff8e3c !important;
   transition:
@@ -51,7 +51,7 @@
   color: #0d0d0d;
 }
 
-.ant-btn-primary:hover {
+.button-primary:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
