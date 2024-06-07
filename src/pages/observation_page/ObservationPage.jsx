@@ -3,8 +3,8 @@ import React from "react";
 import Light from "@/components/control_component/Light";
 import SoilHumidity from "@/components/control_component/SoilHumidity";
 import Inspect from "@/components/card_component/Inspect";
-import lightIcon from '@/components/card_component/icon/lux-icon.png';
-import humidityIcon from '@/components/card_component/icon/humidity-icon.png'; // Đảm bảo thay đúng đường dẫn
+// import lightIcon from '@/components/card_component/icon/lux-icon.png';
+// import humidityIcon from '@/components/card_component/icon/humidity-icon.png'; // Đảm bảo thay đúng đường dẫn
 
 // import component chart
 import ChartLight from "@/components/chart_component/LightChartDay";
@@ -19,20 +19,20 @@ const ObservationPage = () => {
           <Light />
         </div>
         <div className="flex gap-2">
-          <Inspect 
-            title="Ánh Sáng" 
-            value="30" 
-            unit="candela" 
-            icon={lightIcon} 
-            backgroundColor="linear-gradient(to right, #ff7e5f, #feb47b)" 
+          <Inspect
+            title="Ánh Sáng"
+            value="30"
+            unit="candela"
+            icon={lightIcon}
+            backgroundColor="linear-gradient(to right, #ff7e5f, #feb47b)"
             color="white"
           />
-          <Inspect 
-            title="Độ Ẩm Đất" 
-            value="2" 
-            unit="%" 
-            icon={humidityIcon} 
-            backgroundColor="linear-gradient(to right, #43cea2, #185a9d)" 
+          <Inspect
+            title="Độ Ẩm Đất"
+            value="2"
+            unit="%"
+            icon={humidityIcon}
+            backgroundColor="linear-gradient(to right, #43cea2, #185a9d)"
             color="white"
           />
         </div>

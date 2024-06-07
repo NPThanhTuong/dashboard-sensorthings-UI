@@ -25,10 +25,15 @@ import AddThing from "@/components/home_component/thing_component/AddThing";
 import Sensor from "@/components/home_component/sensor_component/Sensor";
 import Observation from "@/components/home_component/observation_component/Observation";
 import AddDataStream from "@/components/home_component/datastream_component/AddDataStream";
-import DataStreamPage from "../pages/datastream_page/DataStreamPage";
+import DataStreamPage from "@/pages/datastream_page/DataStreamPage";
 
 // Import ControlPanel component
-import ControlPanel from "@/components/card_component/ControlPanel"; // Đảm bảo đường dẫn chính xác
+import ControlPanel from "@/components/card_component/ControlPanel";
+
+// đang test
+import AddActuator from "../components/home_component/actuator_component/AddActuator";
+import ActuatorDetail from "../components/home_component/actuator_component/ActuatorDetail";
+import TaskingCapabilityForm from "../components/home_component/taskingcapability_component/TaskingCapabilityForm";
 
 const UserRoutes = () => (
   <Routes>
@@ -129,19 +134,25 @@ const UserRoutes = () => (
             </HomePage>
           }
         />
-
         {/* End Route Home */}
 
+        {/* Start Actuator */}
+        <Route path="/them-actuator" element={<AddActuator />} />
+        <Route path="/chi-tiet-actuator" element={<ActuatorDetail />} />
+        {/* End Actuator */}
+
+        {/* Start TaskingCapability */}
+        <Route
+          path="/them-tasking-capability"
+          element={<TaskingCapabilityForm />}
+        />
+        {/* <Route path="/chi-tiet-actuator" element={<ActuatorDetail />} /> */}
+        {/* End TaskingCapability */}
+
         {/* Route for Control Panel */}
-        <Route
-          path="/dieu-khien"
-          element={<ControlPanel />}
-        />
+        <Route path="/dieu-khien" element={<ControlPanel />} />
+        <Route path="/giam-sat" element={<ObservationPage />} />
         {/* Route for Observation */}
-        <Route
-          path="/giam-sat"
-          element={<ObservationPage />}
-        />
       </Route>
     </Route>
   </Routes>
