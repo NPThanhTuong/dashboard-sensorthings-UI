@@ -23,12 +23,15 @@ import ListThings from "@/components/home_component/thing_component/ListThings";
 import AddThing from "@/components/home_component/thing_component/AddThing";
 //import ListDataStream from "@/components/home_component/datastream_component/ListDataStream";
 import Sensor from "@/components/home_component/sensor_component/Sensor";
-import Observation from "@/components/home_component/observation_component/Observation";
+// import Observation from "@/components/home_component/observation_component/Observation";
 import AddDataStream from "@/components/home_component/datastream_component/AddDataStream";
-import DataStreamPage from "../pages/datastream_page/DataStreamPage";
+
+import DetailDatastreamPage from "@/pages/detail_datastream_page/DetailDatastreamPage";
+
 
 // Import ControlPanel component
 import ControlPanel from "@/components/card_component/ControlPanel"; // Đảm bảo đường dẫn chính xác
+
 
 const UserRoutes = () => (
   <Routes>
@@ -122,10 +125,12 @@ const UserRoutes = () => (
         />
 
         <Route
-          path="/observation/:datastreamId"
+
+          path="/quan-trac/:datastreamId"
+
           element={
             <HomePage>
-              <Observation />
+              <DetailDatastreamPage />
             </HomePage>
           }
         />
