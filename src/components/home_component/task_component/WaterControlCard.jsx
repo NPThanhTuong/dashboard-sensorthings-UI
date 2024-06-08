@@ -11,7 +11,7 @@ const WaterControlCard = ({ thingId, actuatorId }) => {
   const [loading, setLoading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const [result, setResult] = useState([]);
-  const [dataLoading, setDataLoading] = useState(true); // Trạng thái cho việc tải dữ liệu
+  const [dataLoading, setDataLoading] = useState(true);
 
   const fetchData = async () => {
     try {

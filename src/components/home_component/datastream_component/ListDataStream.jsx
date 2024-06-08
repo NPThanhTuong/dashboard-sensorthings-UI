@@ -33,7 +33,7 @@ const ListDataStream = () => {
       }
       setLoading(false);
     } catch (error) {
-      console.error("Lỗi lấy dữ liệu data stream:", error);
+      console.error("Lỗi lấy dữ liệu luồng dữ liệu:", error);
       setError(error);
       setLoading(false);
     }

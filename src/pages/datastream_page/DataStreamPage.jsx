@@ -67,8 +67,6 @@ const DataStreamPage = () => {
         <div className="h-full w-full rounded-xl">
           <WaterControlCard thingId={thingId} actuatorId={2} />
         </div>
-        <div className="h-full w-full rounded-xl">3</div>
-        <div className="h-full w-full rounded-xl">4</div>
       </section>
 
       <section className="my-4 grid h-[500px] w-full grid-cols-5 gap-4 rounded-xl text-center md:grid-cols-5">

@@ -22,7 +22,7 @@ const ThingInfo = ({ thingId }) => {
       }
       setLoading(false);
     } catch (error) {
-      console.error("Lỗi lấy dữ liệu thing:", error);
+      console.error("Lỗi lấy dữ liệu:", error);
       setError(error);
       setLoading(false);
     }

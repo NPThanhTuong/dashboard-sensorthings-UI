@@ -22,7 +22,6 @@ import UserInforPage from "@/pages/user_infor_page/UserInforPage";
 import ListThings from "@/components/home_component/thing_component/ListThings";
 import AddThing from "@/components/home_component/thing_component/AddThing";
 //import ListDataStream from "@/components/home_component/datastream_component/ListDataStream";
-import Sensor from "@/components/home_component/sensor_component/Sensor";
 // import Observation from "@/components/home_component/observation_component/Observation";
 import AddDataStream from "@/components/home_component/datastream_component/AddDataStream";
 import DataStreamPage from "@/pages/datastream_page/DataStreamPage";
@@ -92,37 +91,19 @@ const UserRoutes = () => (
         />
 
         <Route
-          path="/luong-du-lieu/:thingId"
+          path="/chi-tiet-thing/:thingId"
           element={
             <HomePage>
               <DataStreamPage />
             </HomePage>
           }
         />
-        {/* 
-        <Route
-          path="/datastreams/:thingId"
-          element={
-            <HomePage>
-              <ListDataStream />
-            </HomePage>
-          }
-        /> */}
 
         <Route
-          path="/luong-du-lieu/:thingId/them-luong-du-lieu"
+          path="/chi-tiet-thing/:thingId/them-luong-du-lieu"
           element={
             <HomePage>
               <AddDataStream />
-            </HomePage>
-          }
-        />
-
-        <Route
-          path="/sensor/:datastreamId"
-          element={
-            <HomePage>
-              <Sensor />
             </HomePage>
           }
         />

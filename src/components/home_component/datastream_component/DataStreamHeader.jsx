@@ -12,7 +12,7 @@ const DataStreamHeader = () => {
     useState(false);
   const [greeting, setGreeting] = useState("");
   const [currentTime, setCurrentTime] = useState("");
-  const [loading, setLoading] = useState(true); // Trạng thái loading
+  const [loading, setLoading] = useState(true);
 
   const showAddDataStreamModal = () => {
     setIsAddDataStreamModalOpen(true);

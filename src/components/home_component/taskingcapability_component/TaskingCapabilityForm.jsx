@@ -30,10 +30,10 @@ const TaskingCapabilityForm = () => {
       .post(`/api/post/taskingcapability`, payload)
       .then((response) => {
         if (response.status === 201) {
-          message.success("Tasking capability created successfully!");
+          message.success("Tasking capability tạo thành công!");
           form.resetFields();
         } else {
-          message.error("Failed to create tasking capability.");
+          message.error("Tạo Tasking capability thất bại.");
         }
       })
       .catch((error) => {
