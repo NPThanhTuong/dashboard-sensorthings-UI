@@ -77,44 +77,50 @@ const DataStreamHeader = () => {
 
   return (
     <section className="flex items-center justify-between rounded-xl bg-white p-4 shadow-md">
-      {loading ? (
-        <Skeleton active /> // Hiển thị Skeleton khi đang tải
-      ) : (
-        <>
-          <div>
-            <h1 className="text-2xl font-bold">{greeting}</h1>
-            <p className="text-gray-500">{currentTime}</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button
-              style={{ backgroundColor: "#ff8e3c", borderColor: "#ff8e3c" }}
-              shape="round"
-              size="large"
-              className="ant-btn-primary"
-              onClick={showTaskingCapabilityModal}
-            >
-              + Tasking Capability
-            </Button>
-            <Button
-              style={{ backgroundColor: "#ff8e3c", borderColor: "#ff8e3c" }}
-              shape="round"
-              size="large"
-              className="ant-btn-primary"
-              onClick={showAddDataStreamModal}
-            >
-              + Luồng dữ liệu
-            </Button>
-          </div>
-          <div className="flex items-center">
-            <span className="mr-2">Thời gian gửi dữ liệu (phút):</span>
-            <InputNumber
-              min={1}
-              value={intervalTime} // Sử dụng intervalTime từ AuthContext
-              onChange={(value) => setIntervalTime(value)} // Sử dụng setIntervalTime từ AuthContext
-            />
-          </div>
-        </>
-      )}
+      <div>
+        <h1 className="text-2xl font-bold">{greeting}</h1>
+        <p className="text-gray-500">{currentTime}</p>
+      </div>
+      <div className="flex items-center gap-4">
+        <Button
+          style={{ backgroundColor: "#ff8e3c", borderColor: "#ff8e3c" }}
+          shape="round"
+          size="large"
+          className="button-primary"
+          onClick={showTaskingCapabilityModal}
+        >
+          + Tasking Capability
+        </Button>
+        <Button
+          style={{ backgroundColor: "#ff8e3c", borderColor: "#ff8e3c" }}
+          shape="round"
+          size="large"
+          className="button-primary"
+          onClick={showAddDataStreamModal}
+        >
+          + Luồng dữ liệu
+        </Button>
+        <Select
+          placeholder={
+            <span className="custom-placeholder text-black">
+              Chọn luồng dữ liệu
+            </span>
+          }
+          className="custom-select w-48"
+          size="large"
+          onChange={handleDataStreamChange}
+        >
+          {dataStreams?.map((dataStream) => (
+            <Option key={dataStream.id} value={dataStream.id}>
+              {dataStream.name}
+            </Option>
+          ))}
+        </Select>
+        <div className="custom-input-container">
+          <input type="text" placeholder="Tìm" className="custom-input" />
+          <SearchOutlined className="custom-input-icon" />
+        </div>
+      </div>
       <Modal
         title="Thêm Luồng Dữ Liệu"
         open={isAddDataStreamModalOpen}

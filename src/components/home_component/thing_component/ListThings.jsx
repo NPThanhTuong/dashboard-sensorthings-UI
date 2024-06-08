@@ -70,7 +70,7 @@ const ListThings = () => {
       {/* <div className="bg-gray-100">
         <SearchInput />
       </div> */}
-      <div className="flex flex-col justify-center p-3">
+      <div className="flex flex-col justify-center">
         <div className="flex h-dvh w-full max-w-screen-2xl flex-col rounded-lg border bg-white p-6 shadow-lg">
           <div className="flex-grow">
             {things.length === 0 ? (
