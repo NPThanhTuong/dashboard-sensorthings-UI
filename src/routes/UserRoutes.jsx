@@ -27,6 +27,7 @@ import Sensor from "@/components/home_component/sensor_component/Sensor";
 import AddDataStream from "@/components/home_component/datastream_component/AddDataStream";
 import DataStreamPage from "@/pages/datastream_page/DataStreamPage";
 import DetailDatastreamPage from "@/pages/detail_datastream_page/DetailDatastreamPage";
+import NotFoundPage from "@/pages/not_found_page/NotFoundPage";
 
 
 // Import ControlPanel component
@@ -36,7 +37,6 @@ import ControlPanel from "@/components/card_component/ControlPanel";
 import AddActuator from "../components/home_component/actuator_component/AddActuator";
 import ActuatorDetail from "../components/home_component/actuator_component/ActuatorDetail";
 import TaskingCapabilityForm from "../components/home_component/taskingcapability_component/TaskingCapabilityForm";
-
 
 const UserRoutes = () => (
   <Routes>
@@ -160,6 +160,7 @@ const UserRoutes = () => (
         {/* Route for Observation */}
       </Route>
     </Route>
+    <Route path="*" element={<NotFoundPage />} />
   </Routes>
 );
 
