@@ -2,37 +2,18 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
-import { Switch, Skeleton } from "antd";
-import { HiOutlineLightBulb } from "react-icons/hi";
+import "./light-control-card.css";
+import lightIcon from "@public/images/lux-icon.png";
 
 const LightControlCard = ({ thingId, actuatorId }) => {
-  const { token, intervalTime } = useAuth();
+  const { token } = useAuth();
   const [status, setStatus] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [initialLoad, setInitialLoad] = useState(true);
-  const [result, setResult] = useState([]);
-  const [dataLoading, setDataLoading] = useState(true); // Trạng thái cho việc tải dữ liệu
+  const [initialLoad, setInitialLoad] = useState(true); // Thêm state initialLoad
 
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(`/api/get/datastreams(5)/observations`, {
-        params: {
-          token,
-        },
-      });
-      setResult(response.data);
-      setDataLoading(false); // Đặt trạng thái tải dữ liệu là false sau khi lấy xong
-    } catch (error) {
-      toast.error("Lỗi: " + error.message);
-    }
-  };
-
-  const toggleStatus = (checked) => {
-    const taskingParameters = checked ? -1 : 0; // -1 để bật, 0 để tắt
-
-    setStatus(checked); // Cập nhật trạng thái một cách lạc quan
+  const toggleStatus = () => {
+    const taskingParameters = status ? 0 : -1; // -1 for on, 0 for off
     setLoading(true);
-
     axios
       .post(`/api/post/task`, {
         thing_id: thingId,
@@ -41,14 +22,14 @@ const LightControlCard = ({ thingId, actuatorId }) => {
         token,
       })
       .then((response) => {
-        if (response.status !== 201) {
-          setStatus(!checked); // Hoàn nguyên trạng thái nếu phản hồi không thành công
+        if (response.status === 201) {
+          setStatus(!status);
+        } else {
           toast.error("Không gửi được lệnh bật đèn.");
         }
       })
       .catch((error) => {
-        setStatus(!checked); // Hoàn nguyên trạng thái khi có lỗi
-        toast.error("Lỗi: " + error.message);
+        toast.error("Error: " + error.message);
       })
       .finally(() => {
         setLoading(false);
@@ -56,13 +37,7 @@ const LightControlCard = ({ thingId, actuatorId }) => {
   };
 
   useEffect(() => {
-    fetchData();
-
-    const interval = setInterval(fetchData, intervalTime * 60000);
-    return () => clearInterval(interval);
-  }, [status]);
-
-  useEffect(() => {
+    // Kiểm tra nếu không phải lần render đầu tiên thì mới toast
     if (!initialLoad) {
       if (status) {
         toast("Đèn được bật", { autoClose: 2000 });
@@ -70,54 +45,30 @@ const LightControlCard = ({ thingId, actuatorId }) => {
         toast("Đèn đã được tắt", { autoClose: 2000 });
       }
     } else {
+      // Nếu là lần render đầu tiên, set initialLoad thành false
       setInitialLoad(false);
     }
   }, [status]);
 
   return (
     <div
-      className="relative h-36 w-72 overflow-hidden rounded-lg text-white shadow-lg"
-      style={{
-        background: "linear-gradient(to right, #ffcc00, #ff9900)",
-        color: "white",
-      }}
+      className={`control-light border border-yellow-500 ${status ? "on" : "off"}`}
     >
-      <div className="absolute inset-0 -skew-y-12 transform bg-black bg-opacity-30"></div>
-      <div className="relative z-10 flex h-full flex-col justify-between p-4">
-        <div>
-          {dataLoading ? (
-            <Skeleton active paragraph={{ rows: 3 }} /> // Hiển thị Skeleton với các hàng phù hợp
-          ) : result.length > 0 ? (
-            result.map((data) => (
-              <div key={data.id} className="flex justify-between">
-                <p>{data.resultTime}</p>
-                <p className="text-base font-semibold">
-                  {data.result.join(", ")} %
-                </p>
-              </div>
-            ))
-          ) : (
-            <p>Không có dữ liệu</p>
-          )}
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <HiOutlineLightBulb className="text-3xl text-yellow-400" />
-            <span className="ml-2 text-base">Ánh Sáng</span>
-          </div>
-          <div className="flex items-center">
-            <Switch
-              checked={status}
-              onChange={toggleStatus}
-              loading={loading}
-              checkedChildren="Bật"
-              unCheckedChildren="Tắt"
-              style={{
-                backgroundColor: "#ff8e3c", // Màu nền của Switch
-              }}
-            />
-          </div>
-        </div>
+      <div className="control-light-left">
+        <img className="control-light-icon" src={lightIcon} alt="Light" />
+        <span className="control-light-name">Ánh Sáng</span>
+      </div>
+      <div className="control-light-right">
+        <label className="switch">
+          <input
+            type="checkbox"
+            checked={status}
+            onChange={toggleStatus}
+            disabled={loading}
+          />
+          <span className="slider"></span>
+        </label>
+        <span className="control-light-button">{status ? "On" : "Off"}</span>
       </div>
     </div>
   );
