@@ -1,31 +1,30 @@
-import "./data-stream-header.css";
-import { Button, Select, Modal } from "antd";
+import { Button, Modal, InputNumber, Skeleton } from "antd";
 import { useState, useEffect } from "react";
-import { SearchOutlined } from "@ant-design/icons";
 import AddDataStream from "@/components/home_component/datastream_component/AddDataStream";
 import TaskingCapabilityForm from "@/components/home_component/taskingcapability_component/TaskingCapabilityForm";
+import { useAuth } from "@/context/AuthContext";
 
-const { Option } = Select;
-
-const DataStreamHeader = ({ dataStreams, handleDataStreamChange }) => {
-  const [isAddDataStreamModalVisible, setIsAddDataStreamModalVisible] =
+const DataStreamHeader = () => {
+  const { intervalTime, setIntervalTime } = useAuth(); // Sử dụng intervalTime từ AuthContext
+  const [isAddDataStreamModalOpen, setIsAddDataStreamModalOpen] =
     useState(false);
-  const [isTaskingCapabilityModalVisible, setIsTaskingCapabilityModalVisible] =
+  const [isTaskingCapabilityModalOpen, setIsTaskingCapabilityModalOpen] =
     useState(false);
   const [greeting, setGreeting] = useState("");
   const [currentTime, setCurrentTime] = useState("");
+  const [loading, setLoading] = useState(true); // Trạng thái loading
 
   const showAddDataStreamModal = () => {
-    setIsAddDataStreamModalVisible(true);
+    setIsAddDataStreamModalOpen(true);
   };
 
   const showTaskingCapabilityModal = () => {
-    setIsTaskingCapabilityModalVisible(true);
+    setIsTaskingCapabilityModalOpen(true);
   };
 
   const handleCancel = () => {
-    setIsAddDataStreamModalVisible(false);
-    setIsTaskingCapabilityModalVisible(false);
+    setIsAddDataStreamModalOpen(false);
+    setIsTaskingCapabilityModalOpen(false);
   };
 
   useEffect(() => {
@@ -38,8 +37,14 @@ const DataStreamHeader = ({ dataStreams, handleDataStreamChange }) => {
       const month = now.getMonth() + 1; // months are 0-indexed
       const year = now.getFullYear();
 
-      const formattedTime = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-      const formattedDate = `${day.toString().padStart(2, "0")}/${month.toString().padStart(2, "0")}/${year}`;
+      const formattedTime = `${hours
+        .toString()
+        .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds
+        .toString()
+        .padStart(2, "0")}`;
+      const formattedDate = `${day.toString().padStart(2, "0")}/${month
+        .toString()
+        .padStart(2, "0")}/${year}`;
       const formattedDateTime = `${formattedTime} ${formattedDate}`;
 
       let greetingMessage = "Xin chào";
@@ -60,58 +65,59 @@ const DataStreamHeader = ({ dataStreams, handleDataStreamChange }) => {
     updateGreetingAndTime();
     const timer = setInterval(updateGreetingAndTime, 1000);
 
-    return () => clearInterval(timer);
+    // Giả lập thời gian tải dữ liệu
+    setTimeout(() => {
+      setLoading(false); // Đặt trạng thái loading là false sau khi dữ liệu được tải
+    }, 2000); // Giả sử dữ liệu tải trong 2 giây
+
+    return () => {
+      clearInterval(timer);
+    };
   }, []);
 
   return (
     <section className="flex items-center justify-between rounded-xl bg-white p-4 shadow-md">
-      <div>
-        <h1 className="text-2xl font-bold">{greeting}</h1>
-        <p className="text-gray-500">{currentTime}</p>
-      </div>
-      <div className="flex items-center gap-4">
-        <Button
-          style={{ backgroundColor: "#ff8e3c", borderColor: "#ff8e3c" }}
-          shape="round"
-          size="large"
-          className="ant-btn-primary"
-          onClick={showTaskingCapabilityModal}
-        >
-          + Tasking Capability
-        </Button>
-        <Button
-          style={{ backgroundColor: "#ff8e3c", borderColor: "#ff8e3c" }}
-          shape="round"
-          size="large"
-          className="ant-btn-primary"
-          onClick={showAddDataStreamModal}
-        >
-          + Luồng dữ liệu
-        </Button>
-        <Select
-          placeholder={
-            <span className="custom-placeholder text-black">
-              Chọn luồng dữ liệu
-            </span>
-          }
-          className="custom-select w-48"
-          size="large"
-          onChange={handleDataStreamChange}
-        >
-          {dataStreams?.map((dataStream) => (
-            <Option key={dataStream.id} value={dataStream.id}>
-              {dataStream.name}
-            </Option>
-          ))}
-        </Select>
-        <div className="custom-input-container">
-          <input type="text" placeholder="Tìm" className="custom-input" />
-          <SearchOutlined className="custom-input-icon" />
-        </div>
-      </div>
+      {loading ? (
+        <Skeleton active /> // Hiển thị Skeleton khi đang tải
+      ) : (
+        <>
+          <div>
+            <h1 className="text-2xl font-bold">{greeting}</h1>
+            <p className="text-gray-500">{currentTime}</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <Button
+              style={{ backgroundColor: "#ff8e3c", borderColor: "#ff8e3c" }}
+              shape="round"
+              size="large"
+              className="ant-btn-primary"
+              onClick={showTaskingCapabilityModal}
+            >
+              + Tasking Capability
+            </Button>
+            <Button
+              style={{ backgroundColor: "#ff8e3c", borderColor: "#ff8e3c" }}
+              shape="round"
+              size="large"
+              className="ant-btn-primary"
+              onClick={showAddDataStreamModal}
+            >
+              + Luồng dữ liệu
+            </Button>
+          </div>
+          <div className="flex items-center">
+            <span className="mr-2">Thời gian gửi dữ liệu (phút):</span>
+            <InputNumber
+              min={1}
+              value={intervalTime} // Sử dụng intervalTime từ AuthContext
+              onChange={(value) => setIntervalTime(value)} // Sử dụng setIntervalTime từ AuthContext
+            />
+          </div>
+        </>
+      )}
       <Modal
         title="Thêm Luồng Dữ Liệu"
-        open={isAddDataStreamModalVisible}
+        open={isAddDataStreamModalOpen}
         onCancel={handleCancel}
         footer={null}
       >
@@ -119,7 +125,7 @@ const DataStreamHeader = ({ dataStreams, handleDataStreamChange }) => {
       </Modal>
       <Modal
         title="Thêm Tasking Capability"
-        open={isTaskingCapabilityModalVisible}
+        open={isTaskingCapabilityModalOpen}
         onCancel={handleCancel}
         footer={null}
       >
