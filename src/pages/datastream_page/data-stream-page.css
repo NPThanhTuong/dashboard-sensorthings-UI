@@ -22,9 +22,9 @@
   background: rgba(0, 0, 0, 0.7);
   padding: 20px;
   margin-bottom: 0;
-  border-radius: 10px 10px 0 0; /* Góc tròn chỉ ở phần trên */
+  border-radius: 10px 10px 0 0;
   display: flex;
-  flex-direction: column; /* Hiển thị các phần tử theo chiều dọc */
+  flex-direction: column;
   transition:
     height 0.5s ease,
     opacity 0.5s ease;
@@ -32,44 +32,42 @@
 }
 
 .thing-data-overlay:hover {
-  height: 100%; /* Mở rộng chiều cao khi hover */
+  height: 100%;
 }
 
 .thing-data-content {
-  opacity: 1; /* Ban đầu bị ẩn */
+  opacity: 1;
   transition: opacity 0.5s ease;
 }
 
 .thing-data-overlay:hover .thing-data-content {
-  opacity: 1; /* Hiển thị hoàn toàn khi hover */
+  opacity: 1;
 }
 
 .thing-data-overlay h3 {
-  opacity: 1; /* Luôn luôn hiển thị tên của thing */
+  opacity: 1;
   transition: opacity 0.5s ease;
 }
 
-/* Phần mờ dưới tên */
 .thing-data-overlay h3::after {
   content: "";
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 50%; /* Điều chỉnh chiều cao của phần mờ */
+  height: 50%;
   background: linear-gradient(
     to top,
     rgba(0, 0, 0, 0.7) 0%,
     rgba(0, 0, 0, 0) 100%
   );
-  pointer-events: none; /* Ngăn chặn sự tương tác với phần mờ */
+  pointer-events: none;
 }
 
-/* Đảm bảo tên luôn hiển thị, ngay cả khi không hover */
 .thing-data-content h3 {
   opacity: 1 !important;
 }
 
 .thing-data-overlay:hover h3 {
-  opacity: 1; /* Đảm bảo tên vẫn hiển thị khi hover */
+  opacity: 1;
 }

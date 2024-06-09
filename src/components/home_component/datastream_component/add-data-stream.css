@@ -7,7 +7,7 @@
 .custom-select .ant-select-selector:hover,
 .custom-input:hover {
   border-color: #ff8e3c;
-  box-shadow: 0 0 0 2px rgba(255, 142, 60, 0.2);
+  box-shadow: 0 0 0 3px rgba(255, 142, 60, 0.2);
 }
 
 .custom-select .ant-select-selector {

@@ -93,7 +93,7 @@ const ListThings = () => {
                           className="h-52 w-full object-cover"
                         />
                       }
-                      onClick={() => navigate(`/luong-du-lieu/${thing.id}`)}
+                      onClick={() => navigate(`/chi-tiet-thing/${thing.id}`)}
                     >
                       <Card.Meta
                         title={thing.name}

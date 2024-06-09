@@ -61,13 +61,13 @@ const AddDataStream = () => {
       } else {
         notification.error({
           message: "Lỗi",
-          description: "Thêm không thành công",
+          description: "Thêm luồng dữ liệu không thành công",
         });
       }
     } catch (error) {
       notification.error({
         message: "Lỗi",
-        description: "Thêm không thành công",
+        description: "Thêm luồng dữ liệu không thành công",
       });
     } finally {
       setLoading(false);

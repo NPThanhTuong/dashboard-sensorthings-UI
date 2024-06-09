@@ -20,6 +20,9 @@ const fetchUser = async (token, setUser) => {
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(Cookies.get("token") || "");
   const [user, setUser] = useState(null);
+  const [intervalTime, setIntervalTime] = useState(
+    parseInt(Cookies.get("intervalTime")) || 5,
+  ); // Thêm state cho thời gian gửi dữ liệu
 
   const saveToken = (token) => {
     Cookies.set("token", token, { expires: 7 });
@@ -32,6 +35,11 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const updateIntervalTime = (value) => {
+    Cookies.set("intervalTime", value, { expires: 7 });
+    setIntervalTime(value);
+  };
+
   useEffect(() => {
     if (token) {
       fetchUser(token, setUser);
@@ -39,7 +47,16 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   return (
-    <AuthContext.Provider value={{ token, user, saveToken, clearToken }}>
+    <AuthContext.Provider
+      value={{
+        token,
+        user,
+        saveToken,
+        clearToken,
+        intervalTime,
+        setIntervalTime: updateIntervalTime,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
