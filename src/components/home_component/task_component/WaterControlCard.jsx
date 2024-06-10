@@ -85,7 +85,7 @@ const WaterControlCard = ({ thingId, actuatorId }) => {
       <div className="relative z-10 flex h-full flex-col justify-between p-4">
         <div className="">
           {dataLoading ? (
-            <Skeleton active /> // Hiển thị một khung skeleton khi đang tải
+            <Skeleton active paragraph={{ rows: 4 }} /> // Hiển thị một khung skeleton khi đang tải
           ) : result.length > 0 ? (
             result.map((data) => (
               <div key={data.id} className="flex justify-between">
@@ -111,9 +111,6 @@ const WaterControlCard = ({ thingId, actuatorId }) => {
               loading={loading}
               checkedChildren={<span style={{ color: "#fff" }}>Bật</span>}
               unCheckedChildren={<span style={{ color: "#fff" }}>Tắt</span>}
-              style={{
-                backgroundColor: "#ff8e3c", // Màu nền của Switch
-              }}
             />
           </div>
         </div>

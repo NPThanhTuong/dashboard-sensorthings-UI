@@ -86,13 +86,13 @@ const LightControlCard = ({ thingId, actuatorId }) => {
       <div className="relative z-10 flex h-full flex-col justify-between p-4">
         <div>
           {dataLoading ? (
-            <Skeleton active paragraph={{ rows: 3 }} /> // Hiển thị Skeleton với các hàng phù hợp
+            <Skeleton active paragraph={{ rows: 4 }} /> // Hiển thị Skeleton với các hàng phù hợp
           ) : result.length > 0 ? (
             result.map((data) => (
               <div key={data.id} className="flex justify-between">
                 <p>{data.resultTime}</p>
                 <p className="text-base font-semibold">
-                  {data.result.join(", ")} %
+                  {data.result.join(", ")} lux
                 </p>
               </div>
             ))
@@ -112,9 +112,6 @@ const LightControlCard = ({ thingId, actuatorId }) => {
               loading={loading}
               checkedChildren="Bật"
               unCheckedChildren="Tắt"
-              style={{
-                backgroundColor: "#ff8e3c", // Màu nền của Switch
-              }}
             />
           </div>
         </div>

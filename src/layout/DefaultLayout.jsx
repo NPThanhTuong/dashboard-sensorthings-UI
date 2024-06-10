@@ -21,7 +21,7 @@ const DefaultLayout = () => {
     >
       <Layout className="flex h-screen">
         <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
-        <div className="main-content h-full w-full overflow-auto bg-gray-100 p-3 lg:p-4">
+        <div className="main-content h-full w-full overflow-auto bg-gray-100 lg:p-4">
           <Outlet />
         </div>
       </Layout>

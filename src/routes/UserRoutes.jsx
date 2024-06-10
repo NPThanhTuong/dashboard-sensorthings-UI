@@ -19,8 +19,8 @@ import ChangePasswordPage from "@/pages/change_password_page/ChangePasswordPage"
 import UserInforPage from "@/pages/user_infor_page/UserInforPage";
 
 // Home Layout
-import ListThings from "@/components/home_component/thing_component/ListThings";
 import AddThing from "@/components/home_component/thing_component/AddThing";
+import ListThingPage from "@/pages/thing_page/ListThingPage";
 //import ListDataStream from "@/components/home_component/datastream_component/ListDataStream";
 // import Observation from "@/components/home_component/observation_component/Observation";
 import AddDataStream from "@/components/home_component/datastream_component/AddDataStream";
@@ -47,10 +47,6 @@ const UserRoutes = () => (
       <Route element={<DefaultLayout />}>
         <Route path="/thay-doi-mat-khau" element={<ChangePasswordPage />} />
         <Route path="/thong-tin-nguoi-dung" element={<UserInforPage />} />
-
-        <Route path="/quan-sat" element={<ObservationPage />} />
-        <Route path="/ban-do" element={<MapPage />} />
-        <Route path="/thong-ke" element={<StatisticalPage />} />
 
         {/* Start Route Statistical */}
         <Route
@@ -86,7 +82,7 @@ const UserRoutes = () => (
           path="/"
           element={
             <HomePage>
-              <ListThings />
+              <ListThingPage />
             </HomePage>
           }
         />
