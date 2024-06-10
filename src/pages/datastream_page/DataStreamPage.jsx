@@ -5,7 +5,6 @@ import { useParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
 import "./data-stream-page.css";
-import DataStreamHeader from "@/components/home_component/datastream_component/DataStreamHeader";
 import LightControlCard from "@/components/home_component/task_component/LightControlCard";
 import WaterControlCard from "@/components/home_component/task_component/WaterControlCard";
 import ListDataStream from "@/components/home_component/datastream_component/ListDataStream";
@@ -58,9 +57,7 @@ const DataStreamPage = () => {
 
   return (
     <>
-      <DataStreamHeader />
-
-      <section className="mt-4 flex h-auto w-full justify-between gap-4 rounded-xl bg-white p-5 text-center">
+      <section className="mt-2 flex h-auto w-full justify-between gap-4 rounded-xl bg-white p-5 text-center">
         <div className="h-full w-full rounded-xl">
           <LightControlCard thingId={thingId} actuatorId={2} />
         </div>

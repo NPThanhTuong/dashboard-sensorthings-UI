@@ -23,7 +23,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
     },
     {
       key: "2",
-      label: <Link to="/tai-khoan">Tài khoản</Link>,
+      label: <Link to="/thong-tin-nguoi-dung">Tài khoản</Link>,
       icon: <UserOutlined />,
     },
   ];
