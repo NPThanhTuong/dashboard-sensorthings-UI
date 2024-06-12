@@ -2,9 +2,12 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Pagination, Skeleton } from "antd";
-import HeaderThing from "../../components/home_component/thing_component/HeaderThing";
+import { Pagination, Skeleton, Button, Layout, Input } from "antd";
+import HeaderThing from "@/components/home_component/thing_component/HeaderThing";
+import FilteredThings from "@/components/home_component/thing_component/FilteredThings";
 import { IoSettings } from "react-icons/io5";
+
+const { Content } = Layout;
 
 const ListThingPage = () => {
   const { token } = useAuth();
@@ -12,9 +15,11 @@ const ListThingPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6; // Number of items per page
+  const [searchQuery, setSearchQuery] = useState("");
+  const itemsPerPage = 6;
   const navigate = useNavigate();
 
+  // Hàm lấy danh sách các thiết bị
   const fetchThings = async () => {
     try {
       const response = await axios.get("/api/getThings", {
@@ -31,12 +36,13 @@ const ListThingPage = () => {
       }
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Lỗi khi tải dữ liệu:", error);
       setError(error);
       setLoading(false);
     }
   };
 
+  // Sử dụng useEffect để gọi hàm fetchThings khi component được tải lần đầu tiên và sau mỗi lần token thay đổi
   useEffect(() => {
     fetchThings();
 
@@ -47,20 +53,26 @@ const ListThingPage = () => {
     return () => clearInterval(interval);
   }, [token]);
 
-  // Get indices of the first and last item on the current page
+  // Tính toán chỉ số của item đầu và cuối trên trang hiện tại
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  // Get the current items to be displayed on the page
-  const currentThings = things.slice(indexOfFirstItem, indexOfLastItem);
+  // Lọc danh sách thiết bị dựa trên giá trị tìm kiếm
+  const filteredThings = things.filter((thing) =>
+    thing.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
 
-  // Change page
+  // Lấy danh sách thiết bị hiện tại để hiển thị trên trang
+  const currentThings = filteredThings.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Hàm chuyển đổi trang
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  // Hiển thị skeleton loading khi đang tải dữ liệu
   if (loading) {
     return (
-      <div className="flex h-full w-full flex-col rounded-lg border p-6 shadow-lg">
-        <div className="flex-grow">
+      <Layout className="flex h-full w-full flex-col rounded-lg border p-6 shadow-lg">
+        <Content className="flex-grow">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: itemsPerPage }).map((_, index) => (
               <Skeleton
@@ -74,25 +86,25 @@ const ListThingPage = () => {
               />
             ))}
           </div>
-        </div>
+        </Content>
         <div className="my-1 w-full border-b-2 border-gray-200"></div>
         <div className="mt-4 flex justify-center">
           <Skeleton.Button active />
         </div>
-      </div>
+      </Layout>
     );
   }
 
   if (error) {
-    return <div className="text-center">Error: {error.message}</div>;
+    return <div className="text-center">Lỗi: {error.message}</div>;
   }
 
   return (
     <>
-      <HeaderThing />
+      <HeaderThing searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <div className="mt-4 flex flex-col justify-center">
-        <div className="flex h-[600px] w-full max-w-screen-2xl flex-col rounded-lg border bg-white p-6 shadow-lg">
-          <div className="flex-grow">
+        <Layout className="flex h-[600px] w-full max-w-screen-2xl flex-col rounded-lg border bg-white p-6 shadow-lg">
+          <Content className="flex-grow">
             {things.length === 0 ? (
               <div className="text-center">Không có dữ liệu!</div>
             ) : (
@@ -109,7 +121,13 @@ const ListThingPage = () => {
                     <div className="mb-4">
                       <div className="flex justify-between text-xl font-semibold text-gray-800">
                         {thing?.name}
-                        <IoSettings className="text-2xl text-orange-500" />
+                        <Button
+                          className="border-none"
+                          onClick={() => navigate(`/cai-dat-thing/${thing.id}`)}
+                          icon={
+                            <IoSettings className="text-2xl text-orange-500" />
+                          }
+                        />
                       </div>
                       {thing?.description && (
                         <div className="mt-2 line-clamp-2 text-base text-gray-600">
@@ -118,18 +136,18 @@ const ListThingPage = () => {
                       )}
                     </div>
                     <div className="">
-                      <button
-                        className="rounded-full bg-orange-500 px-4 py-2 font-medium text-white hover:bg-orange-600"
+                      <Button
+                        type="primary"
                         onClick={() => navigate(`/chi-tiet-thing/${thing.id}`)}
                       >
                         Quan sát
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 ))}
               </div>
             )}
-          </div>
+          </Content>
           <div className="my-2 w-full border-b-2 border-gray-200"></div>
           {/* Pagination */}
           {things.length > 0 && (
@@ -137,12 +155,12 @@ const ListThingPage = () => {
               <Pagination
                 current={currentPage}
                 pageSize={itemsPerPage}
-                total={things.length}
+                total={filteredThings.length}
                 onChange={paginate}
               />
             </div>
           )}
-        </div>
+        </Layout>
       </div>
     </>
   );

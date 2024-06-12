@@ -1,37 +1,71 @@
-import { useState, useEffect } from "react";
-import { Alert } from "antd";
+import React, { useState, useEffect } from "react";
+import { Alert, Card } from "antd";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
-import "./data-stream-page.css";
-import LightControlCard from "@/components/home_component/task_component/LightControlCard";
-import WaterControlCard from "@/components/home_component/task_component/WaterControlCard";
-import ListDataStream from "@/components/home_component/datastream_component/ListDataStream";
-import ThingInfo from "@/components/home_component/thing_component/ThingInfo";
+import AddTask from "@/components/home_component/task_component/AddTask";
+import LineChart from "@/components/chart_component/LineChart";
+import HeaderDataStream from "@/components/home_component/datastream_component/HeaderDataStream";
 
 const DataStreamPage = () => {
   const { token } = useAuth();
   const { thingId } = useParams();
 
   const [dataStreams, setDataStreams] = useState([]);
+  const [actuators, setActuators] = useState([]);
+  const [observations, setObservations] = useState([]);
+  const [selectedDataStream, setSelectedDataStream] = useState(null);
   const [error, setError] = useState(null);
 
   const fetchDataStreams = async () => {
     try {
       const response = await axios.get(
-        `/api/get/things(${thingId})/datastreams`,
+        `/api/get/things(${thingId})/datastreams?top=all`,
         {
           headers: { token },
         },
       );
       if (Array.isArray(response.data)) {
         setDataStreams(response.data);
+        if (response.data.length > 0) {
+          setSelectedDataStream(response.data[0]);
+        }
       } else {
         setDataStreams([]);
       }
     } catch (error) {
-      console.error("Lỗi lấy dữ liệu data stream:", error);
+      console.error("Error fetching data streams:", error);
+      setError(error);
+    }
+  };
+
+  const fetchActuators = async () => {
+    try {
+      const response = await axios.get(
+        `/api/get/things(${thingId})/actuator?top=all`,
+        {
+          headers: { token },
+        },
+      );
+      setActuators(response.data);
+    } catch (error) {
+      console.error("Error fetching actuators:", error);
+      setError(error);
+    }
+  };
+
+  const fetchObservations = async (dataStreamId) => {
+    try {
+      const response = await axios.get(
+        `/api/get/datastreams(${dataStreamId})/observations?top=all`,
+        {
+          headers: { token },
+        },
+      );
+      setObservations(response.data);
+    } catch (error) {
+      console.error("Error fetching observations:", error);
       setError(error);
     }
   };
@@ -39,14 +73,21 @@ const DataStreamPage = () => {
   useEffect(() => {
     if (thingId && token) {
       fetchDataStreams();
+      fetchActuators();
     }
   }, [thingId, token]);
+
+  useEffect(() => {
+    if (selectedDataStream) {
+      fetchObservations(selectedDataStream.id);
+    }
+  }, [selectedDataStream]);
 
   if (error) {
     return (
       <div className="text-center">
         <Alert
-          message="Lỗi"
+          message="Error"
           description={error.message}
           type="error"
           showIcon
@@ -55,22 +96,37 @@ const DataStreamPage = () => {
     );
   }
 
+  const handleDataStreamChange = (selected) => {
+    setSelectedDataStream(selected);
+  };
+
   return (
     <>
-      <section className="mt-2 flex h-auto w-full justify-between gap-4 rounded-xl bg-white p-5 text-center">
-        <div className="h-full w-full rounded-xl">
-          <LightControlCard thingId={thingId} actuatorId={2} />
-        </div>
-        <div className="h-full w-full rounded-xl">
-          <WaterControlCard thingId={thingId} actuatorId={2} />
+      <section>
+        <HeaderDataStream onDataStreamChange={handleDataStreamChange} />
+      </section>
+      <section className="mt-4 flex h-auto w-full justify-between gap-4 rounded-xl bg-white p-5 text-center">
+        <div className="grid grid-cols-4 gap-4">
+          {actuators?.map((actuator) => (
+            <Card
+              key={actuator.id}
+              title={actuator.name}
+              style={{ width: 300 }}
+            >
+              <AddTask actuator={actuator} />
+            </Card>
+          ))}
         </div>
       </section>
 
-      <section className="my-4 grid h-[500px] w-full grid-cols-5 gap-4 rounded-xl text-center md:grid-cols-5">
-        <div className="col-span-3 h-full w-full rounded-xl bg-white">
-          <ListDataStream />
-        </div>
-        <ThingInfo thingId={thingId} />
+      <section className="mt-4 rounded-xl bg-white p-5">
+        {selectedDataStream && (
+          <LineChart
+            observations={observations}
+            dataStreamId={selectedDataStream.id}
+            dataType={selectedDataStream.name}
+          />
+        )}
       </section>
     </>
   );
