@@ -3,7 +3,6 @@ import axios from "axios";
 import { Form, Input, Button, Select, notification } from "antd";
 import { useAuth } from "@/context/AuthContext";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import "./add-data-stream.css";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -20,6 +19,7 @@ const AddDataStream = () => {
   useEffect(() => {
     const fetchSensors = async () => {
       try {
+        setLoading(true);
         const response = await axios.get("/api/get/sensors?top=all", {
           headers: {
             token: token,
@@ -28,6 +28,8 @@ const AddDataStream = () => {
         setSensors(response.data);
       } catch (error) {
         console.error("Lỗi", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -81,35 +83,31 @@ const AddDataStream = () => {
       initialValues={{ sensor: "", name: "", description: "" }}
     >
       <Form.Item
-        label={<span>Sensor</span>}
-        name="sensor"
-        rules={[{ required: true, message: "Vui lòng chọn sensor!" }]}
-      >
-        <Select placeholder="Chọn sensor" className="custom-select">
-          {sensors.map((sensor) => (
-            <Option key={sensor.id} value={sensor.id}>
-              {sensor.name}
-            </Option>
-          ))}
-        </Select>
-      </Form.Item>
-      <Form.Item
-        label={<span>Tên</span>}
+        label="Tên"
         name="name"
         rules={[{ required: true, message: "Vui lòng nhập tên luồng!" }]}
       >
         <Input placeholder="Nhập tên luồng dữ liệu" className="custom-input" />
       </Form.Item>
       <Form.Item
-        label={<span>Mô tả</span>}
+        label="Mô tả"
         name="description"
         rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
       >
-        <TextArea
-          placeholder="Nhập mô tả"
-          rows={4}
-          className="custom-input px-10"
-        />
+        <TextArea placeholder="Nhập mô tả" rows={4} className="custom-input" />
+      </Form.Item>
+      <Form.Item
+        label="Sensor"
+        name="sensor"
+        rules={[{ required: true, message: "Vui lòng chọn sensor!" }]}
+      >
+        <Select loading={loading} placeholder="Chọn sensor">
+          {sensors.map((sensor) => (
+            <Option key={sensor.id} value={sensor.id}>
+              {sensor.name}
+            </Option>
+          ))}
+        </Select>
       </Form.Item>
       <Form.Item>
         <Button

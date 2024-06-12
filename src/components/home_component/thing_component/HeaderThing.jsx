@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-//import { useAuth } from "@/context/AuthContext";
-import { Button, InputNumber, Skeleton } from "antd";
+import { Button, Skeleton } from "antd";
 import AddThing from "./AddThing";
-import SearchInput from "./SearchInput";
+import FilteredThings from "./FilteredThings";
+import { AiOutlinePlus } from "react-icons/ai";
 
-const HeaderThing = () => {
-  //const { intervalTime, setIntervalTime } = useAuth();
-
+const HeaderThing = ({ searchQuery, setSearchQuery }) => {
   const [greeting, setGreeting] = useState("");
   const [currentTime, setCurrentTime] = useState("");
   const [loading, setLoading] = useState(true);
@@ -70,28 +68,19 @@ const HeaderThing = () => {
               <h1 className="text-2xl font-bold">{greeting}</h1>
               <p className="text-gray-500">{currentTime}</p>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-5">
               <div className="">
                 <Button
-                  size="large"
-                  className="ant-btn-primary px-10"
+                  className="ant-btn-primary flex items-center gap-1 px-10 py-5 text-base font-semibold"
                   onClick={showAddThingModal}
                 >
-                  + Thing
+                  <AiOutlinePlus /> Thing
                 </Button>
               </div>
               <div>
-                <SearchInput />
+                <FilteredThings setSearchQuery={setSearchQuery} />
               </div>
             </div>
-            {/* <div className="flex items-center">
-              <span className="mr-2">Thời gian gửi dữ liệu (phút):</span>
-              <InputNumber
-                min={1}
-                value={intervalTime} // Sử dụng intervalTime từ AuthContext
-                onChange={(value) => setIntervalTime(value)} // Sử dụng setIntervalTime từ AuthContext
-              />
-            </div> */}
           </>
         )}
       </section>
