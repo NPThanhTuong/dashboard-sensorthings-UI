@@ -48,7 +48,7 @@ const SettingThingPage = () => {
 
   const fetchSensors = async (dataStreams) => {
     try {
-      const sensorPromises = dataStreams.map(async (dataStream) => {
+      const sensorPromises = dataStreams?.map(async (dataStream) => {
         const response = await axios.get(
           `/api/get/datastreams(${dataStream.id})/sensors`,
           {

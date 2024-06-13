@@ -24,7 +24,7 @@ const TaskingCapabilityForm = () => {
         setActuators(response.data);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching actuators:", error);
+        console.error("Lỗi lấy dữ liệu actuators:", error);
         setLoading(false);
       }
     };
