@@ -27,6 +27,7 @@ import AddActuator from "../components/home_component/actuator_component/AddActu
 import ActuatorDetail from "../components/home_component/actuator_component/ActuatorDetail";
 
 import NotFoundPage from "@/pages/not_found_page/NotFoundPage";
+import MapPage from "../pages/map_page/MapPage";
 
 const UserRoutes = () => (
   <Routes>
@@ -41,6 +42,14 @@ const UserRoutes = () => (
         <Route path="/thong-tin-nguoi-dung" element={<UserInforPage />} />
 
         {/* Start Route Home */}
+        <Route
+          path="/ban-do"
+          element={
+            <HomePage>
+              <MapPage />
+            </HomePage>
+          }
+        />
         <Route
           path="/them-thing"
           element={

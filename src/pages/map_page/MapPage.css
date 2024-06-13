@@ -1,0 +1,30 @@
+.custom-marker {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: white;
+    border: 2px solid #4285F4;
+    cursor: pointer;
+}
+
+.custom-marker .tooltip {
+    display: none;
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    padding: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.custom-marker:hover .tooltip {
+    display: block;
+}
