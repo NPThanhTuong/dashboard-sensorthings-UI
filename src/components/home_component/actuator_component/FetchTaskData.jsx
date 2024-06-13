@@ -24,7 +24,7 @@ const FetchTaskData = ({ thingId }) => {
         );
         const actuators = response.data;
 
-        const tasksPromises = actuators.map(async (actuator) => {
+        const tasksPromises = actuators?.map(async (actuator) => {
           const taskResponse = await axios.get(
             `/api/get/actuator(${actuator.id})/task`,
             {

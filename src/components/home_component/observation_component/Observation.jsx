@@ -1,83 +1,165 @@
+import React, { useState, useEffect } from "react";
+import { Card, Spin, Alert, Skeleton } from "antd";
+import { ClockCircleOutlined, FieldNumberOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
 const Observation = () => {
-  const { token } = useAuth();
-  const { datastreamId } = useParams();
-  const [observations, setObservations] = useState([]);
+  const { token, intervalTimes } = useAuth();
+  const { thingId } = useParams();
+
+  const [dataStreams, setDataStreams] = useState([]);
+  const [latestObservations, setLatestObservations] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchObservations = async () => {
+  const unitMap = {
+    5: "lux",
+    6: "%",
+  };
+
+  const fetchDataStreams = async () => {
     try {
       const response = await axios.get(
-        `/api/get/datastreams(${datastreamId})/observations`,
+        `/api/get/things(${thingId})/datastreams?top=all`,
         {
-          headers: {
-            token: token,
-          },
+          headers: { token },
         },
       );
-
       if (Array.isArray(response.data)) {
-        setObservations(response.data);
-      } else {
-        setObservations([]);
+        setDataStreams(response.data);
+        response.data.forEach((dataStream) =>
+          fetchLatestObservation(dataStream.id),
+        );
       }
-      setLoading(false);
     } catch (error) {
-      console.error("Lỗi khi tải dữ liệu quan sát:", error);
+      console.error("Error fetching data streams:", error);
       setError(error);
+    } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (datastreamId && token) {
-      fetchObservations();
-    } else {
-      setLoading(false);
+  const fetchLatestObservation = async (dataStreamId) => {
+    try {
+      const response = await axios.get(
+        `/api/get/datastreams(${dataStreamId})/observations?top=1&orderby=resultTime`,
+        {
+          headers: { token },
+        },
+      );
+      if (response.data && response.data.length > 0) {
+        setLatestObservations((prev) => ({
+          ...prev,
+          [dataStreamId]: response.data[0],
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching latest observation:", error);
+      setError(error);
     }
-  }, [datastreamId, token]);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await fetchDataStreams();
+      } catch (error) {
+        console.error("Error fetching data streams:", error);
+        setError(error);
+      }
+    };
+
+    if (thingId && token) {
+      fetchData();
+      const intervalTime = intervalTimes[thingId] || 5; // Default to 5 minutes if not set
+      const interval = setInterval(fetchData, intervalTime * 60 * 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [thingId, token, intervalTimes]);
+
+  useEffect(() => {
+    const fetchObservations = async () => {
+      if (dataStreams.length === 0) return;
+
+      try {
+        await Promise.all(
+          dataStreams.map((dataStream) =>
+            fetchLatestObservation(dataStream.id),
+          ),
+        );
+      } catch (error) {
+        console.error("Error fetching observations:", error);
+        setError(error);
+      }
+    };
+
+    fetchObservations(); // Initial fetch
+
+    const intervalTime = intervalTimes[thingId] || 5; // Default to 5 minutes if not set
+    const interval = setInterval(fetchObservations, intervalTime * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [dataStreams, thingId, intervalTimes]);
 
   if (loading) {
-    return <div className="text-center">Đang tải...</div>;
+    return (
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <Card key={index}>
+            <Skeleton loading={loading} active />
+          </Card>
+        ))}
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-center">Lỗi: {error.message}</div>;
+    return (
+      <div className="text-center">
+        <Alert
+          message="Error"
+          description={error.message}
+          type="error"
+          showIcon
+        />
+      </div>
+    );
   }
 
   return (
-    <div className="p-4">
-      <h3 className="text-xl font-bold">{datastreamId}</h3>
-      <div className="my-2 border-b-2 border-gray-200"></div>
-      {observations.length === 0 ? (
-        <div className="text-center">Không có dữ liệu!</div>
-      ) : (
-        <div>
-          {observations.map((observation) => (
-            <div key={observation.id} className="my-2 rounded-md border p-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {dataStreams.map((dataStream) => (
+        <Card
+          key={dataStream.id}
+          title={dataStream.name}
+          style={{
+            width: "100%",
+            borderRadius: 8,
+            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+            transition: "transform 0.2s",
+          }}
+          className="hover:scale-105"
+        >
+          {latestObservations[dataStream.id] ? (
+            <div>
               <p>
-                <strong>ID:</strong> {observation.id}
+                <ClockCircleOutlined /> <strong>Thời gian:</strong>{" "}
+                {latestObservations[dataStream.id].resultTime}
               </p>
               <p>
-                <strong>Kết quả:</strong> {observation.result.join(", ")}
+                <FieldNumberOutlined /> <strong>Kết quả:</strong>{" "}
+                {latestObservations[dataStream.id].result}{" "}
+                {unitMap[dataStream.id] || ""}
               </p>
-              <p>
-                <strong>Thời gian đo được:</strong> {observation.resultTime}
-              </p>
-              {observation.validTime && (
-                <p>
-                  <strong>Thời gian sử dụng:</strong> {observation.validTime}
-                </p>
-              )}
             </div>
-          ))}
-        </div>
-      )}
+          ) : (
+            <p>Không có dữ liệu</p>
+          )}
+        </Card>
+      ))}
     </div>
   );
 };
