@@ -1,0 +1,103 @@
+#map-container.dark {
+  background-color: #000;
+  color: #fff;
+  position: relative;
+}
+
+#map-container.light {
+  background-color: #fff;
+  color: #000;
+  position: relative; 
+}
+
+.h1 {
+  color: #000;
+  font-weight: bold;
+  font-size: 30px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.h3 {
+  color: #000;
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 10px; 
+}
+
+.select-container {
+  position: absolute; 
+  top: 10px; 
+  right: 10px; 
+  z-index: 1000; 
+}
+
+.select-wrapper {
+  display: inline-block;
+  position: relative;
+  width: 150px;
+}
+
+.select-wrapper select {
+  width: 100%;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #fff;
+  cursor: pointer;
+  text-align: center;
+  font-weight: bold;
+}
+
+button {
+  background-color: #7cb5f1;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease, font-size 0.3s ease;
+}
+
+button:hover {
+  background-color: #7cb5f1;
+  transform: scale(1.1);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+button:focus {
+  outline: none;
+}
+
+button span {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.marker {
+  background-color: #f44336;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+  margin-top: -6px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
+
+.popup-content {
+  font-size: 14px;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}

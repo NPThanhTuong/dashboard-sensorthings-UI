@@ -14,24 +14,17 @@ import StatisticalPage from "@/pages/statistical_page/StatisticalPage";
 import LightChart from "@/components/chart_component/LightChart";
 import SoilHumidityChart from "@/components/chart_component/SoilHumidityChart";
 
-//import infor User
 import ChangePasswordPage from "@/pages/change_password_page/ChangePasswordPage";
 import UserInforPage from "@/pages/user_infor_page/UserInforPage";
 
-// Home Layout
 import AddThing from "@/components/home_component/thing_component/AddThing";
 import ListThingPage from "@/pages/thing_page/ListThingPage";
-//import ListDataStream from "@/components/home_component/datastream_component/ListDataStream";
-// import Observation from "@/components/home_component/observation_component/Observation";
 import AddDataStream from "@/components/home_component/datastream_component/AddDataStream";
 import DataStreamPage from "@/pages/datastream_page/DataStreamPage";
 import DetailDatastreamPage from "@/pages/detail_datastream_page/DetailDatastreamPage";
 import NotFoundPage from "@/pages/not_found_page/NotFoundPage";
 
-// Import ControlPanel component
 import ControlPanel from "@/components/card_component/ControlPanel";
-
-// đang test
 import AddActuator from "../components/home_component/actuator_component/AddActuator";
 import ActuatorDetail from "../components/home_component/actuator_component/ActuatorDetail";
 import TaskingCapabilityForm from "../components/home_component/taskingcapability_component/TaskingCapabilityForm";
@@ -48,7 +41,6 @@ const UserRoutes = () => (
         <Route path="/thay-doi-mat-khau" element={<ChangePasswordPage />} />
         <Route path="/thong-tin-nguoi-dung" element={<UserInforPage />} />
 
-        {/* Start Route Statistical */}
         <Route
           path="/bieu-do-cuong-do-anh-sang"
           element={
@@ -66,75 +58,37 @@ const UserRoutes = () => (
             </StatisticalPage>
           }
         />
-        {/*End Route Statistical */}
 
-        {/* Start Route Home */}
-        <Route
-          path="/them-thing"
-          element={
-            <HomePage>
-              <AddThing />
-            </HomePage>
-          }
-        />
-
-        <Route
-          path="/"
-          element={
-            <HomePage>
-              <ListThingPage />
-            </HomePage>
-          }
-        />
-
-        <Route
-          path="/chi-tiet-thing/:thingId"
-          element={
-            <HomePage>
-              <DataStreamPage />
-            </HomePage>
-          }
-        />
-
+        <Route path="/them-thing" element={<AddThing />} />
+        <Route path="/" element={<ListThingPage />} />
+        <Route path="/chi-tiet-thing/:thingId" element={<DataStreamPage />} />
         <Route
           path="/chi-tiet-thing/:thingId/them-luong-du-lieu"
-          element={
-            <HomePage>
-              <AddDataStream />
-            </HomePage>
-          }
+          element={<AddDataStream />}
         />
-
         <Route
           path="/quan-trac/:datastreamId"
-          element={
-            <HomePage>
-              <DetailDatastreamPage />
-            </HomePage>
-          }
+          element={<DetailDatastreamPage />}
         />
-        {/* End Route Home */}
 
-        {/* Start Actuator */}
         <Route path="/them-actuator" element={<AddActuator />} />
         <Route path="/chi-tiet-actuator" element={<ActuatorDetail />} />
-        {/* End Actuator */}
 
-        {/* Start TaskingCapability */}
         <Route
           path="/them-tasking-capability"
           element={<TaskingCapabilityForm />}
         />
-        {/* <Route path="/chi-tiet-actuator" element={<ActuatorDetail />} /> */}
-        {/* End TaskingCapability */}
 
-        {/* Route for Control Panel */}
         <Route path="/dieu-khien" element={<ControlPanel />} />
         <Route path="/giam-sat" element={<ObservationPage />} />
-        {/* Route for Observation */}
+
+        {/* Thêm route cho MapPage */}
+        <Route path="/ban-do-luan" element={<MapPage />} />
+
+        {/* Route 404 */}
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Route>
-    <Route path="*" element={<NotFoundPage />} />
   </Routes>
 );
 
