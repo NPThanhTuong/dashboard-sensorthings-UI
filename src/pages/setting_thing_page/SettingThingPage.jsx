@@ -140,7 +140,7 @@ const SettingThingPage = () => {
         showTaskingCapabilityModal={showTaskingCapabilityModal}
       />
       <section className="my-4 flex justify-between gap-4">
-        <div className="w-full rounded-xl bg-white p-4 shadow-md">
+        <div className="w-full rounded-2xl bg-white p-4 shadow-md">
           {loading ? (
             <Skeleton active />
           ) : error ? (
@@ -171,7 +171,7 @@ const SettingThingPage = () => {
             </div>
           )}
         </div>
-        <div className="w-full rounded-xl bg-white p-4 shadow-md">
+        <div className="w-full rounded-2xl bg-white p-4 shadow-md">
           <FetchTaskData thingId={thingId} />
         </div>
       </section>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Skeleton } from "antd";
+import { Button, Spin } from "antd";
 import AddThing from "./AddThing";
 import FilteredThings from "./FilteredThings";
 import { AiOutlinePlus } from "react-icons/ai";
@@ -8,7 +8,6 @@ const HeaderThing = ({ searchQuery, setSearchQuery }) => {
   const [greeting, setGreeting] = useState("");
   const [currentTime, setCurrentTime] = useState("");
   const [loading, setLoading] = useState(true);
-
   const [showAddThing, setShowAddThing] = useState(false);
 
   const showAddThingModal = () => {
@@ -46,7 +45,7 @@ const HeaderThing = ({ searchQuery, setSearchQuery }) => {
 
       setGreeting(greetingMessage);
       setCurrentTime(formattedDateTime);
-      setLoading(false); // Cập nhật biến loading thành false sau khi dữ liệu đã được tải xong
+      setLoading(false);
     };
 
     updateGreetingAndTime();
@@ -59,22 +58,25 @@ const HeaderThing = ({ searchQuery, setSearchQuery }) => {
 
   return (
     <>
-      <section className="flex items-center justify-between rounded-xl bg-white p-4 shadow-md">
+      <section className="flex flex-col items-center justify-between rounded-2xl p-4 shadow-md sm:flex-row">
         {loading ? (
-          <Skeleton active />
+          <div className="flex w-full items-center justify-center">
+            <Spin size="large" />
+          </div>
         ) : (
           <>
-            <div>
+            <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl font-bold">{greeting}</h1>
               <p className="text-gray-500">{currentTime}</p>
             </div>
-            <div className="flex items-center gap-5">
-              <div className="">
+            <div className="flex flex-col items-center gap-5 sm:flex-row">
+              <div className="mb-4 sm:mb-0">
                 <Button
-                  className="ant-btn-primary flex items-center gap-1 px-10 py-5 text-base font-semibold"
+                  className="flex w-40 items-center justify-center gap-1 rounded-3xl bg-primary font-semibold text-white"
                   onClick={showAddThingModal}
+                  style={{ height: "40px" }}
                 >
-                  <AiOutlinePlus /> Thing
+                  <AiOutlinePlus /> Đối tượng
                 </Button>
               </div>
               <div>
@@ -87,11 +89,11 @@ const HeaderThing = ({ searchQuery, setSearchQuery }) => {
       {showAddThing && (
         <AddThing
           visible={showAddThing}
-          onClose={() => setShowAddThing(false)} // Đóng form khi người dùng nhấn nút đóng
+          onClose={() => setShowAddThing(false)}
         />
       )}
     </>
   );
 };
-
+//
 export default HeaderThing;

@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Pagination, Skeleton, Button, Layout, Input } from "antd";
+import { Pagination, Skeleton, Button, Layout } from "antd";
 import HeaderThing from "@/components/home_component/thing_component/HeaderThing";
-import FilteredThings from "@/components/home_component/thing_component/FilteredThings";
-import { IoSettings } from "react-icons/io5";
+import { SettingOutlined } from "@ant-design/icons";
+import "./thing-page.css";
 
 const { Content } = Layout;
 
@@ -71,14 +71,14 @@ const ListThingPage = () => {
   // Hiển thị skeleton loading khi đang tải dữ liệu
   if (loading) {
     return (
-      <Layout className="flex h-full w-full flex-col rounded-lg border p-6 shadow-lg">
+      <Layout className="flex h-full w-full flex-col rounded-2xl border p-6 shadow-lg">
         <Content className="flex-grow">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: itemsPerPage }).map((_, index) => (
               <Skeleton
                 key={index}
                 active
-                className="flex transform flex-col justify-between rounded-lg p-6 shadow-md"
+                className="flex transform flex-col justify-between rounded-2xl p-6 shadow-md"
                 style={{
                   background:
                     "linear-gradient(135deg, #ece9e6 0%, #ffffff 100%)",
@@ -103,7 +103,7 @@ const ListThingPage = () => {
     <>
       <HeaderThing searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <div className="mt-4 flex flex-col justify-center">
-        <Layout className="flex h-[600px] w-full max-w-screen-2xl flex-col rounded-lg border bg-white p-6 shadow-lg">
+        <Layout className="flex h-[600px] w-full max-w-screen-2xl flex-col rounded-2xl border bg-white p-6 shadow-lg">
           <Content className="flex-grow">
             {things.length === 0 ? (
               <div className="text-center">Không có dữ liệu!</div>
@@ -121,13 +121,6 @@ const ListThingPage = () => {
                     <div className="mb-4">
                       <div className="flex justify-between text-xl font-semibold text-gray-800">
                         {thing?.name}
-                        <Button
-                          className="border-none"
-                          onClick={() => navigate(`/cai-dat-thing/${thing.id}`)}
-                          icon={
-                            <IoSettings className="text-2xl text-orange-500" />
-                          }
-                        />
                       </div>
                       {thing?.description && (
                         <div className="mt-2 line-clamp-2 text-base text-gray-600">
@@ -135,10 +128,16 @@ const ListThingPage = () => {
                         </div>
                       )}
                     </div>
-                    <div className="">
+                    <div className="flex justify-between">
+                      <Button
+                        className="setting-button rounded-2xl"
+                        icon={<SettingOutlined />}
+                        onClick={() => navigate(`/cai-dat-thing/${thing.id}`)}
+                      />
                       <Button
                         type="primary"
                         onClick={() => navigate(`/chi-tiet-thing/${thing.id}`)}
+                        className="rounded-2xl"
                       >
                         Quan sát
                       </Button>

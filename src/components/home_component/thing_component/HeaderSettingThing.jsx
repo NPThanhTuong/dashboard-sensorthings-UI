@@ -9,16 +9,16 @@ const HeaderSettingThing = ({
   showTaskingCapabilityModal,
 }) => {
   return (
-    <section className="flex items-center justify-between rounded-xl bg-white px-4 py-8 shadow-md">
+    <section className="flex items-center justify-between rounded-2xl bg-white px-4 py-8 shadow-md">
       <div className="flex gap-4">
-        <Button type="primary" onClick={showModal} className="w-40">
+        <Button type="primary" onClick={showModal} className="w-40 rounded-2xl">
           Thêm data stream
         </Button>
 
         <Button
           type="primary"
           onClick={showTaskingCapabilityModal}
-          className="w-40"
+          className="w-40 rounded-2xl"
         >
           Thêm nhiệm vụ
         </Button>
@@ -26,7 +26,7 @@ const HeaderSettingThing = ({
       <div className="flex items-center">
         <span className="mr-2">Thời gian nhận dữ liệu (phút):</span>
         <InputNumber
-          className="border border-orange-500"
+          className="border border-primary"
           min={1}
           value={intervalTimes[thingId] || 5} // Mặc định là 5 nếu không được đặt
           onChange={(value) => setIntervalTime(thingId, value)}

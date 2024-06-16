@@ -91,7 +91,7 @@ const TaskingCapabilityForm = () => {
         </Select>
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" className="w-full rounded-2xl">
           Tạo
         </Button>
       </Form.Item>

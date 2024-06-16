@@ -1,0 +1,83 @@
+.overflow-x-auto::-webkit-scrollbar {
+  width: 5px; /* Chiều rộng của thanh cuộn */
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* Màu nền của thanh cuộn */
+  border-radius: 5px; /* Độ cong viền của thanh cuộn */
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+  background-color: transparent; /* Màu nền phía sau thanh cuộn */
+}
+
+/* Ẩn các nút mũi tên của thanh cuộn */
+.overflow-x-auto {
+  scrollbar-width: thin; /* Thiết lập chiều rộng của thanh cuộn */
+  scrollbar-color: transparent transparent; /* Thiết lập màu nền và màu con trỏ của thanh cuộn */
+}
+
+.weather-icon {
+  position: relative;
+  display: inline-block;
+}
+/*  */
+.weather-icon::after {
+  content: "";
+  position: absolute;
+  bottom: -10px; /* Điều chỉnh khoảng cách bóng với biểu tượng */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  /* height: 20px; Độ dài của bóng */
+  background-color: rgba(255, 255, 255, 0.971); /* Màu sắc của bóng */
+  border-radius: 50%; /* Đảm bảo bóng tròn */
+}
+
+@keyframes cloud-move {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(20px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes rain-fall {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(20px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes sun-spin {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(20px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.icon-clouds {
+  animation: cloud-move 5s infinite ease-in-out;
+}
+
+.icon-rain {
+  animation: rain-fall 5s infinite linear;
+}
+
+.icon-clear {
+  animation: sun-spin 5s infinite linear;
+}

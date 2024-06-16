@@ -1,4 +1,5 @@
 import { Input } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
 const FilteredThings = ({ setSearchQuery }) => {
   const handleSearch = (e) => {
@@ -7,11 +8,12 @@ const FilteredThings = ({ setSearchQuery }) => {
 
   return (
     <Input
-      placeholder="Lọc thiết bị..."
+      placeholder="Tìm kiếm..."
       onChange={handleSearch}
-      className="search-input w-60 border-2 border-orange-600 py-2 pl-5"
+      prefix={<SearchOutlined />}
+      className="search-input w-72 rounded-3xl border-2 py-2 pl-5"
     />
   );
 };
-
+//
 export default FilteredThings;

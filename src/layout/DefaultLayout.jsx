@@ -12,10 +12,10 @@ const DefaultLayout = () => {
       theme={{
         token: {
           // Seed Token
-          colorPrimary: "#ff8e3c",
-          colorInfo: "#ff8e3c",
-          colorLink: "#d9376e",
-          colorTextBase: "#2a2a2a",
+          colorPrimary: "#00BB00", // màu xanh lá chính
+          colorInfo: "#00BB00", // màu xanh lá chính
+          colorLink: "#36DA6D", // màu xanh nhạt đậm
+          colorTextBase: "#2a2a2a", // màu đen mờ
         },
       }}
     >

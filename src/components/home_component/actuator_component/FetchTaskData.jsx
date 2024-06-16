@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { Table, Skeleton, Alert, Pagination, message, Switch } from "antd";
 import { useAuth } from "@/context/AuthContext";
-import { Table, Skeleton, Alert, Pagination } from "antd";
+import Cookies from "js-cookie";
 
 const FetchTaskData = ({ thingId }) => {
   const [tasksData, setTasksData] = useState([]);
@@ -20,55 +21,94 @@ const FetchTaskData = ({ thingId }) => {
             headers: {
               token: token,
             },
-          },
+          }, //
         );
         const actuators = response.data;
 
-        const tasksPromises = actuators?.map(async (actuator) => {
-          const taskResponse = await axios.get(
-            `/api/get/actuator(${actuator.id})/task`,
-            {
-              headers: {
-                token: token,
-              },
-            },
-          );
-          return taskResponse.data.map((task) => ({
-            actuatorId: actuator.id,
-            actuatorName: actuator.name,
-            taskId: task.id,
-            taskingParameters: task.taskingParameters,
-          }));
-        });
+        const storedStates = JSON.parse(Cookies.get("actuatorStates") || "{}");
 
-        const actuatorsWithData = (await Promise.all(tasksPromises)).flat();
+        const actuatorsWithData = actuators.map((actuator) => ({
+          actuatorId: actuator.id,
+          actuatorName: actuator.name,
+          taskId: null,
+          taskingParameters: null,
+          controlState:
+            storedStates[actuator.id] !== undefined
+              ? storedStates[actuator.id]
+              : actuator.controlState,
+        }));
+
         setTasksData(actuatorsWithData);
         setLoading(false);
       } catch (error) {
-        console.error("Lỗi lấy dữ liệu:", error);
+        console.error("Error fetching actuators data:", error);
         setError(error);
         setLoading(false);
       }
     };
 
     fetchActuatorsData();
-  }, [thingId]);
+  }, [thingId, token]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const mapTaskingParameters = (value) => {
-    switch (value) {
-      case -1:
-        return "mới";
-      case 0:
-        return "đang tắt";
-      case 1:
-        return "đang mở";
+  const handleSwitchChange = async (checked, actuator) => {
+    const newControlState = checked ? 1 : 0;
 
-      default:
-        return value;
+    try {
+      // Optimistically update local state
+      setTasksData((prevTasks) =>
+        prevTasks.map((task) =>
+          task.actuatorId === actuator.actuatorId
+            ? { ...task, controlState: newControlState }
+            : task,
+        ),
+      );
+
+      // Update control state in cookies
+      const updatedControlStates = {
+        ...JSON.parse(Cookies.get("actuatorStates") || "{}"),
+        [actuator.actuatorId]: newControlState,
+      };
+      Cookies.set("actuatorStates", JSON.stringify(updatedControlStates), {
+        expires: 7,
+      });
+
+      const response = await axios.post("/api/post/task", {
+        taskingParameters: newControlState === -1 ? 1 : 0,
+        thing_id: parseInt(thingId),
+        actuator_id: actuator.actuatorId,
+        token,
+      });
+
+      if (response.status === 201) {
+        message.success(
+          `Đã ${checked ? "bật" : "tắt"} ${actuator.actuatorName}`,
+        );
+      } else {
+        message.error("Bật tắt thất bại");
+        // Revert back to original state if API call fails
+        setTasksData((prevTasks) =>
+          prevTasks.map((task) =>
+            task.actuatorId === actuator.actuatorId
+              ? { ...task, controlState: checked ? 0 : 1 }
+              : task,
+          ),
+        );
+      }
+    } catch (error) {
+      message.error("Bật tắt thất bại");
+      console.error("Lỗi bật tắt:", error);
+      // Revert back to original state if API call fails
+      setTasksData((prevTasks) =>
+        prevTasks.map((task) =>
+          task.actuatorId === actuator.actuatorId
+            ? { ...task, controlState: checked ? 0 : 1 }
+            : task,
+        ),
+      );
     }
   };
 
@@ -79,15 +119,33 @@ const FetchTaskData = ({ thingId }) => {
       key: "actuatorName",
     },
     {
-      title: "ID nhiệm vụ",
-      dataIndex: "taskId",
-      key: "taskId",
+      title: "Trạng thái",
+      dataIndex: "controlState",
+      key: "controlState",
+      render: (controlState) => {
+        switch (controlState) {
+          case -1:
+            return "Mới";
+          case 0:
+            return "Đang tắt";
+          case 1:
+            return "Đang mở";
+          default:
+            return "Không xác định";
+        }
+      },
     },
     {
-      title: "Tham số nhiệm vụ",
-      dataIndex: "taskingParameters",
-      key: "taskingParameters",
-      render: (taskingParameters) => mapTaskingParameters(taskingParameters),
+      title: "Điều khiển",
+      key: "control",
+      render: (text, record) => (
+        <Switch
+          checked={record.controlState === 1}
+          onChange={(checked) => handleSwitchChange(checked, record)}
+          checkedChildren="On"
+          unCheckedChildren="Off"
+        />
+      ),
     },
   ];
 
@@ -96,7 +154,7 @@ const FetchTaskData = ({ thingId }) => {
   const currentTasks = tasksData.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
-    <div className="bg-white">
+    <div className="rounded-2xl bg-white">
       {loading ? (
         <Skeleton active />
       ) : error ? (
@@ -107,7 +165,7 @@ const FetchTaskData = ({ thingId }) => {
             dataSource={currentTasks}
             columns={columns}
             pagination={false}
-            rowKey="taskId"
+            rowKey="actuatorId"
           />
           <div className="mt-4 flex justify-center">
             <Pagination

@@ -113,7 +113,7 @@ const AddDataStream = () => {
         <Button
           type="primary"
           htmlType="submit"
-          className="mt-5 w-48 rounded-full border-orange-500 bg-orange-500 font-bold text-white hover:border-orange-600 hover:bg-orange-600"
+          className="mt-5 w-full rounded-full border-primary bg-primary font-bold text-white"
           loading={loading}
         >
           Thêm

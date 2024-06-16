@@ -15,7 +15,7 @@ import UserInforPage from "@/pages/user_infor_page/UserInforPage";
 
 // Home Layout
 import AddThing from "@/components/home_component/thing_component/AddThing";
-import ListThingPage from "@/pages/thing_page/ListThingPage";
+import ThingPage from "@/pages/thing_page/ThingPage";
 import AddDataStream from "@/components/home_component/datastream_component/AddDataStream";
 import DataStreamPage from "@/pages/datastream_page/DataStreamPage";
 import DetailDatastreamPage from "@/pages/detail_datastream_page/DetailDatastreamPage";
@@ -25,6 +25,7 @@ import TaskingCapabilityForm from "@/components/home_component/taskingcapability
 // đang test
 import AddActuator from "../components/home_component/actuator_component/AddActuator";
 import ActuatorDetail from "../components/home_component/actuator_component/ActuatorDetail";
+import Weather from "../components/weather_component/Weather";
 
 import NotFoundPage from "@/pages/not_found_page/NotFoundPage";
 
@@ -54,7 +55,7 @@ const UserRoutes = () => (
           path="/"
           element={
             <HomePage>
-              <ListThingPage />
+              <ThingPage />
             </HomePage>
           }
         />
@@ -107,6 +108,7 @@ const UserRoutes = () => (
           element={<TaskingCapabilityForm />}
         />
         {/* End TaskingCapability */}
+        <Route path="/thoi-tiet" element={<Weather />} />
       </Route>
     </Route>
     <Route path="*" element={<NotFoundPage />} />
