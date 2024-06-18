@@ -21,7 +21,7 @@ import DataStreamPage from "@/pages/datastream_page/DataStreamPage";
 import DetailDatastreamPage from "@/pages/detail_datastream_page/DetailDatastreamPage";
 import SettingThingPage from "@/pages/setting_thing_page/SettingThingPage";
 import TaskingCapabilityForm from "@/components/home_component/taskingcapability_component/TaskingCapabilityForm";
-
+import DetailThingPage from "@/pages/detail_thing_page/DetailThingPage";
 // đang test
 import AddActuator from "../components/home_component/actuator_component/AddActuator";
 import ActuatorDetail from "../components/home_component/actuator_component/ActuatorDetail";
@@ -67,7 +67,14 @@ const UserRoutes = () => (
             </HomePage>
           }
         />
-
+        <Route
+          path="/trang-chi-tiet-thing/:thingId"
+          element={
+            <HomePage>
+              <DetailThingPage />
+            </HomePage>
+          }
+        />
         <Route
           path="/cai-dat-thing/:thingId"
           element={
