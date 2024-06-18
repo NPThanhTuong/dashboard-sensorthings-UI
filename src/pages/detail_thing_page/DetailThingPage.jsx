@@ -26,7 +26,7 @@ const DetailThingPage = () => {
       if (isAppend) {
         setObservations((prev) => [...prev, ...response.data]);
       } else {
-        setObservations(response.data[0]);
+        setObservations(response.data[0].result[0]);
       }
     } catch (error) {
       console.error("Lỗi lấy observations:", error);
@@ -134,12 +134,15 @@ const DetailThingPage = () => {
       </section>
 
       <section className=" justify-center my-4 md:flex md:flex-row md:gap-4">
-        <div className="h-full bg-white rounded-lg shadow-md mb-4 md:mb-0 md:flex-grow md:max-w-96 md:w-full">
-          {observations.result && <DetailThingCard type={"Light"} data={observations} />}
-        </div>
-        <div className="h-full bg-white rounded-lg shadow-md md:max-w-96 md:w-full">
-          {observations.result && <DetailThingCard type={"Soil"} data={observations} />}
-        </div>
+
+        {observations && Object.entries(observations).map(([key, value]) => (
+          key !== "time" && (
+            <div key={key} className="my-4">
+              <DetailThingCard dataKey={key} dataValue={value} time={observations.time} />
+            </div>
+          )
+        ))}
+
       </section>
 
       <section className="my-4">

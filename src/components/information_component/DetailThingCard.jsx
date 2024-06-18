@@ -1,16 +1,49 @@
-import { Card, Image, Skeleton, Typography } from "antd";
 import { useEffect, useState } from "react";
-import images from "../../../public/images";
-import AddTask from "@/components/home_component/task_component/AddTask";
+import { IoIosWater } from "react-icons/io";
+import { FaTemperatureLow } from "react-icons/fa";
 
-export default function DetailThingCard({ type, data }) {
-    const imagePath = images[type];
-    const [dataState, setDataState] = useState([]);
+export default function DetailThingCard({ dataKey, dataValue, time }) {
     const [loading, setLoading] = useState(true);
+    const [key, setKey] = useState();
+    const [value, setValue] = useState();
+    const [title, setTitle] = useState(null);
+    const [IconComponent, setIconComponent] = useState(null);
+    const [color, setColor] = useState(null);
+
+
+    const test2 = {
+        temp: {
+            icon: 'IoIosWater',
+            title: 'Temperature',
+            color: 'green'
+        },
+        humi: {
+            icon: 'FaTemperatureLow',
+            title: 'Humidity',
+            color: 'blue'
+        }
+    };
+
+    const getKeyInfo = (key) => {
+        const keyInfo = test2[key];
+        return keyInfo ? keyInfo : null;
+    };
 
     useEffect(() => {
-        setDataState(data);
-    }, [data]);
+        setKey(dataKey);
+        setValue(dataValue);
+
+        const keyInfo = getKeyInfo(dataKey);
+        if (keyInfo) {
+            setIconComponent(keyInfo.icon);
+            setTitle(keyInfo.title);
+            setColor(keyInfo.color);
+        } else {
+            setIconComponent(null);
+            setTitle('Không có thông tin');
+            setColor('white'); // default color if not found
+        }
+    }, [dataKey, dataValue]);
 
     useEffect(() => {
         setLoading(true);
@@ -19,56 +52,22 @@ export default function DetailThingCard({ type, data }) {
             clearTimeout(timeoutId);
         };
     }, []);
-
     return (
-        <Card
-            title={
-                <div>
-                    <h4 className="text-lg font-bold items-center">{type}</h4>
-                    {/* <AddTask actuator={dataState} /> */}
+        <div className={`flex flex-col bg-white border-l-8 border-${color}-500 rounded-tr-lg rounded-br-lg md:w-auto`}>
+            <div className="p-4 flex items-center w-80 justify-between">
+                <div className={`rounded-full h-12 w-12 flex items-center justify-center bg-${color}-500`}>
+                    <IoIosWater className="text-4xl md:text-6xl text-black" />
                 </div>
-            }
-            className="w-full h-full p-4 md:p-6 flex flex-col justify-between"
-            style={{ backgroundColor: "#fffffe" }}
-        >
-            <Skeleton loading={loading} active>
-                {data && (
-                    <div className="flex items-center justify-center md:flex-row">
-                        <div className="flex items-center md:mr-4 mb-4 md:mb-0">
-                            <div className="relative w-32 h-32 md:w-48 md:h-48">
-                                <Image
-                                    src={imagePath}
-                                    alt="Sensor Image"
-                                    layout="fill"
-                                    objectFit="cover"
-                                    className="rounded-lg"
-                                />
-                            </div>
-                        </div>
-                        <div className="flex flex-col items-center md:items-start">
-                            {type === 'Light' ? (
-                                <>
-                                    <div className="text-4xl md:text-8xl font-semibold">
-                                        {data?.result && (
-                                            <p>{data?.result[0]?.temp}</p>
-                                        )}
-                                    </div>
-                                    <p className="text-lg md:text-xl">Lux</p>
-                                </>
-                            ) : (
-                                <>
-                                    <div className="text-4xl md:text-8xl font-semibold">
-                                        {data?.result && (
-                                            <p>{data?.result[0]?.humi}</p>
-                                        )}
-                                    </div>
-                                    <p className="text-lg md:text-xl">%</p>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                )}
-            </Skeleton>
-        </Card>
+                <p className="text-lg font-bold ml-4">{title}</p>
+            </div>
+
+            <div className="p-4 flex items-center justify-center">
+                <p className={`text-4xl md:text-8xl font-semibold text-${color}-500`}>{value}</p>
+            </div>
+            <div className="p-4 text-center">
+                <p>Thời gian cập nhật</p>
+                <p className="text-lg">{time}</p>
+            </div>
+        </div>
     );
 }
