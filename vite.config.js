@@ -10,13 +10,14 @@ export default defineConfig({
       "@public": path.resolve(__dirname, "./public"),
     },
   },
-  server: {
-    proxy: {
-      "/api": {
-        target: "http://127.0.0.1:8000",
-        changeOrigin: true,
-        secure: false,
-      },
-    },
-  },
+  // server: {
+  //   proxy: {
+  //     "/api": {
+  //       //target: "http://sensingapi.cusc.vn",
+  //       target: "http://localhost:8000",
+  //       changeOrigin: true,
+  //       secure: false,
+  //     },
+  //   },
+  // },
 });

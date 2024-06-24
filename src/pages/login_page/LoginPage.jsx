@@ -1,9 +1,10 @@
 import { useState } from "react";
 import "./login-page.css";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { notification } from "antd";
 import { useAuth } from "@/context/AuthContext";
+
+import { request } from "@/utils/request";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -44,13 +45,13 @@ const LoginPage = () => {
       setErrors(newErrors);
     } else {
       try {
-        const response = await axios.post("/api/login", formData);
+        const response = await request.post("/login", formData);
         const { token } = response.data;
         saveToken(token);
-        toast("Đăng nhập thành công!");
+        notification.success({ message: "Đăng nhập thành công!" });
         navigate("/");
       } catch (error) {
-        toast("Đăng nhập không thành công!");
+        notification.error({ message: "Đăng nhập không thành công!" });
       }
     }
   };
@@ -119,7 +120,7 @@ const LoginPage = () => {
 
           <div className="flex items-center justify-between">
             <button
-              className="focus:shadow-outline w-full rounded bg-gradient-to-t from-cyan-400 to-blue-500 px-4 py-2 font-semibold text-white focus:outline-none"
+              className="focus:shadow-outline w-full rounded bg-blue-500 px-4 py-2 font-semibold text-white focus:outline-none"
               type="submit"
             >
               Đăng nhập

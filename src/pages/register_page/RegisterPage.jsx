@@ -1,9 +1,9 @@
 import { useState } from "react";
 import "./register_page.css";
-import axios from "axios";
+import { request } from "@/utils/request";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { notification } from "antd";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -11,7 +11,7 @@ const RegisterPage = () => {
     username: "",
     password: "",
     phone: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
@@ -23,12 +23,14 @@ const RegisterPage = () => {
     setErrors(newErrors);
     setFormData({ ...formData, [name]: value });
   };
+
   const handleClick = (e) => {
     const { name } = e.target;
     const newErrors = { ...errors };
     delete newErrors[name];
     setErrors(newErrors);
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
@@ -61,24 +63,33 @@ const RegisterPage = () => {
       setErrors(newErrors);
     } else {
       try {
-        await axios.post("/api/register", formData);
-        toast("Đăng ký thành công!");
-        navigate('/dang-nhap');
+        await request.post("/register", formData);
+        notification.success({
+          message: "Thành công",
+          description: "Đăng ký thành công!",
+        });
+        navigate("/dang-nhap");
       } catch (error) {
-        toast("Đăng ký không thành công!");
+        notification.error({
+          message: "Lỗi",
+          description: "Đăng ký không thành công!",
+        });
         if (error.response && error.response.data[0]) {
           const { data } = error.response;
 
           data[0].forEach((err) => {
-            toast(err);
+            notification.error({
+              message: "Lỗi",
+              description: err,
+            });
           });
         }
       }
     }
   };
+
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConf, setShowPasswordConf] = useState(false);
-
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -86,6 +97,7 @@ const RegisterPage = () => {
   const togglePasswordConfVisibility = () => {
     setShowPasswordConf(!showPasswordConf);
   };
+
   return (
     <div className="">
       <form
@@ -105,8 +117,9 @@ const RegisterPage = () => {
               Họ và tên
             </label>
             <input
-              className={`focus:shadow-outline w-full appearance-none rounded border border-gray-300 px-3 py-2 leading-tight text-gray-700 focus:outline-none ${errors.displayname ? "border-red-500" : ""
-                }`}
+              className={`focus:shadow-outline w-full appearance-none rounded border border-gray-300 px-3 py-2 leading-tight text-gray-700 focus:outline-none ${
+                errors.displayname ? "border-red-500" : ""
+              }`}
               id="displayname"
               type="text"
               placeholder="Họ và tên"
@@ -129,8 +142,9 @@ const RegisterPage = () => {
               Tên đăng nhập
             </label>
             <input
-              className={`focus:shadow-outline w-full appearance-none rounded border border-gray-300 px-3 py-2 leading-tight text-gray-700 focus:outline-none ${errors.username ? "border-red-500" : ""
-                }`}
+              className={`focus:shadow-outline w-full appearance-none rounded border border-gray-300 px-3 py-2 leading-tight text-gray-700 focus:outline-none ${
+                errors.username ? "border-red-500" : ""
+              }`}
               id="username"
               type="text"
               placeholder="Tên đăng nhập"
@@ -151,8 +165,9 @@ const RegisterPage = () => {
               Số điện thoại
             </label>
             <input
-              className={`focus:shadow-outline w-full appearance-none rounded border border-gray-300 px-3 py-2 leading-tight text-gray-700 focus:outline-none ${errors.phone ? "border-red-500" : ""
-                }`}
+              className={`focus:shadow-outline w-full appearance-none rounded border border-gray-300 px-3 py-2 leading-tight text-gray-700 focus:outline-none ${
+                errors.phone ? "border-red-500" : ""
+              }`}
               id="phone"
               type="text"
               placeholder="Số điện thoại"
@@ -174,10 +189,11 @@ const RegisterPage = () => {
             </label>
             <div className="relative flex items-center">
               <input
-                className={`focus:shadow-outline w-full appearance-none rounded border border-gray-300 px-3 py-2 leading-tight text-gray-700 focus:outline-none ${errors.password ? "border-red-500" : ""
-                  }`}
+                className={`focus:shadow-outline w-full appearance-none rounded border border-gray-300 px-3 py-2 leading-tight text-gray-700 focus:outline-none ${
+                  errors.password ? "border-red-500" : ""
+                }`}
                 id="password"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 placeholder="Mật khẩu"
                 name="password"
                 value={formData.password}
@@ -185,7 +201,7 @@ const RegisterPage = () => {
                 onClick={handleClick}
               />
               <div
-                className="absolute  right-0 pr-3 flex items-center cursor-pointer"
+                className="absolute  right-0 flex cursor-pointer items-center pr-3"
                 onClick={togglePasswordVisibility}
               >
                 {showPassword ? <FaEye /> : <FaEyeSlash />}
@@ -205,10 +221,11 @@ const RegisterPage = () => {
             </label>
             <div className="relative flex items-center">
               <input
-                className={`focus:shadow-outline w-full appearance-none rounded border border-gray-300 px-3 py-2 leading-tight text-gray-700 focus:outline-none ${errors.confirmPassword ? "border-red-500" : ""
-                  }`}
+                className={`focus:shadow-outline w-full appearance-none rounded border border-gray-300 px-3 py-2 leading-tight text-gray-700 focus:outline-none ${
+                  errors.confirmPassword ? "border-red-500" : ""
+                }`}
                 id="confirmPassword"
-                type={showPasswordConf ? 'text' : 'password'}
+                type={showPasswordConf ? "text" : "password"}
                 placeholder="Mật khẩu"
                 name="confirmPassword"
                 value={formData.confirmPassword}
@@ -216,20 +233,22 @@ const RegisterPage = () => {
                 onClick={handleClick}
               />
               <div
-                className="absolute  right-0 pr-3 flex items-center cursor-pointer"
+                className="absolute  right-0 flex cursor-pointer items-center pr-3"
                 onClick={togglePasswordConfVisibility}
               >
                 {showPasswordConf ? <FaEye /> : <FaEyeSlash />}
               </div>
             </div>
             {errors.confirmPassword && (
-              <p className="text-sm italic text-red-500">{errors.confirmPassword}</p>
+              <p className="text-sm italic text-red-500">
+                {errors.confirmPassword}
+              </p>
             )}
           </div>
 
           <div className="flex items-center justify-between">
             <button
-              className="focus:shadow-outline w-full rounded bg-gradient-to-t from-cyan-400 to-blue-500 px-4 py-2 font-semibold text-white focus:outline-none"
+              className="focus:shadow-outline w-full rounded bg-blue-500 px-4 py-2 font-semibold text-white focus:outline-none"
               type="submit"
             >
               Đăng ký

@@ -1,166 +1,187 @@
-import React, { useState, useEffect } from "react";
-import { Card, Spin, Alert, Skeleton } from "antd";
-import { ClockCircleOutlined, FieldNumberOutlined } from "@ant-design/icons";
-import axios from "axios";
-import { useParams } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
+import React, { useEffect, useState } from "react";
+import { Card } from "antd";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 
-const Observation = () => {
-  const { token, intervalTimes } = useAuth();
-  const { thingId } = useParams();
+// Import các hàm hỗ trợ từ observationConfig
+import {
+  getFieldIcon,
+  borderClasses,
+  resultClasses,
+  backgroundClasses,
+  darkBackgroundClasses,
+} from "@/config/observationConfig.jsx";
 
-  const [dataStreams, setDataStreams] = useState([]);
-  const [latestObservations, setLatestObservations] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+// Sử dụng plugin customParseFormat của dayjs
+dayjs.extend(customParseFormat);
 
-  const unitMap = {
-    5: "lux",
-    6: "%",
-  };
+// Import các context và hook cần thiết
+import { useTheme } from "@/context/ThemeContext";
+import { useLanguage } from "@/context/LanguageContext";
+import { useTranslations } from "@/config/useTranslations";
 
-  const fetchDataStreams = async () => {
-    try {
-      const response = await axios.get(
-        `/api/get/things(${thingId})/datastreams?top=all`,
-        {
-          headers: { token },
-        },
-      );
-      if (Array.isArray(response.data)) {
-        setDataStreams(response.data);
-        response.data.forEach((dataStream) =>
-          fetchLatestObservation(dataStream.id),
-        );
-      }
-    } catch (error) {
-      console.error("Error fetching data streams:", error);
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+// Component Observation để hiển thị các dữ liệu quan sát mới nhất
+const Observation = ({ dataStreams, latestObservations }) => {
+  const [loaded, setLoaded] = useState(false); // State để kiểm tra dữ liệu đã tải xong chưa
+  const { isDarkMode } = useTheme(); // Lấy trạng thái dark mode từ context
 
-  const fetchLatestObservation = async (dataStreamId) => {
-    try {
-      const response = await axios.get(
-        `/api/get/datastreams(${dataStreamId})/observations?top=1&orderby=resultTime`,
-        {
-          headers: { token },
-        },
-      );
-      if (response.data && response.data.length > 0) {
-        setLatestObservations((prev) => ({
-          ...prev,
-          [dataStreamId]: response.data[0],
-        }));
-      }
-    } catch (error) {
-      console.error("Error fetching latest observation:", error);
-      setError(error);
-    }
-  };
+  const { language } = useLanguage(); // Lấy ngôn ngữ hiện tại từ context
+  const translations = useTranslations(language); // Lấy các bản dịch tương ứng với ngôn ngữ
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await fetchDataStreams();
-      } catch (error) {
-        console.error("Error fetching data streams:", error);
-        setError(error);
-      }
-    };
-
-    if (thingId && token) {
-      fetchData();
-      const intervalTime = intervalTimes[thingId] || 5; // Default to 5 minutes if not set
-      const interval = setInterval(fetchData, intervalTime * 60 * 1000);
-
-      return () => clearInterval(interval);
+    if (dataStreams && Object.keys(latestObservations).length > 0) {
+      setLoaded(true); // Nếu có dữ liệu, đặt loaded thành true
     }
-  }, [thingId, token, intervalTimes]);
+  }, [dataStreams, latestObservations]);
 
-  useEffect(() => {
-    const fetchObservations = async () => {
-      if (dataStreams.length === 0) return;
+  // Hàm để viết hoa chữ cái đầu tiên của chuỗi
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
 
-      try {
-        await Promise.all(
-          dataStreams.map((dataStream) =>
-            fetchLatestObservation(dataStream.id),
-          ),
-        );
-      } catch (error) {
-        console.error("Error fetching observations:", error);
-        setError(error);
-      }
-    };
+  // Hàm lấy lớp CSS cho viền của field
+  const getBorderClassName = (fieldName) => {
+    return borderClasses[fieldName] || borderClasses.default;
+  };
 
-    fetchObservations(); // Initial fetch
+  // Hàm lấy lớp CSS cho nền của field
+  const getBackgroundClassName = (fieldName) => {
+    return isDarkMode
+      ? darkBackgroundClasses[fieldName] || darkBackgroundClasses.default
+      : backgroundClasses[fieldName] || backgroundClasses.default;
+  };
 
-    const intervalTime = intervalTimes[thingId] || 5; // Default to 5 minutes if not set
-    const interval = setInterval(fetchObservations, intervalTime * 60 * 1000);
+  // Hàm lấy lớp CSS cho kết quả của field
+  const getResultClassName = (fieldName) => {
+    return resultClasses[fieldName] || resultClasses.default;
+  };
 
-    return () => clearInterval(interval);
-  }, [dataStreams, thingId, intervalTimes]);
+  // Hàm làm sạch đơn vị của giá trị
+  const cleanUnit = (value) => {
+    return value.replace(/[()]/g, "").replace(/\s+/g, "").trim();
+  };
 
-  if (loading) {
-    return (
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <Card key={index}>
-            <Skeleton loading={loading} active />
-          </Card>
-        ))}
-      </div>
-    );
-  }
+  // Hàm định dạng thời gian
+  const formatTime = (time) => {
+    return dayjs(time).format("HH:mm:ss DD-MM-YYYY");
+  };
 
-  if (error) {
-    return (
-      <div className="text-center">
-        <Alert
-          message="Error"
-          description={error.message}
-          type="error"
-          showIcon
-        />
-      </div>
-    );
+  // Kiểm tra nếu không có dataStreams hoặc latestObservations thì trả về null
+  if (
+    !dataStreams ||
+    dataStreams.length === 0 ||
+    Object.keys(latestObservations).length === 0 ||
+    !translations
+  ) {
+    return null;
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {dataStreams.map((dataStream) => (
-        <Card
-          key={dataStream.id}
-          title={dataStream.name}
+    <section className="my-4">
+      <div
+        className={`p-6 ${loaded ? "rounded-2xl" : ""} ${
+          isDarkMode
+            ? "dark:border-darkPrimary dark:bg-darkPrimary dark:text-white"
+            : "border-white bg-white"
+        }`}
+      >
+        <h1
+          className="-mt-4 mb-2 text-center text-xl font-bold"
           style={{
-            width: "100%",
-            borderRadius: 8,
-            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-            transition: "transform 0.2s",
+            fontFamily: "Roboto",
+            visibility: loaded ? "visible" : "hidden", // Hiển thị tiêu đề khi dữ liệu đã tải xong
           }}
-          className="hover:scale-105"
         >
-          {latestObservations[dataStream.id] ? (
-            <div>
-              <p>
-                <ClockCircleOutlined /> <strong>Thời gian:</strong>{" "}
-                {latestObservations[dataStream.id].resultTime}
-              </p>
-              <p>
-                <FieldNumberOutlined /> <strong>Kết quả:</strong>{" "}
-                {latestObservations[dataStream.id].result}{" "}
-                {unitMap[dataStream.id] || ""}
-              </p>
-            </div>
-          ) : (
-            <p>Không có dữ liệu</p>
-          )}
-        </Card>
-      ))}
-    </div>
+          {translations["Dữ liệu"]}
+        </h1>
+        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+          {dataStreams?.map((dataStream) => {
+            const observations = latestObservations[dataStream.id];
+            if (
+              !observations ||
+              !observations.result ||
+              !observations.result[0]
+            ) {
+              return null; // Nếu không có dữ liệu quan sát, trả về null
+            }
+
+            return (
+              <Card
+                key={dataStream.id}
+                className={`rounded-2xl border shadow-lg ${
+                  isDarkMode
+                    ? "dark:border-darkPrimary dark:bg-darkSecondary dark:text-white"
+                    : "border-white bg-white"
+                }`}
+              >
+                <div
+                  className="-mt-4 mb-4 text-center text-lg font-bold"
+                  style={{ fontFamily: "Roboto" }}
+                >
+                  {dataStream.name}
+                </div>
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                  {Object.entries(observations.result[0])?.map(
+                    ([key, value], index) =>
+                      key !== "time" && ( // Bỏ qua trường "time"
+                        <Card
+                          key={`${dataStream.id}-${key}-${index}`}
+                          bordered={false}
+                          className={`rounded-l-none rounded-r-2xl shadow-lg`}
+                          style={{ background: getBackgroundClassName(key) }}
+                        >
+                          <div className="flex">
+                            <div
+                              className={`absolute bottom-0 left-0 top-0 flex w-[5%] items-center justify-center ${getBorderClassName(
+                                key,
+                              )}`}
+                            ></div>
+                            <div className="ml-2 flex-grow pl-1">
+                              <div className="flex items-center justify-between gap-4">
+                                <div>{getFieldIcon(key)}</div>
+                                <div
+                                  className={`text-2xl font-bold ${isDarkMode ? "text-white" : ""}`}
+                                  style={{ fontFamily: "Kanit" }}
+                                >
+                                  {capitalizeFirstLetter(key)}
+                                </div>
+                              </div>
+                              <div className="my-5 flex items-center justify-between">
+                                <span
+                                  className={`mx-auto text-4xl font-bold ${getResultClassName(
+                                    key,
+                                  )} ${isDarkMode ? "" : ""}`}
+                                  style={{ fontFamily: "Kanit" }}
+                                >
+                                  {cleanUnit(value)}
+                                </span>
+                              </div>
+                              <div className="mt-4 flex flex-col items-center justify-between">
+                                <span
+                                  className={`text-base ${isDarkMode ? "text-white" : ""}`}
+                                  style={{ fontFamily: "Kanit" }}
+                                >
+                                  {translations["Thời gian cập nhật"]}
+                                </span>
+                                <span
+                                  className={`text-xl font-medium ${isDarkMode ? "text-white" : ""}`}
+                                  style={{ fontFamily: "Kanit" }}
+                                >
+                                  {formatTime(observations.result[0].time)}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
+                      ),
+                  )}
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+    </section>
   );
 };
 

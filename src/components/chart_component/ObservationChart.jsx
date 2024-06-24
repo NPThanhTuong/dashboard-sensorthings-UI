@@ -1,81 +1,33 @@
 import { useEffect, useState } from "react";
-import axios, { all } from "axios";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import {
-  Empty,
-  DatePicker,
-  notification,
-  ConfigProvider,
-  Skeleton,
-  Tabs,
-} from "antd";
-import { twMerge } from "tailwind-merge";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Legend,
-);
-import { useParams, useSearchParams } from "react-router-dom";
+import { notification, ConfigProvider } from "antd";
 import { WarningOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
-import localizedFormat from "dayjs/plugin/localizedFormat";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-import updateLocale from "dayjs/plugin/updateLocale";
-import weekday from "dayjs/plugin/weekday";
-import weekOfYear from "dayjs/plugin/weekOfYear";
 import viVN from "antd/lib/locale/vi_VN";
 import { useAuth } from "@/context/AuthContext";
+import { useParams, useSearchParams } from "react-router-dom";
+import { fetchObservationsChart } from "@/apis/ObservationAPI";
+import ObservationChartContent from "./ObservationChartContent";
+import ObservationChartHeader from "./ObservationChartHeader";
 
-const { RangePicker } = DatePicker;
-
-dayjs.extend(localizedFormat);
-dayjs.extend(customParseFormat);
-dayjs.extend(updateLocale);
-dayjs.extend(weekday);
-dayjs.extend(weekOfYear);
-dayjs.updateLocale("vi", {
-  weekdaysShort: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
-  monthsShort: [
-    "Th1",
-    "Th2",
-    "Th3",
-    "Th4",
-    "Th5",
-    "Th6",
-    "Th7",
-    "Th8",
-    "Th9",
-    "Th10",
-    "Th11",
-    "Th12",
-  ],
-});
 dayjs.locale("vi");
 
+import { useTheme } from "@/context/ThemeContext";
+
 const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
+  const { isDarkMode } = useTheme();
+
+  const { thingId } = useParams();
   const [allObservations, setAllObservations] = useState([]);
   const [handleObservation, setHandleObservation] = useState([]);
   const [isErrorDatePicker, setIsErrorDatePicker] = useState(false);
   const [loading, setLoading] = useState(true);
   const [api, contextHolder] = notification.useNotification();
-  const { token } = useAuth();
-  // const { datastreamId } = useParams();
+  const { token, intervalTimes } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
-  const observationName = searchParams.get(`observationName_${datastreamId}`);
+  const [observationName, setObservationName] = useState("");
+  const [units, setUnits] = useState({});
+  const [activeTabKey, setActiveTabKey] = useState("1");
 
   useEffect(() => {
     const fetchAllObservations = async () => {
@@ -85,23 +37,59 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
           throw new Error("Token không tồn tại");
         }
 
-        const response = await axios.get(
-          `/api/get/datastreams(${datastreamId})/observations?top=all`,
-          {
-            headers: {
-              token: token,
-            },
-          },
+        const data = await fetchObservationsChart(datastreamId, token);
+        // Sort data by time in descending order
+        const sortedData = data.sort(
+          (a, b) =>
+            dayjs(b.result[0]["time"]).valueOf() -
+            dayjs(a.result[0]["time"]).valueOf(),
         );
 
-        let data = response.data;
+        const processedData = sortedData.map((observation) => {
+          const result = observation.result[0];
+          const processedResult = {};
+          const tempUnits = {};
+
+          for (const key in result) {
+            if (result?.hasOwnProperty(key)) {
+              if (key === "time") {
+                processedResult[key] = dayjs(result[key]);
+              } else {
+                const [value, unit] = result[key].split(" ");
+                processedResult[key] = value ? parseFloat(value) : null;
+                tempUnits[key] = unit;
+              }
+            }
+          }
+
+          setUnits((prevUnits) => ({ ...prevUnits, ...tempUnits }));
+
+          return {
+            ...observation,
+            result: [processedResult],
+          };
+        });
+
+        if (JSON.stringify(processedData) !== JSON.stringify(allObservations)) {
+          setAllObservations(processedData);
+          const threeDaysAgo = dayjs().subtract(3, "days");
+          const recentData = processedData.filter(
+            (item) => dayjs(item.result[0]["time"]) >= threeDaysAgo,
+          );
+          // Sort recent data by time in descending order as well
+          const sortedRecentData = recentData.sort(
+            (a, b) =>
+              dayjs(a.result[0]["time"]).valueOf() -
+              dayjs(b.result[0]["time"]).valueOf(),
+          );
+          setHandleObservation(sortedRecentData);
+
+          const initialObservationName = Object.keys(
+            processedData[0].result[0],
+          ).find((key) => key !== "time");
+          setObservationName(initialObservationName);
+        }
         setLoading(false);
-        data = data.sort(
-          (a, b) => dayjs(a.result[0]["time"]) - dayjs(b.result[0]["time"]),
-        );
-
-        setAllObservations(data);
-        setHandleObservation(data);
       } catch (error) {
         api.open({
           message: "Lỗi dữ liệu!",
@@ -109,20 +97,19 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
           icon: <WarningOutlined style={{ color: "#faad14" }} />,
         });
         console.error("Lỗi lấy dữ liệu:", error);
+        setLoading(false);
       }
     };
 
     fetchAllObservations();
-
+    const intervalTime = intervalTimes[thingId] || 5;
     const interval = setInterval(
-      () => {
-        fetchAllObservations();
-      },
-      1000 * 60 * 5,
+      fetchAllObservations,
+      intervalTime * 60 * 1000,
     );
 
     return () => clearInterval(interval);
-  }, [token, datastreamId]);
+  }, [token, datastreamId, intervalTimes, thingId, api]);
 
   const openNotification = (message, desc, icon) => {
     api.open({
@@ -131,12 +118,14 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
       icon: icon,
     });
   };
+
   const capitalizeFirstLetter = (string) => {
-    if (!string) return string; // Kiểm tra chuỗi rỗng
+    if (!string) return string;
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
+
   const lowerizeFirstLetter = (string) => {
-    if (!string) return string; // Kiểm tra chuỗi rỗng
+    if (!string) return string;
     return string.charAt(0).toLowerCase() + string.slice(1);
   };
 
@@ -146,17 +135,18 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
       const diffHour = Math.abs(startDate.diff(endDate, "hour"));
 
       if (diffHour <= maxDaySort * 24) {
-        // điều kiện số giờ lọc nhỏ hơn maxDaySort * 24 giờ
         setIsErrorDatePicker(false);
         const handleData = allObservations.filter(
           (item) =>
             dayjs(item.result[0]["time"]) >= startDate &&
             dayjs(item.result[0]["time"]) <= endDate,
         );
-        console.log(handleData);
-        setHandleObservation(handleData);
+        // Sort handleData by time in descending order
+        const sortedHandleData = handleData.sort(
+          (a, b) => dayjs(a.result[0]["time"]) - dayjs(b.result[0]["time"]),
+        );
+        setHandleObservation(sortedHandleData);
       } else {
-        // số ngày lọc vượt quá 3 ngày
         setIsErrorDatePicker(true);
         setHandleObservation([]);
         openNotification(
@@ -174,104 +164,52 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
   let tabItems = [];
   if (allObservations.length > 0) {
     let tabIndex = 1;
-    for (const [key, value] of Object.entries(allObservations[0].result[0])) {
+    for (const key in allObservations[0].result[0]) {
       if (key !== "time") {
-        tabItems.push({ key: tabIndex, label: capitalizeFirstLetter(key) });
+        tabItems.push({
+          key: tabIndex.toString(),
+          label: capitalizeFirstLetter(key),
+        });
         tabIndex++;
       }
     }
   }
 
   const handleChangeTab = (key) => {
+    setActiveTabKey(key);
+    const selectedTab = tabItems.find((tab) => tab.key === key);
     const queryKey = `observationName_${datastreamId}`;
     const obj = {};
-    obj[queryKey] = tabItems[key - 1]["label"];
+    obj[queryKey] = selectedTab.label;
     setSearchParams(obj);
-  };
-
-  const data = {
-    labels: handleObservation.map((obs) =>
-      new Date(obs.result[0]["time"]).toLocaleString("vi-VN", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      }),
-    ),
-    datasets: [
-      {
-        label: capitalizeFirstLetter(observationName || tabItems[0]?.label),
-        data: handleObservation.map(
-          (obs) =>
-            obs.result[0][
-              lowerizeFirstLetter(observationName || tabItems[0]?.label)
-            ],
-        ),
-        backgroundColor: "rgba(238, 173, 14, 0.5)",
-        borderColor: "rgba(238, 173, 14, 1)",
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const options = {
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "Theo thời gian",
-      },
-    },
-    scales: {
-      y: {
-        title: {
-          display: true,
-          text: capitalizeFirstLetter(observationName || tabItems[0]?.label),
-        },
-        beginAtZero: true,
-      },
-    },
-    maintainAspectRatio: false,
-    responsive: true,
+    setObservationName(lowerizeFirstLetter(selectedTab.label));
   };
 
   return (
     <>
       {contextHolder}
       <ConfigProvider locale={viVN}>
-        <div className="my-5 w-full rounded-md bg-secondary p-5 shadow-lg">
-          <Tabs
-            defaultActiveKey="1"
-            items={tabItems}
-            onChange={handleChangeTab}
+        <div
+          className={`w-full rounded-2xl p-5 shadow-lg ${
+            isDarkMode
+              ? "dark:border-darkPrimary dark:bg-darkPrimary dark:text-white"
+              : "border-white bg-white"
+          }`}
+        >
+          <ObservationChartHeader
+            activeTabKey={activeTabKey}
+            tabItems={tabItems}
+            handleChangeTab={handleChangeTab}
+            handleChangeDate={handleChangeDate}
+            isErrorDatePicker={isErrorDatePicker}
           />
-          <div className="flex justify-between">
-            <h4 className="text-lg font-bold">Dữ liệu quan trắc</h4>
-            <RangePicker
-              showTime
-              onChange={handleChangeDate}
-              format="DD-MM-YYYY HH:mm:ss"
-              status={isErrorDatePicker && "error"}
-            />
-          </div>
-
-          <div className={twMerge("mt-6 flex flex-col justify-center")}>
-            <div className="min-h-[60vh] w-full max-w-screen-2xl py-4">
-              <Skeleton active loading={loading}>
-                {handleObservation.length > 0 ? (
-                  <div className="min-h-[60vh] rounded-lg bg-white p-6">
-                    <Line data={data} options={options} />
-                  </div>
-                ) : (
-                  <Empty description="Không có dữ liệu." />
-                )}
-              </Skeleton>
-            </div>
-          </div>
+          <ObservationChartContent
+            handleObservation={handleObservation}
+            allObservations={allObservations}
+            observationName={observationName}
+            tabItems={tabItems}
+            units={units}
+          />
         </div>
       </ConfigProvider>
     </>

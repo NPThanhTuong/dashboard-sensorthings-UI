@@ -1,10 +1,10 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Pagination, Skeleton } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStream } from "@fortawesome/free-solid-svg-icons";
+import { fetchDataStreams } from "@/apis/DataStreamAPI";
 
 const ListDataStream = () => {
   const { token } = useAuth();
@@ -14,34 +14,23 @@ const ListDataStream = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
-
   const { thingId } = useParams();
 
-  const fetchDataStreams = async () => {
-    try {
-      const response = await axios.get(
-        `/api/get/things(${thingId})/datastreams`,
-        {
-          headers: { token: token },
-        },
-      );
-
-      if (Array.isArray(response.data)) {
-        setDataStreams(response.data);
-      } else {
-        setDataStreams([]);
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error("Lỗi lấy dữ liệu luồng dữ liệu:", error);
-      setError(error);
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const streams = await fetchDataStreams(thingId, token);
+        setDataStreams(streams);
+      } catch (error) {
+        console.error("Lỗi lấy dữ liệu luồng dữ liệu:", error);
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (thingId && token) {
-      fetchDataStreams();
+      fetchData();
     } else {
       setLoading(false);
     }
@@ -145,3 +134,4 @@ const ListDataStream = () => {
 };
 
 export default ListDataStream;
+//

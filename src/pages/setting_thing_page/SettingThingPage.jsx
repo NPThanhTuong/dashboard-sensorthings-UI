@@ -1,20 +1,27 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { Pagination, Skeleton, Modal, Table, Alert, Spin } from "antd";
+import { Modal, Row, Col, Spin } from "antd";
 import AddDataStream from "@/components/home_component/datastream_component/AddDataStream";
 import HeaderSettingThing from "@/components/home_component/thing_component/HeaderSettingThing";
 import TaskingCapabilityForm from "@/components/home_component/taskingcapability_component/TaskingCapabilityForm";
 import FetchTaskData from "@/components/home_component/actuator_component/FetchTaskData";
+import { fetchDataStreams, fetchSensors } from "@/apis/DataStreamAPI";
+import DataStreamsTable from "@/components/home_component/datastream_component/DataStreamTable";
+import { useTheme } from "@/context/ThemeContext";
+import { useTranslations } from "@/config/useTranslations";
+import { useLanguage } from "@/context/LanguageContext";
 
 const SettingThingPage = () => {
+  const { isDarkMode } = useTheme();
   const { token, intervalTimes, setIntervalTime } = useAuth();
   const { thingId } = useParams();
+
   const [dataStreams, setDataStreams] = useState([]);
   const [sensors, setSensors] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [isDataStreamModalOpen, setIsDataStreamModalOpen] = useState(false);
   const [isTaskingCapabilityModalOpen, setIsTaskingCapabilityModalOpen] =
@@ -23,63 +30,49 @@ const SettingThingPage = () => {
 
   const itemsPerPage = 10;
 
-  const fetchDataStreams = async () => {
-    try {
-      const response = await axios.get(
-        `/api/get/things(${thingId})/datastreams?top=all`,
-        {
-          headers: { token: token },
-        },
-      );
-
-      if (Array.isArray(response.data)) {
-        setDataStreams(response.data);
-        await fetchSensors(response.data);
-      } else {
-        setDataStreams([]);
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error("Lỗi lấy dữ liệu luồng dữ liệu:", error);
-      setError(error);
-      setLoading(false);
-    }
-  };
-
-  const fetchSensors = async (dataStreams) => {
-    try {
-      const sensorPromises = dataStreams?.map(async (dataStream) => {
-        const response = await axios.get(
-          `/api/get/datastreams(${dataStream.id})/sensors`,
-          {
-            headers: { token: token },
-          },
-        );
-        return { [dataStream.id]: response.data[0] };
-      });
-      const sensorsArray = await Promise.all(sensorPromises);
-      const sensorsMap = Object.assign({}, ...sensorsArray);
-      setSensors(sensorsMap);
-    } catch (error) {
-      console.error("Lỗi lấy dữ liệu cảm biến:", error);
-      setError(error);
-    }
-  };
+  const { language } = useLanguage();
+  const translations = useTranslations(language);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const streams = await fetchDataStreams(thingId, token);
+        setDataStreams(streams);
+        await fetchSensorsForDataStreams(streams);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (thingId && token) {
-      fetchDataStreams();
+      fetchData();
     } else {
       setLoading(false);
     }
   }, [thingId, token]);
 
+  const fetchSensorsForDataStreams = async (dataStreams) => {
+    try {
+      const sensorPromises = dataStreams.map(async (dataStream) => {
+        const sensor = await fetchSensors(dataStream.id, token);
+        return { ...dataStream, sensor };
+      });
+      const dataStreamsWithSensors = await Promise.all(sensorPromises);
+      const sensorsMap = dataStreamsWithSensors.reduce((acc, curr) => {
+        acc[curr.id] = curr.sensor;
+        return acc;
+      }, {});
+      setSensors(sensorsMap);
+    } catch (error) {
+      console.error("Error fetching sensor data:", error);
+      setError(error);
+    }
+  };
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentDataStreams = dataStreams.slice(
-    indexOfFirstItem,
-    indexOfLastItem,
-  );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -109,91 +102,75 @@ const SettingThingPage = () => {
     setIsTaskingCapabilityModalOpen(false);
   };
 
-  const columns = [
-    {
-      title: "STT",
-      dataIndex: "index",
-      key: "index",
-      render: (_, __, index) => indexOfFirstItem + index + 1,
-    },
-    {
-      title: "Data Stream",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Sensor",
-      dataIndex: "sensor",
-      key: "sensor",
-      render: (_, record) => sensors[record.id]?.name || <Spin />,
-    },
-  ];
-
   return (
     <>
-      <HeaderSettingThing
-        thingId={thingId}
-        intervalTimes={intervalTimes}
-        setIntervalTime={setIntervalTime}
-        showModal={showDataStreamModal}
-        showTaskModal={showTaskModal}
-        showTaskingCapabilityModal={showTaskingCapabilityModal}
-      />
-      <section className="my-4 flex justify-between gap-4">
-        <div className="w-full rounded-xl bg-white p-4 shadow-md">
-          {loading ? (
-            <Skeleton active />
-          ) : error ? (
-            <Alert message={`Lỗi: ${error.message}`} type="error" showIcon />
-          ) : dataStreams.length === 0 ? (
-            <Alert message="Chưa có dữ liệu!" type="info" showIcon />
-          ) : (
-            <div className="flex h-full flex-col">
-              <div className="flex-grow overflow-auto">
-                <Table
-                  dataSource={currentDataStreams?.map((dataStream) => ({
-                    ...dataStream,
-                    key: dataStream.id,
-                  }))}
-                  columns={columns}
-                  pagination={false}
-                  rowKey="id"
-                />
-              </div>
-              <div className="mt-4 flex justify-center">
-                <Pagination
-                  current={currentPage}
-                  pageSize={itemsPerPage}
-                  total={dataStreams.length}
-                  onChange={paginate}
-                />
-              </div>
-            </div>
+      {loading ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="loading-text text-4xl font-bold text-gray-500">
+            <Spin size="large" />
+          </div>
+        </div>
+      ) : (
+        <>
+          <HeaderSettingThing
+            thingId={thingId}
+            intervalTimes={intervalTimes}
+            setIntervalTime={setIntervalTime}
+            showModal={showDataStreamModal}
+            showTaskModal={showTaskModal}
+            showTaskingCapabilityModal={showTaskingCapabilityModal}
+          />
+          {!loading && (
+            <section className={`my-4 `}>
+              <Row gutter={[16, 16]}>
+                <Col xs={24} lg={12}>
+                  <DataStreamsTable
+                    dataStreams={dataStreams}
+                    sensors={sensors}
+                    error={error}
+                    currentPage={currentPage}
+                    itemsPerPage={itemsPerPage}
+                    indexOfFirstItem={indexOfFirstItem}
+                    paginate={paginate}
+                  />
+                </Col>
+                <Col xs={24} lg={12}>
+                  <FetchTaskData thingId={thingId} />
+                </Col>
+              </Row>
+            </section>
           )}
-        </div>
-        <div className="w-full rounded-xl bg-white p-4 shadow-md">
-          <FetchTaskData thingId={thingId} />
-        </div>
-      </section>
-      <Modal
-        title="Thêm data stream"
-        open={isDataStreamModalOpen}
-        onOk={handleDataStreamModalOk}
-        onCancel={handleCancel}
-        footer={null}
-      >
-        <AddDataStream />
-      </Modal>
+          <section
+            className={`${isDarkMode ? "dark:bg-darkPrimary dark:text-black" : ""}`}
+          >
+            <Modal
+              title={null}
+              open={isDataStreamModalOpen}
+              onOk={handleDataStreamModalOk}
+              onCancel={handleCancel}
+              footer={null}
+              closable={false}
+              style={{ padding: 0 }}
+              className={`${isDarkMode ? "dark:text-black" : ""}`}
+            >
+              <AddDataStream />
+            </Modal>
 
-      <Modal
-        title="Thêm tasking capability"
-        open={isTaskingCapabilityModalOpen}
-        onOk={handleTaskingCapabilityModalOk}
-        onCancel={handleCancel}
-        footer={null}
-      >
-        <TaskingCapabilityForm />
-      </Modal>
+            <Modal
+              title={null}
+              open={isTaskingCapabilityModalOpen}
+              onOk={handleTaskingCapabilityModalOk}
+              onCancel={handleCancel}
+              footer={null}
+              closable={false}
+              style={{ padding: 0 }}
+              className={isDarkMode ? "dark-mode" : ""}
+            >
+              <TaskingCapabilityForm />
+            </Modal>
+          </section>
+        </>
+      )}
     </>
   );
 };

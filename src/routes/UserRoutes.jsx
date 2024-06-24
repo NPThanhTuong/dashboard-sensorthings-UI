@@ -13,14 +13,9 @@ import ProtectedRoute from "@/routes/ProtectedRoute";
 import ChangePasswordPage from "@/pages/change_password_page/ChangePasswordPage";
 import UserInforPage from "@/pages/user_infor_page/UserInforPage";
 
-// Home Layout
-import AddThing from "@/components/home_component/thing_component/AddThing";
-import ListThingPage from "@/pages/thing_page/ListThingPage";
-import AddDataStream from "@/components/home_component/datastream_component/AddDataStream";
-import DataStreamPage from "@/pages/datastream_page/DataStreamPage";
-import DetailDatastreamPage from "@/pages/detail_datastream_page/DetailDatastreamPage";
+import ThingPage from "@/pages/thing_page/ThingPage";
+import ThingDetailPage from "@/pages/thing_detail_page/ThingDetailPage";
 import SettingThingPage from "@/pages/setting_thing_page/SettingThingPage";
-import TaskingCapabilityForm from "@/components/home_component/taskingcapability_component/TaskingCapabilityForm";
 
 // đang test
 import AddActuator from "../components/home_component/actuator_component/AddActuator";
@@ -41,35 +36,27 @@ const UserRoutes = () => (
         <Route path="/thong-tin-nguoi-dung" element={<UserInforPage />} />
 
         {/* Start Route Home */}
-        <Route
-          path="/them-thing"
-          element={
-            <HomePage>
-              <AddThing />
-            </HomePage>
-          }
-        />
 
         <Route
           path="/"
           element={
             <HomePage>
-              <ListThingPage />
+              <ThingPage />
             </HomePage>
           }
         />
 
         <Route
-          path="/chi-tiet-thing/:thingId"
+          path="/chi-tiet-doi-tuong/:thingId"
           element={
             <HomePage>
-              <DataStreamPage />
+              <ThingDetailPage />
             </HomePage>
           }
         />
 
         <Route
-          path="/cai-dat-thing/:thingId"
+          path="/cai-dat-doi-tuong/:thingId"
           element={
             <HomePage>
               <SettingThingPage />
@@ -77,36 +64,12 @@ const UserRoutes = () => (
           }
         />
 
-        <Route
-          path="/chi-tiet-thing/:thingId/them-luong-du-lieu"
-          element={
-            <HomePage>
-              <AddDataStream />
-            </HomePage>
-          }
-        />
-
-        <Route
-          path="/quan-trac/:datastreamId"
-          element={
-            <HomePage>
-              <DetailDatastreamPage />
-            </HomePage>
-          }
-        />
         {/* End Route Home */}
 
-        {/* Start Actuator */}
+        {/* Start Actuator đang test*/}
         <Route path="/them-actuator" element={<AddActuator />} />
         <Route path="/chi-tiet-actuator" element={<ActuatorDetail />} />
         {/* End Actuator */}
-
-        {/* Start TaskingCapability */}
-        <Route
-          path="/them-tasking-capability"
-          element={<TaskingCapabilityForm />}
-        />
-        {/* End TaskingCapability */}
       </Route>
     </Route>
     <Route path="*" element={<NotFoundPage />} />
