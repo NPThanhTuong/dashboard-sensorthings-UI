@@ -1,6 +1,6 @@
 import React from "react";
 import { Select, Button } from "antd";
-import ImportData from "@/components/import_data_component/ImportData";
+// import ImportData from "@/components/import_data_component/ImportData";
 import ObservationChart from "@/components/chart_component/ObservationChart";
 import ObservationTable from "@/components/table_component/ObservationTable";
 
