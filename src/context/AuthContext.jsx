@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
   );
 
   const saveToken = (token) => {
-    const expires = 1;
+    const expires = 7;
     Cookies.set("token", token, { expires: expires });
     setToken(token);
 

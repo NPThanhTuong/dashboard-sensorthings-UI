@@ -4,6 +4,9 @@ import dayjs from "dayjs";
 import { useTheme } from "@/context/ThemeContext";
 import "@public/styles/observation-table-content.css";
 
+import { useLanguage } from "@/context/LanguageContext";
+import { useTranslations } from "@/config/useTranslations";
+
 const ObservationTableContent = ({
   loading,
   handleObservation,
@@ -15,8 +18,15 @@ const ObservationTableContent = ({
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 15;
 
+  const { language } = useLanguage();
+  const translations = useTranslations(language);
+
+  if (!translations) {
+    return null;
+  }
+
   if (loading || !handleObservation || handleObservation.length === 0) {
-    return <Empty description="Không có dữ liệu" />;
+    return <Empty description={translations["Không có dữ liệu"]} />;
   }
 
   const startIndex = (currentPage - 1) * pageSize;
@@ -25,13 +35,13 @@ const ObservationTableContent = ({
 
   const columns = [
     {
-      title: "STT",
+      title: translations["STT"],
       dataIndex: "index",
       key: "index",
       render: (text, record, index) => startIndex + index + 1,
     },
     {
-      title: "Thời gian",
+      title: translations["Thời gian"],
       dataIndex: "time",
       key: "time",
       render: (text, record) =>
@@ -71,7 +81,7 @@ const ObservationTableContent = ({
             onChange={handlePageChange}
             showSizeChanger={false}
             showTotal={(total, range) =>
-              `Hiển thị ${range[0]}-${range[1]} trong ${total} mục`
+              `${translations["Hiển thị"]} ${range[0]}-${range[1]} ${translations["trong"]} ${total} ${translations["mục"]}`
             }
             className={`mt-4 flex justify-end `}
           />

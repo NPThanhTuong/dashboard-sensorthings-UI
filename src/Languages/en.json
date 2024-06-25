@@ -113,5 +113,16 @@
   "Thêm đối tượng thành công!": "Thing added successfully!",
   "Thêm đối tượng thất bại!": "Failed to add thing!",
 
-  "STT": "NO"
+  "STT": "NO",
+
+  "Chọn ngày, giờ không hợp lệ!": "Invalid date and time selection!",
+  "Vui lòng chọn ngày, giờ trong khoảng thời gian": "Please select date and time within the period of",
+  "giờ": "hours",
+  "Xuất Excel": "Export to Excel",
+  "Thời gian": "Time",
+  "Hiển thị": "Shows",
+  "trong": "in",
+  "mục": "item",
+  "": "",
+  "": ""
 }

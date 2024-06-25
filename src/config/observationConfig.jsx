@@ -42,8 +42,8 @@ export const backgroundClasses = {
 
 // Background cho thẻ trong dark mode
 export const darkBackgroundClasses = {
-  temperature: "linear-gradient(135deg, #001529 50%, #001529 100%)",
-  humidity: "linear-gradient(135deg, #001529 50%, #001529 100%)",
+  temperature: "linear-gradient(135deg, #213E5E 50%, #213E5E 100%)",
+  humidity: "linear-gradient(135deg, #213E5E 50%, #213E5E 100%)",
   default: "linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%)",
 };
 

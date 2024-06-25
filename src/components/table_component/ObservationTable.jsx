@@ -4,6 +4,7 @@ import { WarningOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
 import viVN from "antd/lib/locale/vi_VN";
+import enUS from "antd/lib/locale/en_US";
 import { useAuth } from "@/context/AuthContext";
 import { useParams, useSearchParams } from "react-router-dom";
 import { fetchObservations } from "@/apis/ObservationAPI";
@@ -12,9 +13,13 @@ import ObservationTableContent from "./ObservationTableContent";
 import ObservationTableHeader from "./ObservationTableHeader";
 
 import { useTheme } from "@/context/ThemeContext";
+import { useLanguage } from "@/context/LanguageContext";
+import { useTranslations } from "@/config/useTranslations";
 
 const ObservationTable = ({ datastreamId, maxDaySort = 3 }) => {
   const { isDarkMode } = useTheme();
+  const { language } = useLanguage(); // Get the current language from context LanguageContext
+  const translations = useTranslations(language); // Get translations based on the current language
 
   const { thingId } = useParams();
   const { token, intervalTimes } = useAuth();
@@ -37,11 +42,24 @@ const ObservationTable = ({ datastreamId, maxDaySort = 3 }) => {
   const [api, contextHolder] = notification.useNotification();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // Function to get the appropriate locale based on the current language
+  const getLocale = (language) => {
+    switch (language) {
+      case "vi":
+        dayjs.locale("vi");
+        return viVN;
+      case "en":
+      default:
+        dayjs.locale("en");
+        return enUS;
+    }
+  };
+
   useEffect(() => {
     const fetchAllObservations = async () => {
       try {
         if (!token) {
-          throw new Error("Token không tồn tại");
+          throw new Error(translations["Token không tồn tại"]);
         }
 
         const data = await fetchObservations(datastreamId, token);
@@ -85,11 +103,12 @@ const ObservationTable = ({ datastreamId, maxDaySort = 3 }) => {
         }
       } catch (error) {
         api.open({
-          message: "Lỗi dữ liệu!",
-          description: `Xảy ra lỗi khi lấy dữ liệu từ máy chủ.`,
+          message: translations["Lỗi dữ liệu!"],
+          description: translations["Xảy ra lỗi khi lấy dữ liệu từ máy chủ."],
           icon: <WarningOutlined style={{ color: "#faad14" }} />,
+          style: isDarkMode ? darkModeNotificationStyle : {}, // Apply dark mode style for notification
         });
-        console.error("Lỗi lấy dữ liệu:", error);
+        console.error(translations["Lỗi lấy dữ liệu:"], error);
       }
     };
 
@@ -101,13 +120,23 @@ const ObservationTable = ({ datastreamId, maxDaySort = 3 }) => {
     );
 
     return () => clearInterval(interval);
-  }, [token, datastreamId, intervalTimes, thingId, allObservations, api]);
+  }, [
+    token,
+    datastreamId,
+    intervalTimes,
+    thingId,
+    allObservations,
+    api,
+    isDarkMode,
+    translations, // Re-fetch data if translations change
+  ]);
 
   const openNotification = (message, desc, icon) => {
     api.open({
       message: message,
       description: desc,
       icon: icon,
+      style: isDarkMode ? darkModeNotificationStyle : {}, // Apply dark mode style for notification
     });
   };
 
@@ -133,8 +162,10 @@ const ObservationTable = ({ datastreamId, maxDaySort = 3 }) => {
           handleObservation: [],
         }));
         openNotification(
-          "Chọn ngày, giờ không hợp lệ!",
-          `Vui lòng chọn ngày, giờ trong khoảng thời gian ${maxDaySort * 24} giờ`,
+          translations["Chọn ngày, giờ không hợp lệ!"],
+          `${translations["Vui lòng chọn ngày, giờ trong khoảng thời gian"]} ${
+            maxDaySort * 24
+          } ${translations["giờ"]}`,
           <WarningOutlined style={{ color: "#faad14" }} />,
         );
       }
@@ -202,14 +233,25 @@ const ObservationTable = ({ datastreamId, maxDaySort = 3 }) => {
       link.download = fileName + fileExtension;
       link.click();
     } catch (error) {
-      console.error("Lỗi khi xuất Excel:", error);
+      console.error(translations["Lỗi khi xuất Excel:"], error);
     }
   };
+
+  // Define dark mode style for notifications
+  const darkModeNotificationStyle = {
+    background: "#333",
+    color: "#fff",
+    border: "1px solid #444",
+  };
+
+  if (!translations) {
+    return null;
+  }
 
   return (
     <>
       {contextHolder}
-      <ConfigProvider locale={viVN}>
+      <ConfigProvider locale={getLocale(language)}>
         <div
           className={`w-full rounded-2xl p-5 shadow-lg ${
             isDarkMode
@@ -217,15 +259,17 @@ const ObservationTable = ({ datastreamId, maxDaySort = 3 }) => {
               : "border-white bg-white"
           }`}
         >
-          <Tabs
-            defaultActiveKey={activeTabKey}
-            items={tabItems}
-            onChange={handleChangeTab}
-          />
+          <Tabs defaultActiveKey={activeTabKey} onChange={handleChangeTab}>
+            {tabItems.map((tab) => (
+              <Tabs.TabPane tab={tab.label} key={tab.key} />
+            ))}
+          </Tabs>
           <ObservationTableHeader
             handleChangeDate={handleChangeDate}
             isErrorDatePicker={isErrorDatePicker}
             exportToExcel={exportToExcel}
+            translations={translations}
+            maxDaySort={maxDaySort}
           />
           <ObservationTableContent
             loading={loading}
@@ -233,6 +277,7 @@ const ObservationTable = ({ datastreamId, maxDaySort = 3 }) => {
             observationName={observationName}
             capitalizeFirstLetter={capitalizeFirstLetter}
             lowerizeFirstLetter={lowerizeFirstLetter}
+            translations={translations}
           />
         </div>
       </ConfigProvider>

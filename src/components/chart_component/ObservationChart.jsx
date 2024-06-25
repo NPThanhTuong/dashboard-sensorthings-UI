@@ -4,11 +4,15 @@ import { WarningOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
 import viVN from "antd/lib/locale/vi_VN";
+import enUS from "antd/lib/locale/en_US";
 import { useAuth } from "@/context/AuthContext";
 import { useParams, useSearchParams } from "react-router-dom";
 import { fetchObservationsChart } from "@/apis/ObservationAPI";
 import ObservationChartContent from "./ObservationChartContent";
 import ObservationChartHeader from "./ObservationChartHeader";
+
+import { useLanguage } from "@/context/LanguageContext";
+import { useTranslations } from "@/config/useTranslations";
 
 dayjs.locale("vi");
 
@@ -16,6 +20,8 @@ import { useTheme } from "@/context/ThemeContext";
 
 const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
   const { isDarkMode } = useTheme();
+  const { language } = useLanguage(); // Lấy ngôn ngữ hiện tại từ context LanguageContext
+  const translations = useTranslations(language); // Lấy bản dịch dựa trên ngôn ngữ hiện tại
 
   const { thingId } = useParams();
   const [allObservations, setAllObservations] = useState([]);
@@ -29,6 +35,26 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
   const [units, setUnits] = useState({});
   const [activeTabKey, setActiveTabKey] = useState("1");
 
+  // Dark mode notification styles
+  const darkModeNotificationStyle = {
+    background: "#333",
+    color: "#fff",
+    border: "1px solid #444",
+  };
+
+  // Hàm lấy locale phù hợp dựa trên ngôn ngữ hiện tại
+  const getLocale = (language) => {
+    switch (language) {
+      case "vi":
+        dayjs.locale("vi");
+        return viVN;
+      case "en":
+      default:
+        dayjs.locale("en");
+        return enUS;
+    }
+  };
+
   useEffect(() => {
     const fetchAllObservations = async () => {
       setLoading(true);
@@ -38,11 +64,11 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
         }
 
         const data = await fetchObservationsChart(datastreamId, token);
-        // Sort data by time in descending order
+        // Sắp xếp dữ liệu theo thời gian giảm dần
         const sortedData = data.sort(
           (a, b) =>
-            dayjs(b.result[0]["time"]).valueOf() -
-            dayjs(a.result[0]["time"]).valueOf(),
+            dayjs(a.result[0]["time"]).valueOf() -
+            dayjs(b.result[0]["time"]).valueOf(),
         );
 
         const processedData = sortedData.map((observation) => {
@@ -72,17 +98,7 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
 
         if (JSON.stringify(processedData) !== JSON.stringify(allObservations)) {
           setAllObservations(processedData);
-          const threeDaysAgo = dayjs().subtract(3, "days");
-          const recentData = processedData.filter(
-            (item) => dayjs(item.result[0]["time"]) >= threeDaysAgo,
-          );
-          // Sort recent data by time in descending order as well
-          const sortedRecentData = recentData.sort(
-            (a, b) =>
-              dayjs(a.result[0]["time"]).valueOf() -
-              dayjs(b.result[0]["time"]).valueOf(),
-          );
-          setHandleObservation(sortedRecentData);
+          setHandleObservation(processedData);
 
           const initialObservationName = Object.keys(
             processedData[0].result[0],
@@ -95,6 +111,7 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
           message: "Lỗi dữ liệu!",
           description: `Xảy ra lỗi khi lấy dữ liệu từ máy chủ.`,
           icon: <WarningOutlined style={{ color: "#faad14" }} />,
+          style: isDarkMode ? darkModeNotificationStyle : {},
         });
         console.error("Lỗi lấy dữ liệu:", error);
         setLoading(false);
@@ -109,13 +126,14 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
     );
 
     return () => clearInterval(interval);
-  }, [token, datastreamId, intervalTimes, thingId, api]);
+  }, [token, datastreamId, intervalTimes, thingId, api, isDarkMode]);
 
   const openNotification = (message, desc, icon) => {
     api.open({
       message: message,
       description: desc,
       icon: icon,
+      style: isDarkMode ? darkModeNotificationStyle : {},
     });
   };
 
@@ -135,28 +153,30 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
       const diffHour = Math.abs(startDate.diff(endDate, "hour"));
 
       if (diffHour <= maxDaySort * 24) {
-        setIsErrorDatePicker(false);
+        setIsErrorDatePicker(false); // Đặt trạng thái không có lỗi
         const handleData = allObservations.filter(
           (item) =>
             dayjs(item.result[0]["time"]) >= startDate &&
             dayjs(item.result[0]["time"]) <= endDate,
         );
-        // Sort handleData by time in descending order
+        // Sắp xếp handleData theo thời gian giảm dần
         const sortedHandleData = handleData.sort(
           (a, b) => dayjs(a.result[0]["time"]) - dayjs(b.result[0]["time"]),
         );
         setHandleObservation(sortedHandleData);
       } else {
-        setIsErrorDatePicker(true);
+        setIsErrorDatePicker(true); // Đặt trạng thái có lỗi
         setHandleObservation([]);
         openNotification(
-          "Chọn ngày, giờ không hợp lệ!",
-          `Vui lòng chọn ngày, giờ trong khoảng thời gian ${maxDaySort * 24} giờ`,
+          translations["Chọn ngày, giờ không hợp lệ!"],
+          `${translations["Vui lòng chọn ngày, giờ trong khoảng thời gian"]} ${
+            maxDaySort * 24
+          } ${translations["giờ"]}`,
           <WarningOutlined style={{ color: "#faad14" }} />,
         );
       }
     } else {
-      setIsErrorDatePicker(false);
+      setIsErrorDatePicker(false); // Đặt trạng thái không có lỗi khi không có ngày được chọn
       setHandleObservation(allObservations);
     }
   };
@@ -185,10 +205,14 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
     setObservationName(lowerizeFirstLetter(selectedTab.label));
   };
 
+  if (!translations) {
+    return null;
+  }
+
   return (
     <>
       {contextHolder}
-      <ConfigProvider locale={viVN}>
+      <ConfigProvider locale={getLocale(language)}>
         <div
           className={`w-full rounded-2xl p-5 shadow-lg ${
             isDarkMode
