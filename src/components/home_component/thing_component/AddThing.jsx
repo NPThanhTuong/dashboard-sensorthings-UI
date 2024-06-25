@@ -1,21 +1,26 @@
-import axios from "axios";
-import { useEffect } from "react";
-import { toast } from "react-toastify";
-import { useAuth } from "@/context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { Form, Input, Select, Upload, Button, Modal } from "antd";
+import React, { useEffect } from "react";
+import { Modal, Form, Input, Select, Upload, Button, notification } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { addThing } from "@/apis/ThingAPI";
+import { useLanguage } from "@/context/LanguageContext";
+import { useTranslations } from "@/config/useTranslations";
+import { useTheme } from "@/context/ThemeContext";
 
 const { Option } = Select;
 
 const AddThing = ({ visible, onClose }) => {
   const { token, user } = useAuth();
-  const navigate = useNavigate();
+  const { isDarkMode } = useTheme();
+  const { language } = useLanguage();
+  const translations = useTranslations(language);
 
+  const navigate = useNavigate();
   const [form] = Form.useForm();
 
   useEffect(() => {
-    if (user) {
+    if (user && user.message && user.message.id) {
       form.setFieldsValue({ id_user: user.message.id });
     }
   }, [user, form]);
@@ -31,70 +36,161 @@ const AddThing = ({ visible, onClose }) => {
     }
 
     try {
-      await axios.post("/api/post/things", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          token: token,
-        },
+      await addThing(data, token);
+      notification.success({
+        message: translations["Thêm đối tượng thành công!"],
       });
-      toast.success("Thêm thing thành công");
       navigate("/");
     } catch (error) {
-      console.error("Lỗi thêm thing:", error);
-      toast.error("Thêm thing thất bại");
+      console.error("Lỗi thêm đối tượng:", error);
+      notification.error({ message: translations["Thêm đối tượng thất bại!"] });
     }
   };
 
+  if (!translations) {
+    return null;
+  }
+
   return (
     <Modal
-      title="Thêm Thing"
-      visible={visible}
+      title={null}
+      open={visible}
       onCancel={onClose}
+      closable={false}
       footer={null}
+      className={`rounded-2xl p-6 ${
+        isDarkMode
+          ? "dark:border-darkPrimary dark:bg-darkPrimary dark:text-white"
+          : "bg-white"
+      }`}
     >
-      <Form form={form} onFinish={handleSubmit} layout="vertical">
-        <Form.Item
-          label="Vị trí"
-          name="id_location"
-          rules={[{ required: true, message: "Vui lòng chọn vị trí" }]}
+      <div
+        className={`-m-10 rounded-2xl p-6 ${
+          isDarkMode
+            ? "dark:border-darkPrimary dark:bg-darkPrimary dark:text-white"
+            : "bg-white"
+        }`}
+      >
+        <h1
+          className={`text-center text-xl font-bold ${
+            isDarkMode
+              ? "dark:border-darkPrimary dark:bg-darkPrimary dark:text-white"
+              : "bg-white"
+          }`}
         >
-          <Select placeholder="Lựa chọn vị trí">
-            <Option value="1">1</Option>
-          </Select>
-        </Form.Item>
-
-        <Form.Item
-          label="Tên Thing"
-          name="name"
-          rules={[{ required: true, message: "Vui lòng nhập tên Thing" }]}
+          {translations["Thêm đối tượng"]}
+        </h1>
+        <Form
+          form={form}
+          onFinish={handleSubmit}
+          layout="vertical"
+          className={
+            isDarkMode
+              ? "dark:border-darkPrimary dark:bg-darkPrimary dark:text-white"
+              : "bg-white focus:border-primary"
+          }
         >
-          <Input />
-        </Form.Item>
+          <Form.Item
+            label={translations["Vị trí"]}
+            name="id_location"
+            rules={[
+              {
+                required: true,
+                message: translations["Vui lòng chọn vị trí!"],
+              },
+            ]}
+            className={
+              isDarkMode
+                ? "dark:border-darkPrimary dark:bg-darkPrimary dark:text-white"
+                : "bg-white focus:border-primary"
+            }
+          >
+            <Select
+              placeholder={translations["Lựa chọn vị trí"]}
+              className={
+                isDarkMode
+                  ? "select-dark-mode"
+                  : "bg-white focus:border-primary"
+              }
+              dropdownClassName={isDarkMode ? "select-dark-mode" : ""}
+            >
+              <Option value="1">1</Option>
+              {/* Add more options if needed */}
+            </Select>
+          </Form.Item>
 
-        <Form.Item
-          label="Mô tả"
-          name="description"
-          // rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
-        >
-          <Input.TextArea rows={4} />
-        </Form.Item>
+          <Form.Item
+            label={translations["Tên đối tượng"]}
+            name="name"
+            rules={[
+              {
+                required: true,
+                message: translations["Vui lòng nhập tên đối tượng!"],
+              },
+            ]}
+          >
+            <Input
+              placeholder={translations["Nhập tên đối tượng"]}
+              className={`custom-input ${
+                isDarkMode
+                  ? "dark:border-darkInput dark:bg-darkInput dark:text-white"
+                  : "bg-white"
+              }`}
+            />
+          </Form.Item>
 
-        <Form.Item label="Hình ảnh" name="avt_image">
-          <Upload beforeUpload={() => false} maxCount={1} listType="picture">
-            <Button icon={<UploadOutlined />}>Tải lên hình ảnh</Button>
-          </Upload>
-        </Form.Item>
+          <Form.Item
+            label={translations["Mô tả"]}
+            name="description"
+            rules={[
+              { required: true, message: translations["Vui lòng nhập mô tả!"] },
+            ]}
+          >
+            <Input.TextArea
+              placeholder={translations["Mô tả"]}
+              rows={4}
+              className={`custom-input ${
+                isDarkMode
+                  ? "dark:bg-darkInput dark:border-darkInput dark:text-white"
+                  : ""
+              }`}
+            />
+          </Form.Item>
 
-        <Form.Item name="id_user" hidden>
-          <Input />
-        </Form.Item>
+          <Form.Item label={translations["Hình ảnh"]} name="avt_image">
+            <Upload beforeUpload={() => false} maxCount={1} listType="picture">
+              <Button
+                icon={<UploadOutlined />}
+                className={`custom-input ${
+                  isDarkMode
+                    ? "dark:bg-darkInput dark:border-darkInput dark:text-white"
+                    : ""
+                }`}
+              >
+                {translations["Tải lên hình ảnh"]}
+              </Button>
+            </Upload>
+          </Form.Item>
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit" className="w-full">
-            Thêm
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item name="id_user" hidden>
+            <Input />
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className={`w-full ${
+                isDarkMode
+                  ? "dark:bg-darkButton dark:m-0 dark:border-darkPrimary dark:text-white dark:shadow-md dark:shadow-white"
+                  : ""
+              }`}
+            >
+              {translations["Thêm"]}
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </Modal>
   );
 };

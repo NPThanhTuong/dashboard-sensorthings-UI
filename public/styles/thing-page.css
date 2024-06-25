@@ -1,0 +1,68 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.image-container {
+  height: 50%;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.3s ease;
+}
+
+.content {
+  padding: 16px;
+  flex-grow: 1;
+  background: linear-gradient(
+    to top,
+    rgb(161, 251, 200),
+    rgba(24, 27, 33, 0.07)
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.dark .content {
+  background: linear-gradient(to top, rgb(2, 12, 24), rgba(24, 27, 33, 0.1));
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.setting-button {
+  border-radius: 16px;
+}
+
+.dark .setting-button {
+  background-color: #081a2e;
+  border: none;
+  color: #fff;
+}
+
+.rotating-icon {
+  animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.svg-glow {
+  filter: drop-shadow(0 0 6px #38a169);
+  transition: filter 0.3s ease-in-out;
+}
+
+.svg-glow:hover {
+  filter: drop-shadow(0 0 10px #38a169);
+}

@@ -1,15 +1,24 @@
 import { useState, useEffect } from "react";
-import { Button, Skeleton } from "antd";
+import { Button } from "antd";
 import AddThing from "./AddThing";
 import FilteredThings from "./FilteredThings";
 import { AiOutlinePlus } from "react-icons/ai";
+
+import ThemeLightDark from "@/components/theme_component/ThemeLightDark";
+import LanguageSelector from "@/components/language_component/LanguageSelector";
+
+import { useLanguage } from "@/context/LanguageContext";
+import { useTranslations } from "@/config/useTranslations";
 
 const HeaderThing = ({ searchQuery, setSearchQuery }) => {
   const [greeting, setGreeting] = useState("");
   const [currentTime, setCurrentTime] = useState("");
   const [loading, setLoading] = useState(true);
-
   const [showAddThing, setShowAddThing] = useState(false);
+
+  // phần chuyển đổi ngôn ngữ
+  const { language } = useLanguage();
+  const translations = useTranslations(language);
 
   const showAddThingModal = () => {
     setShowAddThing(true);
@@ -46,7 +55,7 @@ const HeaderThing = ({ searchQuery, setSearchQuery }) => {
 
       setGreeting(greetingMessage);
       setCurrentTime(formattedDateTime);
-      setLoading(false); // Cập nhật biến loading thành false sau khi dữ liệu đã được tải xong
+      setLoading(false);
     };
 
     updateGreetingAndTime();
@@ -59,26 +68,36 @@ const HeaderThing = ({ searchQuery, setSearchQuery }) => {
 
   return (
     <>
-      <section className="flex items-center justify-between rounded-xl bg-white p-4 shadow-md">
+      <section className="flex flex-col items-center justify-between rounded-lg bg-white p-4 shadow-md dark:bg-darkPrimary sm:flex-row">
         {loading ? (
-          <Skeleton active />
+          <div className="flex w-full items-center justify-center"></div>
         ) : (
           <>
-            <div>
-              <h1 className="text-2xl font-bold">{greeting}</h1>
-              <p className="text-gray-500">{currentTime}</p>
+            <div className="mb-4 sm:mb-0">
+              <h1 className="text-2xl font-bold dark:text-textDark">
+                {translations["Trang chủ"]}
+              </h1>
+              <p className="dark:text-textDark">{currentTime}</p>
             </div>
-            <div className="flex items-center gap-5">
-              <div className="">
+            <div className="flex flex-col items-center gap-5 sm:flex-row">
+              <div className="mb-4 sm:mb-0">
                 <Button
-                  className="ant-btn-primary flex items-center gap-1 px-10 py-5 text-base font-semibold"
+                  type="primary"
+                  className={`dark:bg-darkButton flex w-40 items-center justify-center gap-1 rounded-full bg-primary font-semibold text-white dark:shadow-sm dark:shadow-white`}
                   onClick={showAddThingModal}
+                  style={{ height: "40px" }}
                 >
-                  <AiOutlinePlus /> Thing
+                  <AiOutlinePlus /> {translations["Đối tượng"]}
                 </Button>
               </div>
               <div>
                 <FilteredThings setSearchQuery={setSearchQuery} />
+              </div>
+              <div>
+                <ThemeLightDark />
+              </div>
+              <div>
+                <LanguageSelector />
               </div>
             </div>
           </>
@@ -87,7 +106,7 @@ const HeaderThing = ({ searchQuery, setSearchQuery }) => {
       {showAddThing && (
         <AddThing
           visible={showAddThing}
-          onClose={() => setShowAddThing(false)} // Đóng form khi người dùng nhấn nút đóng
+          onClose={() => setShowAddThing(false)}
         />
       )}
     </>

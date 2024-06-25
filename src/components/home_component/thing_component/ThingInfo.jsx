@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { Alert, Skeleton } from "antd";
 import { useAuth } from "@/context/AuthContext";
 import hitech_ctu from "@public/images/hitech-ctu.jpg";
+import { fetchThingData } from "@/apis/ThingAPI";
+import "@public/styles/thing-info.css";
 
 const ThingInfo = ({ thingId }) => {
   const { token } = useAuth();
@@ -10,30 +11,23 @@ const ThingInfo = ({ thingId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchThingData = async () => {
-    try {
-      const response = await axios.get(`/api/get/things(${thingId})`, {
-        headers: { token },
-      });
-      if (Array.isArray(response.data) && response.data.length > 0) {
-        setThingData(response.data[0]);
-      } else {
-        setThingData(null);
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error("Lỗi lấy dữ liệu:", error);
-      setError(error);
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    if (thingId && token) {
-      fetchThingData();
-    } else {
-      setLoading(false);
-    }
+    const getThingData = async () => {
+      if (thingId && token) {
+        try {
+          const data = await fetchThingData(thingId, token);
+          setThingData(data);
+        } catch (error) {
+          setError(error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+      }
+    };
+
+    getThingData();
   }, [thingId, token]);
 
   if (error) {
@@ -49,9 +43,18 @@ const ThingInfo = ({ thingId }) => {
     );
   }
 
+  const renderProperties = (properties) => {
+    return Object.entries(properties).map(([key, value]) => (
+      <div className="mb-2 " key={key}>
+        <span className="property-key">{key}: </span>
+        <span className="property-value">{value}</span>
+      </div>
+    ));
+  };
+
   return (
     <div
-      className="relative col-span-2 overflow-hidden rounded-xl"
+      className="relative col-span-2 h-full overflow-hidden rounded-2xl"
       style={{ backgroundColor: "#eff0f3" }}
     >
       <img
@@ -61,29 +64,23 @@ const ThingInfo = ({ thingId }) => {
       />
       <Skeleton loading={loading} active>
         {thingData && (
-          <div className="thing-data-overlay">
-            <div className="thing-data-content">
-              <h3 className="mb-12 text-2xl font-bold text-white">
-                {thingData.name}
-              </h3>
-              <div className="mb-2">
-                <span className="font-semibold text-white">Mô tả:</span>
-                <p className="ml-2 text-white">{thingData.description}</p>
-              </div>
-              <div className="mb-2">
-                <span className="font-semibold text-white">Người sở hữu:</span>
-                <p className="ml-2 text-white">{thingData.properties?.owner}</p>
-              </div>
-              <div className="mb-2">
-                <span className="font-semibold text-white">Địa chỉ:</span>
-                <p className="ml-2 text-white">
-                  {thingData.properties?.address}, {thingData.properties?.ward},{" "}
-                  {thingData.properties?.district},{" "}
-                  {thingData.properties?.province}
-                </p>
+          <>
+            <span className="description-title">Mô tả đối tượng (Thing)</span>
+            <div className="thing-data-overlay">
+              {/* <div className="mota">
+                <span>{thingData.name}</span>
+              </div> */}
+              <div className="thing-data-content">
+                <div className="mb-2">
+                  <p className="ml-2">{thingData.description}</p>
+                </div>
+                <div className="">
+                  {thingData.properties &&
+                    renderProperties(thingData.properties)}
+                </div>
               </div>
             </div>
-          </div>
+          </>
         )}
       </Skeleton>
     </div>

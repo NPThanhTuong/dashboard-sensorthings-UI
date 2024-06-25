@@ -1,83 +1,190 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Line } from "react-chartjs-2";
-import moment from "moment";
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js";
+import { gradientColors } from "@/config/chartConfig";
 
-const LineChart = ({ observations, dataStreamId, dataType }) => {
-  const unitMap = {
-    5: "lux",
-    6: "%",
-  };
+ChartJS.register(
+  LineElement,
+  PointElement,
+  LinearScale,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+);
 
-  const [startDate, setStartDate] = useState(moment().subtract(3, "days"));
-  const [endDate, setEndDate] = useState(moment());
+import { useTheme } from "@/context/ThemeContext";
+import { useLanguage } from "@/context/LanguageContext";
+import { useTranslations } from "@/config/useTranslations";
 
-  const unit = unitMap[dataStreamId] || "";
+const LineChart = ({ dataStreams, observations }) => {
+  const chartRefs = useRef([]);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
-  const getChartData = () => {
-    const filteredObservations = observations.filter((obs) =>
-      moment(obs.resultTime).isBetween(startDate, endDate),
-    );
+  const { isDarkMode } = useTheme();
+  const { language } = useLanguage();
+  const translations = useTranslations(language);
 
-    const labels = filteredObservations.map((obs) =>
-      moment(obs.resultTime).format("DD/MM/YYYY HH:mm:ss"),
-    );
-    const data = filteredObservations.map((obs) => obs.result[0]);
-
-    return {
-      labels,
-      datasets: [
-        {
-          label: `${dataType} (${unit})`,
-          data,
-          fill: false,
-          backgroundColor: "rgb(255, 165, 0,1)",
-          borderColor: "rgba(255, 165, 0, 0.5)",
+  // Cấu hình biểu đồ với các tùy chọn tối ưu
+  const chartOptions = useMemo(
+    () => ({
+      scales: {
+        x: {
+          display: false,
+          ticks: {
+            color: isDarkMode ? "#FFFFFF" : "#000000",
+          },
         },
-      ],
-    };
-  };
-
-  const options = {
-    scales: {
-      y: {
-        ticks: {
-          stepSize: 20,
+        y: {
+          display: true,
+          beginAtZero: true,
+          ticks: {
+            color: isDarkMode ? "#FFFFFF" : "#000000",
+          },
         },
       },
-    },
+      plugins: {
+        legend: {
+          display: true,
+          labels: {
+            color: isDarkMode ? "#FFFFFF" : "#000000",
+          },
+        },
+      },
+      maintainAspectRatio: false,
+      responsive: true,
+      elements: {
+        point: { radius: 0 },
+      },
+    }),
+    [isDarkMode],
+  );
+
+  // Hàm làm sạch và tách giá trị và đơn vị từ chuỗi
+  const cleanUnit = (value) => {
+    const match = value.match(/^([\d.]+)\s*\((.*)\)$/);
+    if (match) {
+      return { value: parseFloat(match[1]), unit: match[2] };
+    }
+    return { value: parseFloat(value), unit: "" };
   };
 
-  const chartData = getChartData();
+  // Hàm lấy gradient cho biểu đồ
+  const getGradient = (ctx, key) => {
+    const gradientConfig = gradientColors[key] || gradientColors.default;
+    const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+    gradient.addColorStop(0, gradientConfig.start);
+    gradient.addColorStop(1, gradientConfig.end);
+    return gradient;
+  };
 
-  return (
-    <>
-      <section className="flex gap-5">
-        <div>
-          <label className="text-base">Ngày bắt đầu: </label>
-          <input
-            type="date"
-            value={startDate.format("YYYY-MM-DD")}
-            onChange={(e) => setStartDate(moment(e.target.value))}
-            className="border px-2 py-1"
-          />
-        </div>
-        <div>
-          <label className="text-base">Ngày kết thúc: </label>
-          <input
-            type="date"
-            value={endDate.format("YYYY-MM-DD")}
-            onChange={(e) => setEndDate(moment(e.target.value))}
-            className="border px-2 py-1"
-          />
+  // Hàm render biểu đồ đường
+  const renderLineChart = (dataStream, obsData, index) => {
+    const labels = obsData.map((obs) => obs.result[0].time);
+    const keys = Object.keys(obsData[0].result[0]).filter(
+      (key) => key !== "time",
+    );
+
+    const datasets = keys.map((key) => {
+      const unit = cleanUnit(obsData[0].result[0][key]).unit;
+      let gradient = null;
+      if (chartRefs.current[index]) {
+        const ctx = chartRefs.current[index].ctx;
+        gradient = getGradient(ctx, key);
+      }
+
+      return {
+        label: `${key.charAt(0).toUpperCase() + key.slice(1)} (${unit})`,
+        data: obsData.map((obs) => cleanUnit(obs.result[0][key]).value),
+        fill: "start",
+        borderColor: gradient,
+        backgroundColor: gradient,
+      };
+    });
+
+    const chartData = { labels: labels.slice(-20), datasets };
+
+    return (
+      <section key={dataStream.id} className="">
+        <div
+          className={`result-section rounded-2xl border bg-white shadow-lg ${
+            isDarkMode
+              ? "dark:border-darkPrimary dark:bg-darkSecondary dark:text-white"
+              : "border-white bg-white"
+          }`}
+        >
+          <h2
+            className=" text-center text-lg font-bold"
+            style={{ fontFamily: "Roboto" }}
+          >
+            {dataStream.name}
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+            {datasets.map((dataset) => (
+              <div key={dataset.label} className="h-52 w-64">
+                <Line
+                  ref={(el) => (chartRefs.current[index] = el)}
+                  data={{ labels: labels.slice(-20), datasets: [dataset] }}
+                  options={chartOptions}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
+    );
+  };
 
-      {chartData.datasets[0].data.length > 0 ? (
-        <Line data={chartData} options={options} height={100} />
-      ) : (
-        <p className="text-center text-red-500">Không có dữ liệu</p>
-      )}
-    </>
+  // Sử dụng useEffect để set cờ dữ liệu đã tải xong
+  useEffect(() => {
+    setDataLoaded(true);
+  }, []);
+
+  // Kiểm tra nếu không có data streams hoặc observations
+  if (
+    !dataStreams ||
+    dataStreams.length === 0 ||
+    Object.keys(observations).length === 0 ||
+    !translations
+  ) {
+    return null;
+  }
+
+  return (
+    <div
+      className={`rounded-2xl bg-white p-6 ${dataLoaded ? "" : "hidden"} ${
+        isDarkMode
+          ? "dark:border-darkPrimary dark:bg-darkPrimary dark:text-white"
+          : "border-white bg-white"
+      }`}
+    >
+      <h1
+        className="-mt-4 mb-4 text-center text-xl font-bold "
+        style={{ fontFamily: "Roboto" }}
+      >
+        {translations["Biểu đồ"]}
+      </h1>
+      <div className={`grid grid-cols-1 gap-4 md:grid-cols-1 lg:grid-cols-2 `}>
+        {dataStreams.map((dataStream, index) => {
+          const obsData = observations[dataStream.id] || [];
+
+          if (obsData.length > 0) {
+            return renderLineChart(dataStream, obsData, index);
+          } else {
+            return null;
+          }
+        })}
+      </div>
+    </div>
   );
 };
 

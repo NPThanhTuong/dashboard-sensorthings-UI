@@ -1,0 +1,45 @@
+.select-dark-mode .ant-select-selector {
+  background-color: #020e1a;
+  border-color: #555;
+  color: #fff;
+}
+
+.select-dark-mode .ant-select-arrow {
+  color: #fff;
+}
+
+.select-dark-mode .ant-select-dropdown {
+  background-color: #020e1a;
+  border-color: #555;
+}
+
+.select-dark-mode .ant-select-item-option {
+  background-color: #020e1a;
+  color: #fff;
+}
+
+.select-dark-mode .ant-select-item-option-selected {
+  background-color: #1890ff;
+  color: #fff;
+}
+
+.select-dark-mode {
+  background-color: #020e1a;
+  color: #fff;
+}
+
+.select-dark-mode .ant-select-selector {
+  background-color: #020e1a !important;
+  border-color: #555 !important;
+  color: #fff !important;
+}
+
+.select-dark-mode .ant-select-arrow {
+  color: #fff !important;
+}
+
+.select-dark-mode
+  .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background-color: #1890ff !important;
+  color: #fff !important;
+}

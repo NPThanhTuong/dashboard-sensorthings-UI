@@ -1,0 +1,29 @@
+.dark-theme-datepicker .ant-picker-panel-container,
+.dark-theme-datepicker .ant-picker-time-panel {
+  background: #081a2e;
+  color: #fff;
+}
+
+.dark-theme-datepicker .ant-picker-header,
+.dark-theme-datepicker .ant-picker-body,
+.dark-theme-datepicker .ant-picker-footer {
+  background: #081a2e;
+  color: #fff;
+}
+
+.dark-theme-datepicker .ant-picker-cell {
+  color: #fff;
+}
+
+.dark-theme-datepicker .ant-picker-cell-in-view:hover {
+  background: #081a2e;
+}
+
+.dark-theme-datepicker .ant-picker-ok {
+  background: #081a2e;
+  color: #fff;
+}
+
+.dark-placeholder input::placeholder {
+  color: #fff !important;
+}

@@ -1,0 +1,38 @@
+.dark-mode-table .ant-table {
+  border: 1px solid #081a2e;
+  background-color: #081a2e;
+  color: #ffffff;
+}
+
+.dark-mode-table .ant-table-thead > tr > th {
+  border: 1px solid #081a2e;
+  background-color: #081a2e;
+  color: #ffffff;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background-color: inherit !important;
+}
+
+.dark-mode-table .ant-table table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.dark-mode-table .ant-table-thead > tr > th {
+  border: 1px solid #ffffff; /* Màu border của các cột */
+}
+
+.dark-mode-table .ant-table-tbody > tr > td {
+  border: 1px solid #ffffff; /* Màu border của các cột */
+}
+
+.dark-mode-table .ant-table-cell {
+  border-right: 1px solid #ffffff; /* Đường border phân tách các cột */
+}
+
+/* observation-table-content.css */
+.dark-mode-alert {
+  background-color: #081a2e;
+  color: white;
+}
