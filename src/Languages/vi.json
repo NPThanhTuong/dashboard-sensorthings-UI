@@ -113,5 +113,14 @@
   "Thêm đối tượng thất bại!": "Thêm đối tượng thất bại!",
   "Thêm đối tượng thành công!": "Thêm đối tượng thành công!",
 
-  "STT": "STT"
+  "STT": "STT",
+  "Chọn ngày, giờ không hợp lệ!": "Chọn ngày, giờ không hợp lệ!",
+  "Vui lòng chọn ngày, giờ trong khoảng thời gian": "Vui lòng chọn ngày, giờ trong khoảng thời gian",
+  "giờ": "giờ",
+  "Xuất Excel": "Xuất Excel",
+
+  "Thời gian": "Thời gian",
+  "Hiển thị": "Hiển thị",
+  "trong": "trong",
+  "mục": "mục"
 }

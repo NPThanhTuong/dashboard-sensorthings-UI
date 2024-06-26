@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useRef, useMemo, useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -28,11 +28,26 @@ import { useTranslations } from "@/config/useTranslations";
 
 const LineChart = ({ dataStreams, observations }) => {
   const chartRefs = useRef([]);
-  const [dataLoaded, setDataLoaded] = useState(false);
-
   const { isDarkMode } = useTheme();
   const { language } = useLanguage();
   const translations = useTranslations(language);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    if (dataStreams && Object.keys(observations).length > 0) {
+      setLoaded(true); // Nếu có dữ liệu, đặt loaded thành true
+    }
+  }, [dataStreams, observations]);
+
+  // Check if all dataStreams have corresponding data in observations
+  const hasAllDataStreamsData = dataStreams.every(
+    (dataStream) =>
+      observations[dataStream.id] && observations[dataStream.id].length > 0,
+  );
+
+  if (!hasAllDataStreamsData) {
+    return null;
+  }
 
   // Cấu hình biểu đồ với các tùy chọn tối ưu
   const chartOptions = useMemo(
@@ -123,12 +138,12 @@ const LineChart = ({ dataStreams, observations }) => {
           }`}
         >
           <h2
-            className=" text-center text-lg font-bold"
+            className=" my-4 text-center text-lg font-bold"
             style={{ fontFamily: "Roboto" }}
           >
             {dataStream.name}
           </h2>
-          <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+          <div className="grid gap-4 p-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
             {datasets.map((dataset) => (
               <div key={dataset.label} className="h-52 w-64">
                 <Line
@@ -144,24 +159,22 @@ const LineChart = ({ dataStreams, observations }) => {
     );
   };
 
-  // Sử dụng useEffect để set cờ dữ liệu đã tải xong
-  useEffect(() => {
-    setDataLoaded(true);
-  }, []);
-
   // Kiểm tra nếu không có data streams hoặc observations
   if (
     !dataStreams ||
     dataStreams.length === 0 ||
-    Object.keys(observations).length === 0 ||
-    !translations
+    Object.keys(observations).length === 0
   ) {
+    return null;
+  }
+
+  if (!translations) {
     return null;
   }
 
   return (
     <div
-      className={`rounded-2xl bg-white p-6 ${dataLoaded ? "" : "hidden"} ${
+      className={`rounded-2xl bg-white p-6 ${
         isDarkMode
           ? "dark:border-darkPrimary dark:bg-darkPrimary dark:text-white"
           : "border-white bg-white"
@@ -169,11 +182,15 @@ const LineChart = ({ dataStreams, observations }) => {
     >
       <h1
         className="-mt-4 mb-4 text-center text-xl font-bold "
-        style={{ fontFamily: "Roboto" }}
+        style={{
+          fontFamily: "Roboto",
+          visibility: loaded ? "visible" : "hidden",
+        }}
       >
         {translations["Biểu đồ"]}
       </h1>
-      <div className={`grid grid-cols-1 gap-4 md:grid-cols-1 lg:grid-cols-2 `}>
+
+      <div className={`grid grid-cols-1 gap-4 md:grid-cols-1 lg:grid-cols-2`}>
         {dataStreams.map((dataStream, index) => {
           const obsData = observations[dataStream.id] || [];
 
