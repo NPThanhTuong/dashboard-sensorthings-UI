@@ -20,6 +20,12 @@ import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useTranslations } from "@/config/useTranslations";
 
+// Tạo ánh xạ giữa các khóa đã làm sạch và các khóa gốc
+const keyMap = Object.keys(borderClasses).reduce((acc, key) => {
+  acc[key.replace(/\s+/g, "").toLowerCase()] = key;
+  return acc;
+}, {});
+
 // Component Observation để hiển thị các dữ liệu quan sát mới nhất
 const Observation = ({ dataStreams, latestObservations }) => {
   const [loaded, setLoaded] = useState(false); // State để kiểm tra dữ liệu đã tải xong chưa
@@ -39,21 +45,33 @@ const Observation = ({ dataStreams, latestObservations }) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
+  // Hàm loại bỏ khoảng cách trắng từ khóa
+  const cleanKey = (key) => {
+    return key.replace(/\s+/g, "").toLowerCase();
+  };
+
   // Hàm lấy lớp CSS cho viền của field
   const getBorderClassName = (fieldName) => {
-    return borderClasses[fieldName] || borderClasses.default;
+    const cleanedFieldName = cleanKey(fieldName);
+    const originalFieldName = keyMap[cleanedFieldName] || fieldName;
+    return borderClasses[originalFieldName] || borderClasses.default;
   };
 
   // Hàm lấy lớp CSS cho nền của field
   const getBackgroundClassName = (fieldName) => {
+    const cleanedFieldName = cleanKey(fieldName);
+    const originalFieldName = keyMap[cleanedFieldName] || fieldName;
     return isDarkMode
-      ? darkBackgroundClasses[fieldName] || darkBackgroundClasses.default
-      : backgroundClasses[fieldName] || backgroundClasses.default;
+      ? darkBackgroundClasses[originalFieldName] ||
+          darkBackgroundClasses.default
+      : backgroundClasses[originalFieldName] || backgroundClasses.default;
   };
 
   // Hàm lấy lớp CSS cho kết quả của field
   const getResultClassName = (fieldName) => {
-    return resultClasses[fieldName] || resultClasses.default;
+    const cleanedFieldName = cleanKey(fieldName);
+    const originalFieldName = keyMap[cleanedFieldName] || fieldName;
+    return resultClasses[originalFieldName] || resultClasses.default;
   };
 
   // Hàm làm sạch đơn vị của giá trị
@@ -125,20 +143,22 @@ const Observation = ({ dataStreams, latestObservations }) => {
                     ([key, value], index) =>
                       key !== "time" && ( // Bỏ qua trường "time"
                         <Card
-                          key={`${dataStream.id}-${key}-${index}`}
+                          key={`${dataStream.id}-${cleanKey(key)}-${index}`}
                           bordered={false}
                           className={`rounded-l-none rounded-r-2xl shadow-lg`}
-                          style={{ background: getBackgroundClassName(key) }}
+                          style={{
+                            background: getBackgroundClassName(cleanKey(key)),
+                          }}
                         >
                           <div className="flex">
                             <div
                               className={`absolute bottom-0 left-0 top-0 flex w-[5%] items-center justify-center ${getBorderClassName(
-                                key,
+                                cleanKey(key),
                               )}`}
                             ></div>
-                            <div className="ml-2 flex-grow pl-1">
-                              <div className="flex items-center justify-between gap-4">
-                                <div>{getFieldIcon(key)}</div>
+                            <div className="ml-1 flex-grow pl-1">
+                              <div className="flex items-center justify-between gap-2">
+                                <div>{getFieldIcon(cleanKey(key))}</div>
                                 <div
                                   className={`text-2xl font-bold ${isDarkMode ? "text-white" : ""}`}
                                   style={{ fontFamily: "Kanit" }}
@@ -149,7 +169,7 @@ const Observation = ({ dataStreams, latestObservations }) => {
                               <div className="my-5 flex items-center justify-between">
                                 <span
                                   className={`mx-auto text-4xl font-bold ${getResultClassName(
-                                    key,
+                                    cleanKey(key),
                                   )} ${isDarkMode ? "" : ""}`}
                                   style={{ fontFamily: "Kanit" }}
                                 >

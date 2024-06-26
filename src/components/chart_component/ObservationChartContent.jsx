@@ -12,8 +12,9 @@ import {
   Legend,
 } from "chart.js";
 import { colorMapping } from "@/config/chartConfig";
-
 import { useTheme } from "@/context/ThemeContext";
+import { useLanguage } from "@/context/LanguageContext";
+import { useTranslations } from "@/config/useTranslations";
 
 ChartJS.register(
   CategoryScale,
@@ -23,9 +24,6 @@ ChartJS.register(
   Tooltip,
   Legend,
 );
-
-import { useLanguage } from "@/context/LanguageContext";
-import { useTranslations } from "@/config/useTranslations";
 
 const ObservationChartContent = ({
   handleObservation,
@@ -47,8 +45,16 @@ const ObservationChartContent = ({
     return string.charAt(0).toLowerCase() + string.slice(1);
   };
 
+  const formatKey = (key) => {
+    if (!key) return "";
+    return key.replace(/\s+/g, "").toLowerCase();
+  };
+
+  const formattedObservationName = formatKey(
+    observationName || tabItems[0]?.label,
+  );
   const gradientColors =
-    colorMapping[lowerizeFirstLetter(observationName)] || colorMapping.default;
+    colorMapping[formattedObservationName] || colorMapping.default;
 
   const data = {
     labels: handleObservation.map((obs) =>
@@ -65,10 +71,7 @@ const ObservationChartContent = ({
       {
         label:
           capitalizeFirstLetter(observationName || tabItems[0]?.label) +
-          ` ${
-            units[lowerizeFirstLetter(observationName || tabItems[0]?.label)] ||
-            ""
-          }`,
+          ` ${units[formattedObservationName] || ""}`,
         data: handleObservation.map(
           (obs) =>
             obs.result[0][
@@ -98,7 +101,7 @@ const ObservationChartContent = ({
       legend: {
         position: "top",
         labels: {
-          color: isDarkMode ? "#FFFFFF" : "#000000", // Legend label color
+          color: isDarkMode ? "#FFFFFF" : "#000000",
         },
       },
       title: {
@@ -109,17 +112,17 @@ const ObservationChartContent = ({
         font: {
           size: 15,
         },
-        color: isDarkMode ? "#FFFFFF" : "#000000", // Title color
+        color: isDarkMode ? "#FFFFFF" : "#000000",
       },
     },
     scales: {
       x: {
         title: {
           display: true,
-          color: isDarkMode ? "#FFFFFF" : "#000000", // X-axis title color
+          color: isDarkMode ? "#FFFFFF" : "#000000",
         },
         ticks: {
-          color: isDarkMode ? "#FFFFFF" : "#000000", // X-axis ticks color
+          color: isDarkMode ? "#FFFFFF" : "#000000",
         },
       },
       y: {
@@ -127,11 +130,7 @@ const ObservationChartContent = ({
           display: true,
           text:
             capitalizeFirstLetter(observationName || tabItems[0]?.label) +
-            ` ${
-              units[
-                lowerizeFirstLetter(observationName || tabItems[0]?.label)
-              ] || ""
-            }`,
+            ` ${units[formattedObservationName] || ""}`,
           color: isDarkMode ? "#FFFFFF" : "#000000",
         },
         ticks: {
@@ -164,7 +163,7 @@ const ObservationChartContent = ({
           </div>
         </div>
       ) : (
-        <Empty description="Không có dữ liệu." />
+        <Empty description="Không có dữ liệu" />
       )}
     </div>
   );
