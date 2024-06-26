@@ -1,5 +1,7 @@
 import temperatureIcon from "@public/images/icons/temperature.png";
 import humidityIcon from "@public/images/icons/humidity.png";
+import lightIcon from "@public/images/icons/light.png";
+
 import { GoClock } from "react-icons/go";
 
 // Icon cho thẻ
@@ -21,6 +23,22 @@ export const getFieldIcon = (fieldName) => {
           className="h-12 w-12 rounded-full border border-blue-700 bg-blue-50 p-2"
         />
       );
+    case "light":
+      return (
+        <img
+          src={lightIcon}
+          alt="Light Icon"
+          className="h-12 w-12 rounded-full border border-yellow-500 bg-yellow-50 p-2"
+        />
+      );
+    case "soilmoisture":
+      return (
+        <img
+          src={lightIcon}
+          alt="Light Icon"
+          className="h-12 w-12 rounded-full border border-orange-700 bg-orange-50 p-2"
+        />
+      );
     default:
       return <GoClock className="text-black" />;
   }
@@ -30,13 +48,21 @@ export const getFieldIcon = (fieldName) => {
 export const borderClasses = {
   temperature: "bg-green-700",
   humidity: "bg-blue-700",
+
+  light: "bg-yellow-500",
+  soilmoisture: "bg-orange-700",
+
   default: "",
 };
 
 // Background cho thẻ
 export const backgroundClasses = {
   temperature: "linear-gradient(135deg, #FAFFFC 0%, #DFFFE9 100%)",
-  humidity: "linear-gradient(135deg, #EDF0FE 0%, #CFD8FF 100%)",
+  humidity: "linear-gradient(135deg, #FAFFFC 0%, #CFD8FF 100%)",
+
+  light: "linear-gradient(135deg, #FAFFFC 0%, #F4FA58 100%)",
+  soilmoisture: "linear-gradient(135deg, #FAFFFC 0%, #EE7A53 100%)",
+
   default: "linear-gradient(135deg, #f0f0f0 0%, #a0a0a0 100%)",
 };
 
@@ -44,6 +70,10 @@ export const backgroundClasses = {
 export const darkBackgroundClasses = {
   temperature: "linear-gradient(135deg, #213E5E 50%, #213E5E 100%)",
   humidity: "linear-gradient(135deg, #213E5E 50%, #213E5E 100%)",
+
+  light: "linear-gradient(135deg, #213E5E 50%, #213E5E 100%)",
+  soilmoisture: "linear-gradient(135deg, #213E5E 50%, #213E5E 100%)",
+
   default: "linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%)",
 };
 
@@ -51,5 +81,9 @@ export const darkBackgroundClasses = {
 export const resultClasses = {
   temperature: "text-green-500",
   humidity: "text-blue-500",
+
+  light: "text-yellow-500",
+  soilmoisture: "text-orange-700",
+
   default: "text-white",
 };

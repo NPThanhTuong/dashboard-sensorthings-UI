@@ -26,6 +26,12 @@ import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useTranslations } from "@/config/useTranslations";
 
+// Tạo ánh xạ giữa các khóa đã làm sạch và các khóa gốc
+const keyMap = Object.keys(gradientColors).reduce((acc, key) => {
+  acc[key.replace(/\s+/g, "").toLowerCase()] = key;
+  return acc;
+}, {});
+
 const LineChart = ({ dataStreams, observations }) => {
   const chartRefs = useRef([]);
   const { isDarkMode } = useTheme();
@@ -95,7 +101,9 @@ const LineChart = ({ dataStreams, observations }) => {
 
   // Hàm lấy gradient cho biểu đồ
   const getGradient = (ctx, key) => {
-    const gradientConfig = gradientColors[key] || gradientColors.default;
+    const cleanedKey = key.replace(/\s+/g, "").toLowerCase();
+    const gradientConfig =
+      gradientColors[keyMap[cleanedKey]] || gradientColors.default;
     const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
     gradient.addColorStop(0, gradientConfig.start);
     gradient.addColorStop(1, gradientConfig.end);

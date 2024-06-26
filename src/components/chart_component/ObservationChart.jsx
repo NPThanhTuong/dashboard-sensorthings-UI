@@ -10,16 +10,18 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { fetchObservationsChart } from "@/apis/ObservationAPI";
 import ObservationChartContent from "./ObservationChartContent";
 import ObservationChartHeader from "./ObservationChartHeader";
+
 import { useLanguage } from "@/context/LanguageContext";
 import { useTranslations } from "@/config/useTranslations";
-import { useTheme } from "@/context/ThemeContext";
 
 dayjs.locale("vi");
 
+import { useTheme } from "@/context/ThemeContext";
+
 const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
   const { isDarkMode } = useTheme();
-  const { language } = useLanguage();
-  const translations = useTranslations(language);
+  const { language } = useLanguage(); // Lấy ngôn ngữ hiện tại từ context LanguageContext
+  const translations = useTranslations(language); // Lấy bản dịch dựa trên ngôn ngữ hiện tại
 
   const { thingId } = useParams();
   const [allObservations, setAllObservations] = useState([]);
@@ -40,7 +42,7 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
     border: "1px solid #444",
   };
 
-  // Function to get locale based on current language
+  // Hàm lấy locale phù hợp dựa trên ngôn ngữ hiện tại
   const getLocale = (language) => {
     switch (language) {
       case "vi":
@@ -53,7 +55,6 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
     }
   };
 
-  // useEffect để lấy tất cả các quan sát khi component được render
   useEffect(() => {
     const fetchAllObservations = async () => {
       setLoading(true);
@@ -63,16 +64,8 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
         }
 
         const data = await fetchObservationsChart(datastreamId, token);
-        // Lọc ra các quan sát không có thời gian hợp lệ
-        const filteredData = data.filter(
-          (observation) =>
-            observation.result &&
-            observation.result[0] &&
-            observation.result[0].time,
-        );
-
-        // Sắp xếp dữ liệu theo thời gian tăng dần
-        const sortedData = filteredData.sort(
+        // Sắp xếp dữ liệu theo thời gian giảm dần
+        const sortedData = data.sort(
           (a, b) =>
             dayjs(a.result[0]["time"]).valueOf() -
             dayjs(b.result[0]["time"]).valueOf(),
@@ -135,7 +128,6 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
     return () => clearInterval(interval);
   }, [token, datastreamId, intervalTimes, thingId, api, isDarkMode]);
 
-  // Hàm mở thông báo
   const openNotification = (message, desc, icon) => {
     api.open({
       message: message,
@@ -145,38 +137,35 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
     });
   };
 
-  // Hàm viết hoa chữ cái đầu tiên của chuỗi
   const capitalizeFirstLetter = (string) => {
     if (!string) return string;
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
-  // Hàm viết thường chữ cái đầu tiên của chuỗi
   const lowerizeFirstLetter = (string) => {
     if (!string) return string;
     return string.charAt(0).toLowerCase() + string.slice(1);
   };
 
-  // Hàm xử lý thay đổi ngày
   const handleChangeDate = (date, dateString) => {
     if (date) {
       const [startDate, endDate] = date;
       const diffHour = Math.abs(startDate.diff(endDate, "hour"));
 
       if (diffHour <= maxDaySort * 24) {
-        setIsErrorDatePicker(false); // Không có lỗi
+        setIsErrorDatePicker(false); // Đặt trạng thái không có lỗi
         const handleData = allObservations.filter(
           (item) =>
             dayjs(item.result[0]["time"]) >= startDate &&
             dayjs(item.result[0]["time"]) <= endDate,
         );
-        // Sắp xếp handleData theo thời gian tăng dần
+        // Sắp xếp handleData theo thời gian giảm dần
         const sortedHandleData = handleData.sort(
           (a, b) => dayjs(a.result[0]["time"]) - dayjs(b.result[0]["time"]),
         );
         setHandleObservation(sortedHandleData);
       } else {
-        setIsErrorDatePicker(true); // Có lỗi
+        setIsErrorDatePicker(true); // Đặt trạng thái có lỗi
         setHandleObservation([]);
         openNotification(
           translations["Chọn ngày, giờ không hợp lệ!"],
@@ -187,12 +176,11 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
         );
       }
     } else {
-      setIsErrorDatePicker(false); // Không có lỗi
+      setIsErrorDatePicker(false); // Đặt trạng thái không có lỗi khi không có ngày được chọn
       setHandleObservation(allObservations);
     }
   };
 
-  // Tạo các tab từ dữ liệu quan sát
   let tabItems = [];
   if (allObservations.length > 0) {
     let tabIndex = 1;
@@ -207,7 +195,6 @@ const ObservationChart = ({ datastreamId, maxDaySort = 3 }) => {
     }
   }
 
-  // Hàm xử lý thay đổi tab
   const handleChangeTab = (key) => {
     setActiveTabKey(key);
     const selectedTab = tabItems.find((tab) => tab.key === key);
