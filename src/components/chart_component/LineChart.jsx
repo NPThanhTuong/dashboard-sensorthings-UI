@@ -32,6 +32,11 @@ const keyMap = Object.keys(gradientColors).reduce((acc, key) => {
   return acc;
 }, {});
 
+const fixedChartStyle = {
+  width: "250px", // Chiều rộng cố định
+  height: "220px", // Chiều cao cố định
+};
+
 const LineChart = ({ dataStreams, observations }) => {
   const chartRefs = useRef([]);
   const { isDarkMode } = useTheme();
@@ -137,7 +142,7 @@ const LineChart = ({ dataStreams, observations }) => {
     const chartData = { labels: labels.slice(-20), datasets };
 
     return (
-      <section key={dataStream.id} className="">
+      <div key={dataStream.id} className="">
         <div
           className={`result-section rounded-2xl border bg-white shadow-lg ${
             isDarkMode
@@ -146,14 +151,18 @@ const LineChart = ({ dataStreams, observations }) => {
           }`}
         >
           <h2
-            className=" my-4 text-center text-lg font-bold"
+            className="my-4 text-center text-lg font-bold"
             style={{ fontFamily: "Roboto" }}
           >
             {dataStream.name}
           </h2>
-          <div className="grid gap-4 p-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2">
             {datasets.map((dataset) => (
-              <div key={dataset.label} className="h-52 w-64">
+              <div
+                key={dataset.label}
+                className="mx-auto"
+                style={fixedChartStyle}
+              >
                 <Line
                   ref={(el) => (chartRefs.current[index] = el)}
                   data={{ labels: labels.slice(-20), datasets: [dataset] }}
@@ -163,7 +172,7 @@ const LineChart = ({ dataStreams, observations }) => {
             ))}
           </div>
         </div>
-      </section>
+      </div>
     );
   };
 
@@ -189,7 +198,7 @@ const LineChart = ({ dataStreams, observations }) => {
       }`}
     >
       <h1
-        className="-mt-4 mb-4 text-center text-xl font-bold "
+        className="-mt-4 mb-4 text-center text-xl font-bold"
         style={{
           fontFamily: "Roboto",
           visibility: loaded ? "visible" : "hidden",
@@ -198,7 +207,7 @@ const LineChart = ({ dataStreams, observations }) => {
         {translations["Biểu đồ"]}
       </h1>
 
-      <div className={`grid grid-cols-1 gap-4 md:grid-cols-1 lg:grid-cols-2`}>
+      <div className="grid  gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2">
         {dataStreams.map((dataStream, index) => {
           const obsData = observations[dataStream.id] || [];
 

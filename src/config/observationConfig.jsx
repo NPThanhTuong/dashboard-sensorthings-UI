@@ -13,7 +13,8 @@ export const getFieldIcon = (fieldName) => {
         <img
           src={temperatureIcon}
           alt="Temperature Icon"
-          className="h-12 w-12 rounded-full border border-green-700 bg-green-50 p-2"
+          className="h-12 w-12 rounded-full border bg-green-50 p-2"
+          style={{ borderColor: "#00BB00" }}
         />
       );
     case "humidity":
@@ -47,8 +48,8 @@ export const getFieldIcon = (fieldName) => {
 
 // Border cho thẻ
 export const borderClasses = {
-  temperature: "bg-green-700",
-  humidity: "bg-blue-700",
+  temperature: "bg-green-500",
+  humidity: "bg-blue-500",
 
   light: "bg-yellow-500",
   soilmoisture: "bg-orange-700",
