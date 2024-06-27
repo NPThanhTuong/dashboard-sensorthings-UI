@@ -45,7 +45,7 @@ const ObservationTableContent = ({
       dataIndex: "time",
       key: "time",
       render: (text, record) =>
-        dayjs(record.result[0]["time"]).format("HH:mm:ss DD-MM-YYYY"),
+        dayjs(record.result[0]["time"]).format("HH:mm:ss DD/MM/YYYY"),
     },
     {
       title: capitalizeFirstLetter(observationName),

@@ -128,7 +128,7 @@ const ObservationTable = ({ datastreamId, maxDaySort = 3 }) => {
     allObservations,
     api,
     isDarkMode,
-    translations, // Re-fetch data if translations change
+    translations,
   ]);
 
   const openNotification = (message, desc, icon) => {

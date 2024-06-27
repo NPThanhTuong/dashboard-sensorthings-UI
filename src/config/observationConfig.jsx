@@ -1,5 +1,6 @@
 import temperatureIcon from "@public/images/icons/temperature.png";
 import humidityIcon from "@public/images/icons/humidity.png";
+import SoilIcon from "@public/images/icons/soil.png";
 import lightIcon from "@public/images/icons/light.png";
 
 import { GoClock } from "react-icons/go";
@@ -34,8 +35,8 @@ export const getFieldIcon = (fieldName) => {
     case "soilmoisture":
       return (
         <img
-          src={lightIcon}
-          alt="Light Icon"
+          src={SoilIcon}
+          alt="Soil Icon"
           className="h-12 w-12 rounded-full border border-orange-700 bg-orange-50 p-2"
         />
       );
