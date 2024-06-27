@@ -81,7 +81,7 @@ const Observation = ({ dataStreams, latestObservations }) => {
 
   // Hàm định dạng thời gian
   const formatTime = (time) => {
-    return dayjs(time).format("HH:mm:ss DD-MM-YYYY");
+    return dayjs(time).format("HH:mm:ss DD/MM/YYYY");
   };
 
   // Kiểm tra nếu không có dataStreams hoặc latestObservations thì trả về null
