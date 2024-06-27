@@ -1,12 +1,9 @@
 import React from "react";
 import { Select, Button } from "antd";
-// import ImportData from "@/components/import_data_component/ImportData";
 import ObservationChart from "@/components/chart_component/ObservationChart";
 import ObservationTable from "@/components/table_component/ObservationTable";
-
 import { useTheme } from "@/context/ThemeContext";
 import "@public/styles/data-stream-control.css";
-
 import { useLanguage } from "@/context/LanguageContext";
 import { useTranslations } from "@/config/useTranslations";
 
@@ -47,7 +44,7 @@ const DataStreamControl = ({
           isDarkMode ? "dark:bg-darkSecondary dark:text-white" : ""
         }`}
       >
-        <div className="mb-4 w-full md:mb-0 md:mr-4 md:w-auto">
+        <div className="mb-4 w-full md:w-auto">
           <Select
             value={selectedDataStream}
             onChange={handleDataStreamChange}
@@ -65,35 +62,37 @@ const DataStreamControl = ({
           </Select>
         </div>
 
-        <ButtonGroup
-          className={`flex w-full flex-wrap gap-4 md:w-auto ${
-            isDarkMode ? "" : "border-primary"
-          }`}
-        >
-          <Button
-            onClick={toggleAddingData}
-            className="h-10 w-full px-6 py-2 md:w-auto"
-            style={buttonStyle(activeView === "addData")}
+        <div className="w-full md:w-auto">
+          <ButtonGroup
+            className={`flex flex-col gap-4 md:flex-row md:items-center md:justify-between ${
+              isDarkMode ? "" : "border-primary"
+            }`}
           >
-            {translations["Thêm dữ liệu"]}
-          </Button>
+            <Button
+              onClick={toggleAddingData}
+              className="h-10 w-full px-6 py-2 md:w-auto"
+              style={buttonStyle(activeView === "addData")}
+            >
+              {translations["Thêm dữ liệu"]}
+            </Button>
 
-          <Button
-            onClick={() => toggleView("chart")}
-            className="h-10 w-full px-4 py-2 md:w-auto"
-            style={buttonStyle(activeView === "chart")}
-          >
-            {translations["Dữ liệu biểu đồ"]}
-          </Button>
+            <Button
+              onClick={() => toggleView("chart")}
+              className="h-10 w-full px-4 py-2 md:w-auto"
+              style={buttonStyle(activeView === "chart")}
+            >
+              {translations["Dữ liệu biểu đồ"]}
+            </Button>
 
-          <Button
-            onClick={() => toggleView("table")}
-            className="h-10 w-full px-6 py-2 md:w-auto"
-            style={buttonStyle(activeView === "table")}
-          >
-            {translations["Dữ liệu bảng"]}
-          </Button>
-        </ButtonGroup>
+            <Button
+              onClick={() => toggleView("table")}
+              className="h-10 w-full px-6 py-2 md:w-auto"
+              style={buttonStyle(activeView === "table")}
+            >
+              {translations["Dữ liệu bảng"]}
+            </Button>
+          </ButtonGroup>
+        </div>
       </div>
 
       <div className="mt-4">

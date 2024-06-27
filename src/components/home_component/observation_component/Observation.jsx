@@ -26,7 +26,14 @@ const keyMap = Object.keys(borderClasses).reduce((acc, key) => {
   return acc;
 }, {});
 
-// Component Observation để hiển thị các dữ liệu quan sát mới nhất
+// CSS-in-JS style object
+const fixedObservationStyle = {
+  width: "250px", // Chiều rộng cố định
+  height: "220px", // Chiều cao cố định
+  // padding: "5px",
+  overflow: "hidden", // Đảm bảo nội dung không tràn ra ngoài
+};
+
 const Observation = ({ dataStreams, latestObservations }) => {
   const [loaded, setLoaded] = useState(false); // State để kiểm tra dữ liệu đã tải xong chưa
   const { isDarkMode } = useTheme(); // Lấy trạng thái dark mode từ context
@@ -112,7 +119,7 @@ const Observation = ({ dataStreams, latestObservations }) => {
         >
           {translations["Dữ liệu"]}
         </h1>
-        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2">
           {dataStreams?.map((dataStream) => {
             const observations = latestObservations[dataStream.id];
             if (
@@ -138,16 +145,17 @@ const Observation = ({ dataStreams, latestObservations }) => {
                 >
                   {dataStream.name}
                 </div>
-                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <div className=" grid grid-cols-1 gap-4 sm:-ml-2 lg:grid-cols-2">
                   {Object.entries(observations.result[0])?.map(
                     ([key, value], index) =>
                       key !== "time" && ( // Bỏ qua trường "time"
                         <Card
                           key={`${dataStream.id}-${cleanKey(key)}-${index}`}
                           bordered={false}
-                          className={`rounded-l-none rounded-r-2xl shadow-lg`}
+                          className={`mx-auto rounded-l-none rounded-r-2xl shadow-lg`}
                           style={{
                             background: getBackgroundClassName(cleanKey(key)),
+                            ...fixedObservationStyle, // Áp dụng style cố định
                           }}
                         >
                           <div className="flex">
@@ -156,7 +164,7 @@ const Observation = ({ dataStreams, latestObservations }) => {
                                 cleanKey(key),
                               )}`}
                             ></div>
-                            <div className="ml-1 flex-grow pl-1">
+                            <div className="ml-1 flex-grow">
                               <div className="flex items-center justify-between gap-2">
                                 <div>{getFieldIcon(cleanKey(key))}</div>
                                 <div
@@ -166,7 +174,7 @@ const Observation = ({ dataStreams, latestObservations }) => {
                                   {capitalizeFirstLetter(key)}
                                 </div>
                               </div>
-                              <div className="my-5 flex items-center justify-between">
+                              <div className="my-4 flex items-center justify-between">
                                 <span
                                   className={`mx-auto text-4xl font-bold ${getResultClassName(
                                     cleanKey(key),
