@@ -12,6 +12,7 @@ import {
   fetchLatestObservation,
   fetchObservations,
 } from "@/apis/ObservationAPI";
+import AddTask from "../../components/home_component/task_component/AddTask";
 
 const ThingDetailPage = () => {
   const { token, intervalTimes } = useAuth();
@@ -148,6 +149,9 @@ const ThingDetailPage = () => {
             <LineChart dataStreams={dataStreams} observations={observations} />
           </>
         )}
+      </section>
+      <section>
+        <AddTask />
       </section>
       {dataLoaded && (
         <DataStreamControl

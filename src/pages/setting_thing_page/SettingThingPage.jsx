@@ -121,24 +121,26 @@ const SettingThingPage = () => {
             showTaskingCapabilityModal={showTaskingCapabilityModal}
           />
           {!loading && (
-            <section className={`my-4 `}>
-              <Row gutter={[16, 16]}>
-                <Col xs={24} lg={12}>
-                  <DataStreamsTable
-                    dataStreams={dataStreams}
-                    sensors={sensors}
-                    error={error}
-                    currentPage={currentPage}
-                    itemsPerPage={itemsPerPage}
-                    indexOfFirstItem={indexOfFirstItem}
-                    paginate={paginate}
-                  />
-                </Col>
-                <Col xs={24} lg={12}>
-                  <FetchTaskData thingId={thingId} />
-                </Col>
-              </Row>
-            </section>
+            <>
+              <section className={`my-4 `}>
+                <Row gutter={[16, 16]}>
+                  <Col xs={24} lg={12}>
+                    <DataStreamsTable
+                      dataStreams={dataStreams}
+                      sensors={sensors}
+                      error={error}
+                      currentPage={currentPage}
+                      itemsPerPage={itemsPerPage}
+                      indexOfFirstItem={indexOfFirstItem}
+                      paginate={paginate}
+                    />
+                  </Col>
+                  <Col xs={24} lg={12}>
+                    <FetchTaskData thingId={thingId} />
+                  </Col>
+                </Row>
+              </section>
+            </>
           )}
           <section
             className={`${isDarkMode ? "dark:bg-darkPrimary dark:text-black" : ""}`}
