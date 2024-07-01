@@ -1,80 +1,159 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
-import { Form, Switch, message, Skeleton } from "antd";
+import { request } from "@/utils/request";
+import { Switch, message, Card } from "antd";
 import { useAuth } from "@/context/AuthContext";
 import Cookies from "js-cookie";
+import { renderIcon } from "@/config/IconControlConfig";
 
-const AddTask = ({ actuator }) => {
+const AddTask = () => {
   const { thingId } = useParams();
-  const [taskingParameters, setTaskingParameters] = useState(() => {
-    const storedState = parseInt(Cookies.get("taskingParameters")) || 0;
-    return storedState === 1 ? -1 : 0;
-  });
-  const [isSwitched, setIsSwitched] = useState(false);
-  const [initialLoad, setInitialLoad] = useState(true);
+  const [actuators, setActuators] = useState([]);
+  const [taskingParameters, setTaskingParameters] = useState({});
+  const [autoMode, setAutoMode] = useState(false);
   const [loading, setLoading] = useState(true);
   const { token } = useAuth();
 
   useEffect(() => {
-    if (!initialLoad) {
-      const saveTask = async () => {
-        try {
-          const response = await axios.post("/api/post/task", {
-            taskingParameters: taskingParameters === -1 ? 1 : 0,
-            thing_id: parseInt(thingId),
-            actuator_id: actuator.id,
-            token,
+    const fetchActuators = async () => {
+      try {
+        const response = await request.get(
+          `/get/things(${thingId})/actuator?top=all`,
+          {
+            headers: {
+              token: token,
+            },
+          },
+        );
+        if (Array.isArray(response.data)) {
+          setActuators(response.data);
+          const initialParameters = {};
+          response.data.forEach((actuator) => {
+            initialParameters[actuator.id] =
+              actuator.controlState === 1 ? 0 : actuator.controlState;
           });
-          if (response.status === 201) {
-            if (isSwitched) {
-              message.success(
-                `Đã ${taskingParameters === -1 ? "bật" : "tắt"} `,
-              );
-            }
-          } else {
-            message.error("Bật tắt thất bại");
-          }
-        } catch (error) {
-          message.error("Bật tắt thất bại");
-          console.error("Lỗi bật tắt:", error);
-        } finally {
-          setLoading(false);
+          setTaskingParameters(initialParameters);
+          setAutoMode(
+            response.data.some((actuator) => actuator.controlState === 1),
+          );
+        } else {
+          message.error("Invalid actuator data");
+          console.error("Invalid actuator data:", response.data);
         }
-      };
+      } catch (error) {
+        message.error("Failed to fetch actuators");
+        console.error("Error fetching actuators:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      saveTask();
-    } else {
-      setInitialLoad(false);
+    fetchActuators();
+  }, [thingId, token]);
+
+  const handleSwitchChange = async (actuatorId, checked) => {
+    const newTaskingParameters = {
+      ...taskingParameters,
+      [actuatorId]: checked ? -1 : 0,
+    };
+    setTaskingParameters(newTaskingParameters);
+
+    try {
+      const response = await request.post(
+        "/post/task",
+        {
+          taskingParameters: newTaskingParameters[actuatorId],
+          thing_id: parseInt(thingId),
+          actuator_id: actuatorId,
+          token,
+        },
+        {
+          headers: {
+            token: token,
+          },
+        },
+      );
+      if (response.status === 201) {
+        message.success(
+          `Đã ${newTaskingParameters[actuatorId] === -1 ? "mở" : "tắt"}`,
+        );
+      } else {
+        message.error("Thao tác thất bại");
+      }
+    } catch (error) {
+      message.error("Thao tác thất bại");
+      console.error("Lỗi thao tác:", error);
     }
-  }, [taskingParameters, initialLoad, isSwitched, thingId, token, actuator.id]);
+  };
+
+  const handleAutoModeChange = async (checked) => {
+    setAutoMode(checked);
+
+    try {
+      const response = await request.post(
+        "/post/task",
+        {
+          taskingParameters: checked ? 1 : 0,
+          thing_id: parseInt(thingId),
+          actuator_id: null,
+          token,
+        },
+        {
+          headers: {
+            token: token,
+          },
+        },
+      );
+      if (response.status === 201) {
+        message.success(`Chế độ tự động ${checked ? "bật" : "tắt"}`);
+      } else {
+        message.error("Thao tác thất bại");
+      }
+    } catch (error) {
+      message.error("Thao tác thất bại");
+      console.error("Lỗi thao tác:", error);
+    }
+  };
 
   useEffect(() => {
-    if (actuator.controlState !== undefined && initialLoad) {
-      setTaskingParameters(actuator.controlState === 1 ? -1 : 0);
-    }
-  }, [actuator.controlState, initialLoad]);
-
-  useEffect(() => {
-    Cookies.set("taskingParameters", taskingParameters === -1 ? 1 : 0, {
+    Cookies.set("taskingParameters", JSON.stringify(taskingParameters), {
       expires: 7,
     });
-  }, [taskingParameters]);
+    Cookies.set("autoMode", JSON.stringify(autoMode), {
+      expires: 7,
+    });
+  }, [taskingParameters, autoMode]);
 
   return (
     <div className="flex h-full flex-col items-center justify-center">
       {loading ? (
-        <Skeleton.Button active size="large" />
+        <div></div>
       ) : (
-        <Switch
-          checked={taskingParameters === -1}
-          onChange={(checked) => {
-            setTaskingParameters(checked ? -1 : 0);
-            setIsSwitched(true);
-          }}
-          checkedChildren="On"
-          unCheckedChildren="Off"
-        />
+        <div className="flex w-full flex-wrap justify-start">
+          {actuators.map((actuator) => (
+            <Card
+              key={actuator.id}
+              title={actuator.name}
+              style={{ flex: "0 0 16.66%", marginBottom: 16, marginRight: 16 }}
+            >
+              <div className="flex items-center justify-between">
+                {renderIcon(
+                  actuator.name,
+                  taskingParameters[actuator.id] === -1,
+                )}
+                <Switch
+                  checked={taskingParameters[actuator.id] === -1}
+                  onChange={(checked) =>
+                    handleSwitchChange(actuator.id, checked)
+                  }
+                  checkedChildren="On"
+                  unCheckedChildren="Off"
+                  disabled={autoMode}
+                />
+              </div>
+            </Card>
+          ))}
+        </div>
       )}
     </div>
   );
