@@ -122,5 +122,12 @@
   "Thời gian": "Thời gian",
   "Hiển thị": "Hiển thị",
   "trong": "trong",
-  "mục": "mục"
+  "mục": "mục",
+  "Manual": "Thủ công",
+  "Auto": "Tự động",
+  "On": "Bật",
+  "Off": "Tắt",
+  "Thao tác thất bại": "Thao tác thất bại",
+  "Value": "Giá trị",
+  "Operation failed": "Operation failed"
 }

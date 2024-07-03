@@ -4,7 +4,7 @@
   "Tài khoản": "Account",
 
   "Comment trang chủ": "Các từ khóa của Thing",
-  "Trang chủ": "Home",
+  "Trang chủ": "Home Page",
   "Đối tượng": "Thing",
   "Tìm kiếm": "Search",
   "Quan sát": "View",
@@ -123,6 +123,11 @@
   "Hiển thị": "Shows",
   "trong": "in",
   "mục": "item",
-  "": "",
-  "": ""
+  "Manual": "Manual",
+  "Auto": "Auto",
+  "On": "On",
+  "Off": "Off",
+  "Thao tác thất bại": "Failed action",
+  "Value": "Value",
+  "Operation failed": "Operation failed"
 }

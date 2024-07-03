@@ -146,12 +146,10 @@ const ThingDetailPage = () => {
               latestObservations={latestObservations}
               intervalTimes={intervalTimes}
             />
+            <AddTask />
             <LineChart dataStreams={dataStreams} observations={observations} />
           </>
         )}
-      </section>
-      <section>
-        <AddTask />
       </section>
       {dataLoaded && (
         <DataStreamControl

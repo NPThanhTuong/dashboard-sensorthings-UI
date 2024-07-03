@@ -68,7 +68,7 @@ const HeaderThing = ({ searchQuery, setSearchQuery }) => {
 
   return (
     <>
-      <section className="flex flex-col items-center justify-between rounded-lg bg-white p-4 shadow-md dark:bg-darkPrimary sm:flex-row">
+      <section className="flex flex-col items-center justify-between rounded-2xl bg-white p-4 shadow-md dark:bg-darkPrimary sm:flex-row">
         {loading ? (
           <div className="flex w-full items-center justify-center"></div>
         ) : (
@@ -83,7 +83,7 @@ const HeaderThing = ({ searchQuery, setSearchQuery }) => {
               <div className="mb-4 sm:mb-0">
                 <Button
                   type="primary"
-                  className={`dark:bg-darkButton flex w-40 items-center justify-center gap-1 rounded-full bg-primary font-semibold text-white dark:shadow-sm dark:shadow-white`}
+                  className={`flex w-40 items-center justify-center gap-1 rounded-full bg-primary font-semibold text-white dark:bg-darkButton dark:shadow-sm dark:shadow-white`}
                   onClick={showAddThingModal}
                   style={{ height: "40px" }}
                 >
