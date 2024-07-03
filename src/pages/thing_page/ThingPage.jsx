@@ -1,3 +1,5 @@
+// ThingPage.js
+
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -5,19 +7,17 @@ import { Pagination, Button, Layout, Row, Col, Spin } from "antd";
 import { SettingOutlined } from "@ant-design/icons";
 import HeaderThing from "@/components/home_component/thing_component/HeaderThing";
 import { fetchThings } from "@/apis/ThingAPI";
-import hitech_ctu from "@public/images/hitech-ctu.jpg";
 import { useTheme } from "@/context/ThemeContext";
 import "@public/styles/thing-page.css";
-
 import { useLanguage } from "@/context/LanguageContext";
 import { useTranslations } from "@/config/useTranslations";
+import { getImageForId } from "@/config/ThingConfig"; // Import getImageForId function
 
 const { Content } = Layout;
 
 const ThingPage = () => {
   const { token } = useAuth();
   const { isDarkMode } = useTheme();
-
   const { language } = useLanguage();
   const translations = useTranslations(language);
 
@@ -35,7 +35,7 @@ const ThingPage = () => {
       setThings(data);
       setLoading(false);
     } catch (error) {
-      console.error("Lỗi khi tải dữ liệu:", error);
+      console.error("Error loading data:", error);
       setError(error);
       setLoading(false);
     }
@@ -54,7 +54,7 @@ const ThingPage = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   if (error) {
-    return <div className="text-center">Lỗi: {error.message}</div>;
+    return <div className="text-center">Error: {error.message}</div>;
   }
 
   const handleSettingClick = (thingId) => {
@@ -107,7 +107,7 @@ const ThingPage = () => {
                           <div
                             className="image-container"
                             style={{
-                              backgroundImage: `url(${hitech_ctu})`,
+                              backgroundImage: `url(${getImageForId(thing.id)})`,
                             }}
                           >
                             <span className="bg-white px-4 py-1 text-right dark:bg-darkPrimary">
@@ -150,7 +150,7 @@ const ThingPage = () => {
                               />
                               <Button
                                 type="primary"
-                                className="dark:bg-darkButton rounded-2xl font-semibold dark:shadow-md dark:shadow-white"
+                                className="rounded-2xl font-semibold dark:bg-darkButton dark:shadow-md dark:shadow-white"
                                 onClick={() =>
                                   navigate(`/chi-tiet-doi-tuong/${thing.id}`)
                                 }
