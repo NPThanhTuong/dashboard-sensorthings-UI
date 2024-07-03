@@ -66,6 +66,9 @@ const HeaderThing = ({ searchQuery, setSearchQuery }) => {
     };
   }, []);
 
+  if (!translations) {
+    return null;
+  }
   return (
     <>
       <section className="flex flex-col items-center justify-between rounded-2xl bg-white p-4 shadow-md dark:bg-darkPrimary sm:flex-row">

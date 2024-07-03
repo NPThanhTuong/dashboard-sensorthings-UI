@@ -91,8 +91,8 @@ const ThingPage = () => {
             >
               <Content className="flex-grow">
                 {things.length === 0 ? (
-                  <div className="dark:text-dark-headline text-center">
-                    {translations["Không có dữ liệu!"]}
+                  <div className="dark:text-dark-headline text-center text-xl text-red-500">
+                    {translations["Không có đối tượng!"]}
                   </div>
                 ) : (
                   <Row gutter={[16, 16]}>
