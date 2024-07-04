@@ -13,7 +13,7 @@
 }
 
 /* loading */
-@keyframes wave {
+/* @keyframes wave {
   0%,
   100% {
     transform: translateY(0);
@@ -21,9 +21,9 @@
   50% {
     transform: translateY(-10px);
   }
-}
+} */
 
-.loading-text span {
+/* .loading-text span {
   display: inline-block;
   animation: wave 1s ease-in-out infinite;
 }
@@ -60,7 +60,7 @@
 }
 .loading-text span:nth-child(11) {
   animation-delay: 1s;
-}
+} */
 /* 
 .dark {
   --color-primary: #00bb00;
