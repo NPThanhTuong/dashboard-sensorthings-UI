@@ -174,9 +174,9 @@ const AddTask = () => {
                       minHeight: "220px",
                       minWidth: "250px",
                       marginTop: "20px",
-                      marginRight: "20px",
-                      marginLeft: "10px",
-                      margin: "0 auto",
+                      // marginRight: "20px",
+                      marginLeft: "20px",
+                      // margin: "0 auto",
                       backgroundImage: isDarkMode
                         ? darkBackground
                         : colors.bgColor,
@@ -216,7 +216,12 @@ const AddTask = () => {
                             justifyContent: "flex-end",
                           }}
                         >
-                          <span className="ml-2">{actuator.name}</span>
+                          <span
+                            className="ml-2"
+                            style={{ fontFamily: "Kanit" }}
+                          >
+                            {actuator.name}
+                          </span>
                         </div>
                       </div>
 

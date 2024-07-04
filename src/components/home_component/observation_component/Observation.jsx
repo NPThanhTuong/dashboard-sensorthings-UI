@@ -168,7 +168,7 @@ const Observation = ({ dataStreams, latestObservations }) => {
                               <div className="flex items-center justify-between gap-2">
                                 <div>{getFieldIcon(cleanKey(key))}</div>
                                 <div
-                                  className={`text-2xl font-bold ${isDarkMode ? "text-white" : ""}`}
+                                  className={`text-[22px] font-bold ${isDarkMode ? "text-white" : ""}`}
                                   style={{ fontFamily: "Kanit" }}
                                 >
                                   {capitalizeFirstLetter(key)}
