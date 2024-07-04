@@ -174,7 +174,7 @@ const AddTask = () => {
                       minHeight: "220px",
                       minWidth: "250px",
                       marginTop: "20px",
-                      // marginRight: "20px",
+                      marginRight: "20px",
                       marginLeft: "10px",
                       margin: "0 auto",
                       backgroundImage: isDarkMode
